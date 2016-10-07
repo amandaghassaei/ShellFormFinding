@@ -32,11 +32,27 @@ function initThreeView(globals) {
     }
 
     function render() {
-        renderer.render(scene, camera);
+        //renderer.render(scene, camera);
+    }
+
+    function startAnimation(callback){
+        console.log("starting animation");
+        _loop(function(){
+            _render();
+            callback();
+        });
+
     }
 
     function _render(){
+        renderer.render(scene, camera);
+    }
 
+    function _loop(callback){
+        callback();
+        requestAnimationFrame(function(){
+            _loop(callback);
+        });
     }
 
     function sceneAdd(object) {
@@ -69,6 +85,7 @@ function initThreeView(globals) {
         sceneAdd: sceneAdd,
         sceneClear: sceneClear,
         render: render,
-        onWindowResize: onWindowResize
+        onWindowResize: onWindowResize,
+        startAnimation: startAnimation
     }
 }

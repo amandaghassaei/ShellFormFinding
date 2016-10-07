@@ -26,6 +26,7 @@ function initDynamicModel(globals){
     //variables for solving
     var dt = 0.0001;
 
+    var originalPosition;
     var position;
     var lastPosition;
     var velocity;
@@ -34,16 +35,19 @@ function initDynamicModel(globals){
 
     initTypedArrays();
 
-    for (var i=0;i<10;i++){
+    globals.threeView.startAnimation(function(){
         for (var j=0;j<1000;j++){
-            solve();
+            solveStep();
         }
         render();
+    });
+
+
+    function runSolver(){
+
     }
 
-
-
-    function solve(){
+    function solveStep(){
 
         for (var i=0;i<nodes.length;i++){
 
@@ -54,17 +58,21 @@ function initDynamicModel(globals){
             var force = node.getExternalForce();
             var nodePosition = new THREE.Vector3(lastPosition[rgbaIndex], lastPosition[rgbaIndex+1], lastPosition[rgbaIndex+2]);
             var nodeVelocity = new THREE.Vector3(lastVelocity[rgbaIndex], lastVelocity[rgbaIndex+1], lastVelocity[rgbaIndex+2]);
+            var nodeOrigPosition = new THREE.Vector3(originalPosition[rgbaIndex], originalPosition[rgbaIndex+1], originalPosition[rgbaIndex+2]);
+
             for (var j=0;j<node.beams.length;j++){
                 var beam = node.beams[j];
-                var neighborIndex = beam.getOtherNode(this).getIndex()*4;
+                var neighborIndex = (beam.getOtherNode(node)).getIndex()*4;
 
                 var neighborPosition = new THREE.Vector3(lastPosition[neighborIndex], lastPosition[neighborIndex+1], lastPosition[neighborIndex+2]);
                 var neighborVelocity = new THREE.Vector3(lastVelocity[neighborIndex], lastVelocity[neighborIndex+1], lastVelocity[neighborIndex+2]);
+                var neighborOrigPosition = new THREE.Vector3(originalPosition[neighborIndex], originalPosition[neighborIndex+1], originalPosition[neighborIndex+2]);
 
-                var deltaP = nodePosition.clone().sub(neighborPosition);
-                var deltaV = nodeVelocity.clone().sub(neighborVelocity);
-                var _force = deltaP.clone().normalize().multiplyScalar(deltaP.length()*beam.getK()).add(
-                    deltaV.clone().normalize().multiplyScalar(deltaV.length*beam.getD()));
+                var nominalDist = neighborOrigPosition.sub(nodeOrigPosition);
+                var deltaP = neighborPosition.sub(nodePosition).add(nominalDist);
+                deltaP.sub(deltaP.clone().normalize().multiplyScalar(nominalDist.length()));
+                var deltaV = neighborVelocity.sub(nodeVelocity);
+                var _force = deltaP.multiplyScalar(beam.getK()).add(deltaV.multiplyScalar(beam.getD()));
                 force.add(_force);
             }
 
@@ -81,6 +89,7 @@ function initDynamicModel(globals){
             position[rgbaIndex+1] = nodePosition.y;
             position[rgbaIndex+2] = nodePosition.z;
         }
+        //console.log(originalPosition);
 
         var temp = lastPosition;
         lastPosition = position;
@@ -89,6 +98,7 @@ function initDynamicModel(globals){
         temp = lastVelocity;
         lastVelocity = velocity;
         velocity = temp;
+
     }
 
     function render(){
@@ -104,6 +114,7 @@ function initDynamicModel(globals){
     function initTypedArrays(){
         var numNodes = nodes.length;
 
+        originalPosition = new Float32Array(numNodes*4);
         position = new Float32Array(numNodes*4);
         lastPosition = new Float32Array(numNodes*4);
         velocity = new Float32Array(numNodes*4);
@@ -115,11 +126,15 @@ function initDynamicModel(globals){
             externalForces[4*index] = externalForce.x;
             externalForces[4*index+1] = externalForce.y;
             externalForces[4*index+2] = externalForce.z;
+            var origPosition = node.getOriginalPosition();
+            originalPosition[4*index] = origPosition.x;
+            originalPosition[4*index+1] = origPosition.y;
+            originalPosition[4*index+2] = origPosition.z;
         });
-    };
+    }
 
 
     return {
-        solve:solve
+        runSolver:runSolver
     }
 }

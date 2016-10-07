@@ -56,7 +56,7 @@ Beam.prototype.getK = function(){
 };
 
 Beam.prototype.getD = function(){
-    return 0.001;
+    return 0.01;
 };
 
 Beam.prototype.getOtherNode = function(node){

@@ -85,7 +85,7 @@ Node.prototype.render = function(position){
 
 Node.prototype.reset = function(){
     this.velocity = new THREE.Vector3(0,0,0);
-    this.render(new THREE.Vector3());
+    this.render(new THREE.Vector3(0,0,0));
 };
 
 
