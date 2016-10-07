@@ -2,7 +2,7 @@
  * Created by ghassaei on 9/16/16.
  */
 
-function initThreeView() {
+function initThreeView(globals) {
 
     var scene = new THREE.Scene();
     var camera = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 0.1, 1000);
