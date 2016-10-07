@@ -12,7 +12,7 @@ $(function() {
 
     var globals = initGlobals();
 
-
+    globals.threeView.render();
 
 
 });

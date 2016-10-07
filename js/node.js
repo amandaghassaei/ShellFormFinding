@@ -56,6 +56,10 @@ Node.prototype.highlight = function(){
 Node.prototype.unhighlight = function(){
 };
 
+Node.prototype.hide = function(){
+    this.object3D.visible = false;
+};
+
 Node.prototype.move = function(position){
     this.object3D.position.set(position.x, position.y, position.z);
     _.each(this.beams, function(beam){

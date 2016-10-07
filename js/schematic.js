@@ -11,12 +11,11 @@ function initSchematic(globals){
 
     //var edgeMaterial = new THREE.LineBasicMaterial({color:0xff0f00, linewidth:2});
 
-    var nodes = calcNodes();
-    var edges = [];
+    var geo = calcNodesAndEdges(object3D);
+    var nodes = geo.nodes;
+    var edges = geo.edges;//todo need this?
 
-    globals.threeView.render();
-
-    function calcNodes(){
+    function calcNodesAndEdges(_object3D){
         var xResolution = globals.xResolution;
         var zResolution = globals.zResolution;
         var xLength = globals.xLength;
@@ -36,20 +35,27 @@ function initSchematic(globals){
                     var minusJNode = _nodes[index-1];
                     var edge = new Beam([node, minusJNode]);
                     _edges.push(edge);
-                    object3D.add(edge.getObject3D());
+                    _object3D.add(edge.getObject3D());
                 }
                 if (i>0){
                     var minusINode = _nodes[index-zResolution];
                     var edge = new Beam([node, minusINode]);
                     _edges.push(edge);
-                    object3D.add(edge.getObject3D());
+                    _object3D.add(edge.getObject3D());
                 }
 
                 _nodes.push(node);
-                object3D.add(node.getObject3D());
+                _object3D.add(node.getObject3D());
             }
         }
-        return _nodes;
+        return {
+            nodes: _nodes,
+            edges: _edges
+        };
+    }
+
+    function cloneGeo(_object3D){
+        return calcNodesAndEdges(_object3D);
     }
 
     function reset(){
@@ -72,6 +78,7 @@ function initSchematic(globals){
 
 
     return {
-        update:update
+        update:update,
+        cloneGeo:cloneGeo
     }
 }

@@ -2,7 +2,6 @@
  * Created by ghassaei on 9/16/16.
  */
 
-var beamMaterial = new THREE.LineBasicMaterial({color: 0x999999, linewidth: 3});
 var beamMaterialHighlight = new THREE.LineBasicMaterial({color: 0x4444ff, linewidth: 3});
 
 function Beam(nodes){
@@ -15,7 +14,7 @@ function Beam(nodes){
     lineGeometry.dynamic = true;
     lineGeometry.vertices = this.vertices;
 
-    this.object3D = new THREE.Line(lineGeometry, beamMaterial);
+    this.object3D = new THREE.Line(lineGeometry, new THREE.LineBasicMaterial({color: 0x999999, linewidth: 3}));
     this.object3D._myBeam = this;
 
     this.reset();
@@ -27,8 +26,11 @@ Beam.prototype.highlight = function(){
 Beam.prototype.unhighlight = function(){
 };
 
+Beam.prototype.setColor = function(hex){
+    this.object3D.material.color.setHex(hex);
+};
 
-Beam.prototype.setColor = function(val, max, min){
+Beam.prototype.setHSLColor = function(val, max, min){
     var scaledVal = (1-(val - min)/(max - min)) * 0.7;
     var color = new THREE.Color();
     color.setHSL(scaledVal, 1, 0.5);
