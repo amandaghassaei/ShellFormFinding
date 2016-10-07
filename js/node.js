@@ -71,7 +71,9 @@ Node.prototype.hide = function(){
     this.object3D.visible = false;
 };
 
-Node.prototype.render = function(){
+Node.prototype.render = function(position){
+    position.add(this.originalPosition);
+    this.object3D.position.set(position.x, position.y, position.z);
     _.each(this.beams, function(beam){
         beam.updatePosition();
     });
@@ -82,9 +84,8 @@ Node.prototype.render = function(){
 
 
 Node.prototype.reset = function(){
-    this.object3D.position.set(this.originalPosition.x, this.originalPosition.y, this.originalPosition.z);
     this.velocity = new THREE.Vector3(0,0,0);
-    this.render();
+    this.render(new THREE.Vector3());
 };
 
 
@@ -102,7 +103,7 @@ Node.prototype.solveDynamics = function(dt){
         var beam = this.beams[i];
         var neighbor = beam.getOtherNode(this);
         var nominalDistance = originalPosition.clone().sub(neighbor.getOriginalPosition());
-        var deltaP = position.clone().sub(neighbor.getPosition()).sub(nominalDistance);
+        var deltaP = (position.clone().sub(neighbor.getPosition())).sub(nominalDistance);
         var deltaV = velocity.clone().sub(neighbor.getVelocity());
         var _force = deltaP.clone().normalize().multiplyScalar(deltaP.length()*beam.getK()).add(
             deltaV.clone().normalize().multiplyScalar(deltaV.length*beam.getD()));

@@ -14,8 +14,8 @@ function initGlobals(){
 
     _globals.dynamicGeoNeedsClone = false;
     _globals.FDMGeoNeedsClone = false;
-    _globals.xResolution = 10;
-    _globals.zResolution = 10;
+    _globals.xResolution = 5;
+    _globals.zResolution = 5;
     _globals.xLength = 30;
     _globals.zLength = 30;
     _globals.planeHeight = -10;
