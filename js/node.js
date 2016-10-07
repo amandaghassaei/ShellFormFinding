@@ -93,29 +93,6 @@ Node.prototype.reset = function(){
 
 //dynamic solve
 
-Node.prototype.solveDynamics = function(dt){
-    if (this.fixed) return;
-    var force = this.getExternalForce();
-    var position = this.getPosition();
-    var originalPosition = this.getOriginalPosition();
-    var velocity = this.getVelocity();
-    for (var i=0;i<this.beams.length;i++){
-        var beam = this.beams[i];
-        var neighbor = beam.getOtherNode(this);
-        var nominalDistance = originalPosition.clone().sub(neighbor.getOriginalPosition());
-        var deltaP = (position.clone().sub(neighbor.getPosition())).sub(nominalDistance);
-        var deltaV = velocity.clone().sub(neighbor.getVelocity());
-        var _force = deltaP.clone().normalize().multiplyScalar(deltaP.length()*beam.getK()).add(
-            deltaV.clone().normalize().multiplyScalar(deltaV.length*beam.getD()));
-        force.add(_force);
-    }
-    //euler integration
-    var mass = 1;
-    this.velocity = force.multiplyScalar(dt/mass).add(velocity);
-    position = this.velocity.clone().multiplyScalar(dt).add(position);
-    this.object3D.position.set(position.x, position.y, position.z);
-};
-
 Node.prototype.getOriginalPosition = function(){
     return this.originalPosition;
 };
@@ -129,6 +106,8 @@ Node.prototype.getVelocity = function(){
 };
 
 Node.prototype.getMass = function(){
+    var density = 1;
+    //var area =
     return 1;
 };
 

@@ -52,7 +52,7 @@ Beam.prototype.getLength = function(){
 //dynamic solve
 
 Beam.prototype.getK = function(){
-    return 1;
+    return 100/this.getLength();
 };
 
 Beam.prototype.getD = function(){

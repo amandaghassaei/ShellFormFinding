@@ -18,7 +18,7 @@ function initGlobals(){
     _globals.zResolution = 5;
     _globals.xLength = 30;
     _globals.zLength = 30;
-    _globals.planeHeight = -10;
+    _globals.planeHeight = 0;
     _globals.selfWeight = true;
 
     function setXResolution(val){
