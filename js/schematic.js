@@ -5,13 +5,16 @@
 
 function initSchematic(globals){
 
-    var edgeMaterial = new THREE.LineBasicMaterial({color:0xff0f00, linewidth:2});
-    var nodeGeo = new THREE.CircleGeometry(2,20);
-    nodeGeo.rotateX(Math.PI/2);
-    var nodeMaterial = new THREE.MeshBasicMaterial({color:0x0000ff, side:THREE.DoubleSide});
+    var object3D = new THREE.Object3D();
+    object3D.position.y = globals.planeHeight;
+    globals.threeView.sceneAdd(object3D);
+
+    //var edgeMaterial = new THREE.LineBasicMaterial({color:0xff0f00, linewidth:2});
 
     var nodes = calcNodes();
-    var nodesObj3D = drawNodes(nodes);
+    var edges = [];
+
+    globals.threeView.render();
 
     function calcNodes(){
         var xResolution = globals.xResolution;
@@ -20,30 +23,45 @@ function initSchematic(globals){
         var zLength = globals.zLength;
 
         var _nodes = [];
+        var _edges = [];
 
         for (var i=0;i<xResolution;i++){
             for (var j=0;j<zResolution;j++){
                 var x = i/xResolution*xLength-xLength/2;
                 var z = j/zResolution*zLength-zLength/2;
-                _nodes.push(new THREE.Vector3(x, 0, z));
+                var index = zResolution*i+j;
+                var node = new Node(new THREE.Vector3(x, 0, z), index);
+
+                if (j>0){
+                    var minusJNode = _nodes[index-1];
+                    var edge = new Beam([node, minusJNode]);
+                    _edges.push(edge);
+                    object3D.add(edge.getObject3D());
+                }
+                if (i>0){
+                    var minusINode = _nodes[index-zResolution];
+                    var edge = new Beam([node, minusINode]);
+                    _edges.push(edge);
+                    object3D.add(edge.getObject3D());
+                }
+
+                _nodes.push(node);
+                object3D.add(node.getObject3D());
             }
         }
         return _nodes;
     }
 
-    function drawNodes(_nodes, oldNodesObj3D){
-        _.each(oldNodesObj3D, function(object){
-            globals.threeView.sceneRemove(object);
+    function reset(){
+        object3D.children = [];
+        _.each(nodes, function(node){
+            node.destroy();
         });
-        var _nodesObj3D = [];
-        _.each(_nodes, function(node){
-            var mesh = new THREE.Mesh(nodeGeo, nodeMaterial);
-            mesh.position.set(node.x, node.y, node.z);
-            _nodesObj3D.push(mesh);
-            globals.threeView.sceneAdd(mesh);
+        nodes = [];
+        _.each(edges, function(edge){
+            edge.destroy();
         });
-        globals.threeView.render();
-        return _nodesObj3D;
+        edges = [];
     }
 
 
