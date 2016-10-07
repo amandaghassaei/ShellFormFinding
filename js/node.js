@@ -3,6 +3,7 @@
  */
 
 var nodeMaterial = new THREE.MeshBasicMaterial({color: 0x000000, side:THREE.DoubleSide});
+var nodeMaterialFixed = new THREE.MeshBasicMaterial({color: 0xff0000, side:THREE.DoubleSide});
 var nodeGeo = new THREE.CircleGeometry(0.2,20);
 nodeGeo.rotateX(Math.PI/2);
 
@@ -24,6 +25,8 @@ function Node(position, index){
 
 Node.prototype.setFixed = function(fixed){
     this.fixed = fixed;
+    if (fixed) this.object3D.material = nodeMaterialFixed;
+    else this.object3D.material = nodeMaterial;
 };
 
 Node.prototype.addExternalForce = function(force){

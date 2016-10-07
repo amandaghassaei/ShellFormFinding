@@ -3,14 +3,17 @@
  */
 
 
-function Force(force){
+function Force(force, origin){
     this.setForce(force);
-    this.arrow = new THREE.ArrowHelper(this.getDirection(), new THREE.Vector3(0,0,0), this.getMagnitude(), 0xaaaaaa);
-    this.arrow.setLength(this.getMagnitude(), 3, 3);
+    this.arrow = new THREE.ArrowHelper(this.getDirection(), origin, this.getMagnitude(), 0x0000ff);
+    this.arrow.setLength(this.getMagnitude(), 1, 1);
     this.arrow.line.material.linewidth = 4;
     this.arrow.cone._myForce = this;
-    //scene.add(this.arrow);
 }
+
+Force.prototype.getObject3D = function(){
+    return this.arrow;
+};
 
 Force.prototype.setForce = function(force){
     this.force = force;
@@ -48,6 +51,10 @@ Force.prototype.unhighlight = function(){
     this.arrow.cone.material.color.setHex(0xaaaaaa);
 };
 
+Force.prototype.hide = function(){
+    this.arrow.visible = false;
+};
+
 Force.prototype.update = function(position, scale){
     this.arrow.position.set(position*scale/2, 0, 0.1);
     this.arrow.setDirection(this.getDirection());
@@ -62,6 +69,5 @@ Force.prototype.move = function(intersection){
 
 Force.prototype.destroy = function(){
     this.arrow.cone._myForce = null;
-    //scene.remove(this.arrow);
     this.arrow = null;
 };

@@ -11,9 +11,53 @@ function initSchematic(globals){
 
     //var edgeMaterial = new THREE.LineBasicMaterial({color:0xff0f00, linewidth:2});
 
+    
+    
+    
+    
+    var fixed = initFixed();
+    var forces = initForces(fixed);
     var geo = calcNodesAndEdges(object3D);
     var nodes = geo.nodes;
     var edges = geo.edges;//todo need this?
+    
+    function initFixed(){
+        var xResolution = globals.xResolution;
+        var zResolution = globals.zResolution;
+        var _fixed = [];
+        for (var i=0;i<xResolution;i++){
+            _fixed.push([]);
+            for (var j=0;j<zResolution;j++){
+                if ((i==j && i==0) ||
+                    (i==xResolution-1 && j==0) ||
+                    (j==zResolution-1 && i==0) ||
+                    (i==xResolution-1 && j==zResolution-1)) _fixed[i].push(true);
+                else _fixed[i].push(false);
+            }
+        }
+        return _fixed;
+    }
+
+    function initForces(_fixed){
+        var xResolution = globals.xResolution;
+        var zResolution = globals.zResolution;
+        var xLength = globals.xLength;
+        var zLength = globals.zLength;
+
+        var _forces = [];
+        for (var i=0;i<xResolution;i++){
+            _forces.push([]);
+            for (var j=0;j<zResolution;j++){
+                var x = i/xResolution*xLength-xLength/2;
+                var z = j/zResolution*zLength-zLength/2;
+                var force = new Force(new THREE.Vector3(0,5,0), new THREE.Vector3(x, 0, z));
+                object3D.add(force.getObject3D());
+                if (_fixed[i][j]) force.hide();
+                _forces[i].push(force);
+            }
+        }
+        return _forces;
+    }
 
     function calcNodesAndEdges(_object3D){
         var xResolution = globals.xResolution;
@@ -30,6 +74,7 @@ function initSchematic(globals){
                 var z = j/zResolution*zLength-zLength/2;
                 var index = zResolution*i+j;
                 var node = new Node(new THREE.Vector3(x, 0, z), index);
+                if (fixed[i][j]) node.setFixed(true);
 
                 if (j>0){
                     var minusJNode = _nodes[index-1];
@@ -68,6 +113,9 @@ function initSchematic(globals){
             edge.destroy();
         });
         edges = [];
+
+
+
     }
 
 
