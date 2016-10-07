@@ -35,6 +35,10 @@ function initThreeView(globals) {
         renderer.render(scene, camera);
     }
 
+    function _render(){
+
+    }
+
     function sceneAdd(object) {
         scene.add(object);
     }

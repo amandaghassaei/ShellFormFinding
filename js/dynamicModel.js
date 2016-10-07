@@ -20,9 +20,22 @@ function initDynamicModel(globals){
         edges.setColor(0xdddddd);
     });
 
+    var dt = 0.0001;
+
     solve();
 
     function solve(){
+        for (var b=0;b<20;b++){
+            for (var a=0;a<1000;a++){
+                for (var i=0;i<nodes.length;i++){
+                    nodes[i].solveDynamics(dt);
+                }
+            }
+            for (var i=0;i<nodes.length;i++){
+                nodes[i].render();
+            }
+            globals.threeView.render();
+        }
 
     }
 

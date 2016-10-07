@@ -74,6 +74,7 @@ function initSchematic(globals){
                 var z = j/zResolution*zLength-zLength/2;
                 var index = zResolution*i+j;
                 var node = new Node(new THREE.Vector3(x, 0, z), index);
+                node.addExternalForce(forces[i][j]);
                 if (fixed[i][j]) node.setFixed(true);
 
                 if (j>0){

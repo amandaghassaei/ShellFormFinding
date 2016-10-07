@@ -9,6 +9,7 @@ function Beam(nodes){
     nodes[0].addBeam(this);
     nodes[1].addBeam(this);
     this.vertices = [nodes[0].getPosition(), nodes[1].getPosition()];
+    this.nodes = nodes;
 
     var lineGeometry = new THREE.Geometry();
     lineGeometry.dynamic = true;
@@ -46,6 +47,27 @@ Beam.prototype.getLength = function(){
     return this.vertices[0].clone().sub(this.vertices[1]).length();
 };
 
+
+
+//dynamic solve
+
+Beam.prototype.getK = function(){
+    return 1;
+};
+
+Beam.prototype.getD = function(){
+    return 0.001;
+};
+
+Beam.prototype.getOtherNode = function(node){
+    if (this.nodes[0] == node) return this.nodes[1];
+    return this.nodes[0];
+};
+
+
+
+//render
+
 Beam.prototype.getObject3D = function(){
     return this.object3D;
 };
@@ -55,8 +77,13 @@ Beam.prototype.updatePosition = function(){
     this.object3D.geometry.computeBoundingSphere();
 };
 
+
+
+//deallocate
+
 Beam.prototype.destroy = function(){
     this.vertices = null;
     this.object3D._myBeam = null;
     this.object3D = null;
+    this.nodes = null;
 };
