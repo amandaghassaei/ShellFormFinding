@@ -19,6 +19,10 @@ body{
                                   not supported by any browser */
 }
 
+#gpuMathCanvas{
+    display: none;
+}
+
 a{
     color:#6dd0f2;
 }

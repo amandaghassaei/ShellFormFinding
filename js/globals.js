@@ -47,9 +47,11 @@ function initGlobals(){
     }
 
     _globals.threeView = initThreeView(_globals);
+    _globals.gpuMath = initGPUMath();
     _globals.controls = initControls(_globals);
     _globals.schematic = initSchematic(_globals);
     _globals.dynamicModel = initDynamicModel(_globals);
+
 
     return _globals;
 }
