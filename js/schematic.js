@@ -48,8 +48,8 @@ function initSchematic(globals){
         for (var i=0;i<xResolution;i++){
             _forces.push([]);
             for (var j=0;j<zResolution;j++){
-                var x = i/xResolution*xLength-xLength/2;
-                var z = j/zResolution*zLength-zLength/2;
+                var x = i/(xResolution-1)*xLength-xLength/2;
+                var z = j/(zResolution-1)*zLength-zLength/2;
                 var force = new Force(new THREE.Vector3(0,5,0), new THREE.Vector3(x, 0, z));
                 object3D.add(force.getObject3D());
                 if (_fixed[i][j]) force.hide();
@@ -70,8 +70,8 @@ function initSchematic(globals){
 
         for (var i=0;i<xResolution;i++){
             for (var j=0;j<zResolution;j++){
-                var x = i/xResolution*xLength-xLength/2;
-                var z = j/zResolution*zLength-zLength/2;
+                var x = i/(xResolution-1)*xLength-xLength/2;
+                var z = j/(zResolution-1)*zLength-zLength/2;
                 var index = zResolution*i+j;
                 var node = new Node(new THREE.Vector3(x, 0, z), index);
                 node.addExternalForce(forces[i][j]);
