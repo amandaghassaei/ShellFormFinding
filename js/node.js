@@ -128,6 +128,10 @@ Node.prototype.getVelocity = function(){
     return this.velocity;
 };
 
+Node.prototype.getMass = function(){
+    return 1;
+};
+
 
 
 

@@ -56,7 +56,13 @@ Beam.prototype.getK = function(){
 };
 
 Beam.prototype.getD = function(){
-    return 0.01;
+    return 2*this.getNaturalFrequency();
+};
+
+Beam.prototype.getNaturalFrequency = function(){
+    var minMass = this.nodes[0].getMass();
+    if (this.nodes[1].getMass()<minMass) minMass = this.nodes[1].getMass();
+    return Math.sqrt(this.getK()/minMass);
 };
 
 Beam.prototype.getOtherNode = function(node){

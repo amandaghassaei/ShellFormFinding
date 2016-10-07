@@ -22,9 +22,9 @@ function initDynamicModel(globals){
 
 
 
-
     //variables for solving
-    var dt = 0.0001;
+    var dt;
+    var numSteps;
 
     var originalPosition;
     var position;
@@ -33,17 +33,23 @@ function initDynamicModel(globals){
     var lastVelocity;
     var externalForces;
 
-    initTypedArrays();
-
-    globals.threeView.startAnimation(function(){
-        for (var j=0;j<1000;j++){
-            solveStep();
-        }
-        render();
-    });
-
+    runSolver();
 
     function runSolver(){
+        initTypedArrays();
+        var params = calcSolveParams();
+        dt = params.dt;
+        numSteps = params.numSteps;
+
+        globals.threeView.startAnimation(function(){
+            for (var j=0;j<numSteps;j++){
+                solveStep();
+            }
+            render();
+        });
+    }
+
+    function stopSolver(){
 
     }
 
@@ -77,7 +83,7 @@ function initDynamicModel(globals){
             }
 
             //euler integration
-            var mass = 1;
+            var mass = node.getMass();
 
             nodeVelocity = force.multiplyScalar(dt/mass).add(nodeVelocity);
             velocity[rgbaIndex] = nodeVelocity.x;
@@ -111,6 +117,19 @@ function initDynamicModel(globals){
         globals.threeView.render();
     }
 
+    function calcSolveParams(){
+        var maxFreqNat = 0;
+        _.each(edges, function(beam){
+            if (beam.getNaturalFrequency()>maxFreqNat) maxFreqNat = beam.getNaturalFrequency();
+        });
+        var _dt = (1/(2*Math.PI*maxFreqNat))*0.5;//half of max delta t for good measure
+        var _numSteps = (1/60)/_dt;
+        return {
+            dt: _dt,
+            numSteps: _numSteps
+        }
+    }
+
     function initTypedArrays(){
         var numNodes = nodes.length;
 
@@ -135,6 +154,7 @@ function initDynamicModel(globals){
 
 
     return {
-        runSolver:runSolver
+        runSolver:runSolver,
+        stopSolver: stopSolver
     }
 }
