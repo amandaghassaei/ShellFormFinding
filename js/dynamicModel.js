@@ -41,9 +41,18 @@ function initDynamicModel(globals){
 
     function runSolver(){
         initTypedArrays();
+
         var params = calcSolveParams();
         dt = params.dt;
         numSteps = params.numSteps;
+
+        var gpuMath = globals.gpuMath;
+        initTexturesAndPrograms(gpuMath);
+        gpuMath.setProgram("velocityCalc");
+        gpuMath.setProgram("velocityCalc");
+        gpuMath.setUniformForProgram("velocityCalc", "u_dt", dt, "1f");
+        gpuMath.setProgram("positionCalc");
+        gpuMath.setUniformForProgram("positionCalc", "u_dt", dt, "1f");
 
         globals.threeView.startAnimation(function(){
             for (var j=0;j<numSteps;j++){
@@ -133,19 +142,78 @@ function initDynamicModel(globals){
         }
     }
 
-    function initTypedArrays(){
-        var numNodes = nodes.length;
+    function initTexturesAndPrograms(gpuMath){
+        gpuMath.reset();
+        var textureDim = calcTextureSize(nodes.length);
 
-        originalPosition = new Float32Array(numNodes*4);
-        position = new Float32Array(numNodes*4);
-        lastPosition = new Float32Array(numNodes*4);
-        velocity = new Float32Array(numNodes*4);
-        lastVelocity = new Float32Array(numNodes*4);
-        externalForces = new Float32Array(numNodes*4);
-        mass = new Float32Array(numNodes*4);
-        meta = new Int8Array(numNodes*4);
-        beamK = new Float32Array(numNodes*4);
-        beamD = new Float32Array(numNodes*4);
+        var vertexShader = document.getElementById("vertexShader").text;
+
+        gpuMath.initTextureFromData("u_position", textureDim, textureDim, "FLOAT", position);
+        gpuMath.initFrameBufferForTexture("u_position");
+        gpuMath.initTextureFromData("u_lastPosition", textureDim, textureDim, "FLOAT", lastPosition);
+        gpuMath.initFrameBufferForTexture("u_lastPosition");
+        gpuMath.initTextureFromData("u_velocity", textureDim, textureDim, "FLOAT", velocity);
+        gpuMath.initFrameBufferForTexture("u_velocity");
+        gpuMath.initTextureFromData("u_lastVelocity", textureDim, textureDim, "FLOAT", lastVelocity);
+        gpuMath.initFrameBufferForTexture("u_lastVelocity");
+
+        gpuMath.initTextureFromData("u_originalPosition", textureDim, textureDim, "FLOAT", originalPosition);
+        gpuMath.initTextureFromData("u_externalForces", textureDim, textureDim, "FLOAT", externalForces);
+        gpuMath.initTextureFromData("u_mass", textureDim, textureDim, "FLOAT", mass);
+        gpuMath.initTextureFromData("u_meta", textureDim, textureDim, "float", meta);
+        gpuMath.initTextureFromData("u_beamK", textureDim, textureDim, "FLOAT", beamK);
+        gpuMath.initTextureFromData("u_beamD", textureDim, textureDim, "FLOAT", beamD);
+
+        gpuMath.createProgram("positionCalc", vertexShader, document.getElementById("positionCalcShader").text);
+        gpuMath.setUniformForProgram("positionCalc", "u_velocity", 0, "1i");
+        gpuMath.setUniformForProgram("positionCalc", "u_lastPosition", 1, "1i");
+        gpuMath.setUniformForProgram("positionCalc", "u_textureDim", [textureDim, textureDim], "2f");
+
+        gpuMath.createProgram("velocityCalc", vertexShader, document.getElementById("velocityCalcShader").text);
+        gpuMath.setUniformForProgram("velocityCalc", "u_lastPosition", 0, "1i");
+        gpuMath.setUniformForProgram("velocityCalc", "u_lastVelocity", 1, "1i");
+        gpuMath.setUniformForProgram("velocityCalc", "u_originalPosition", 2, "1i");
+        gpuMath.setUniformForProgram("velocityCalc", "u_externalForces", 3, "1i");
+        gpuMath.setUniformForProgram("velocityCalc", "u_mass", 4, "1i");
+        gpuMath.setUniformForProgram("velocityCalc", "u_meta", 5, "1i");
+        gpuMath.setUniformForProgram("velocityCalc", "u_beamK", 6, "1i");
+        gpuMath.setUniformForProgram("velocityCalc", "u_beamD", 7, "1i");
+        gpuMath.setUniformForProgram("velocityCalc", "u_textureDim", [textureDim, textureDim], "2f");
+
+        gpuMath.createProgram("packToBytes", vertexShader, document.getElementById("packToBytesShader").text);
+        gpuMath.initTextureFromData("outputBytes", textureDim*4, textureDim, "UNSIGNED_BYTE", null);
+        gpuMath.initFrameBufferForTexture("outputBytes");
+        gpuMath.setUniformForProgram("packToBytes", "u_floatTextureDim", [textureDim, textureDim], "2f");
+    }
+
+    function calcTextureSize(numNodes){
+        if (numNodes == 1) return 2;
+        for (var i=0;i<numNodes;i++){
+            if (Math.pow(2, 2*i) >= numNodes){
+                return Math.pow(2, i);
+            }
+        }
+        console.warn("no texture size found for " + numCells + " cells");
+        return 0;
+    }
+
+    function initTypedArrays(){
+        var textureDim = calcTextureSize(nodes.length);
+
+        originalPosition = new Float32Array(textureDim*textureDim*4);
+        position = new Float32Array(textureDim*textureDim*4);
+        lastPosition = new Float32Array(textureDim*textureDim*4);
+        velocity = new Float32Array(textureDim*textureDim*4);
+        lastVelocity = new Float32Array(textureDim*textureDim*4);
+        externalForces = new Float32Array(textureDim*textureDim*4);
+        mass = new Float32Array(textureDim*textureDim*4);
+        meta = new Float32Array(textureDim*textureDim*4);
+        beamK = new Float32Array(textureDim*textureDim*4);
+        beamD = new Float32Array(textureDim*textureDim*4);
+
+        for (var i=0;i<textureDim*textureDim;i++){
+            mass[4*i+1] = 1;//set all fixed by default
+        }
 
         _.each(nodes, function(node, index){
             var externalForce = node.getExternalForce();
