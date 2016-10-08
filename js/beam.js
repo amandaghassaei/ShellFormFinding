@@ -15,7 +15,7 @@ function Beam(nodes){
     lineGeometry.dynamic = true;
     lineGeometry.vertices = this.vertices;
 
-    this.object3D = new THREE.Line(lineGeometry, new THREE.LineBasicMaterial({color: 0x999999, linewidth: 3}));
+    this.object3D = new THREE.Line(lineGeometry, new THREE.LineBasicMaterial({color: 0x444444, linewidth: 3}));
     this.object3D._myBeam = this;
 
     this.reset();

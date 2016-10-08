@@ -9,11 +9,6 @@ function initSchematic(globals){
     object3D.position.y = globals.planeHeight;
     globals.threeView.sceneAdd(object3D);
 
-    //var edgeMaterial = new THREE.LineBasicMaterial({color:0xff0f00, linewidth:2});
-
-    
-    
-    
     
     var fixed = initFixed();
     var forces = initForces(fixed);

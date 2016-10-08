@@ -5,7 +5,7 @@
 
 function Force(force, origin){
     this.setForce(force);
-    this.arrow = new THREE.ArrowHelper(this.getDirection(), origin, this.getMagnitude(), 0x0000ff);
+    this.arrow = new THREE.ArrowHelper(this.getDirection(), origin, this.getMagnitude(), 0xb67df0);
     this.arrow.setLength(this.getMagnitude(), 1, 1);
     this.arrow.line.material.linewidth = 4;
     this.arrow.cone._myForce = this;

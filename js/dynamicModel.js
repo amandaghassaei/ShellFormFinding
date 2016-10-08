@@ -16,7 +16,7 @@ function initDynamicModel(globals){
     });
     var edges = geo.edges;
     _.each(edges, function(edges){
-        edges.setColor(0xdddddd);
+        edges.setColor(0x8cbaed);
     });
 
 
