@@ -42,6 +42,10 @@ body{
     float:right;
 }
 
+#materialTypes{
+    padding-left:20px;
+}
+
 #gpuMathCanvas{
     display: none;
 }
@@ -51,6 +55,47 @@ a{
 }
 a:hover{
     color:#6dd0f2;
+    cursor: text;
+}
+
+.editable{
+    color:#34495e;
+    height: 42px;
+    display: inline-block;
+    line-height: 42px;
+    width: 70px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space:nowrap
+}
+.editable:hover{
+    color:#34495e;
+}
+.editableInput{
+    display: none;
+    outline: grey;
+    padding: 5px 7px;
+    height: 42px;
+    line-height: 42px;
+}
+.editableInput:focus {
+    outline: grey;
+    border:none;
+}
+.radio{
+    height: 42px;
+display: inline-block;
+    width: 100%;
+}
+
+input.form-control {
+    width: 90px;
+    display: inline-block;
+}
+
+.radioSlider{
+    display: inline-block;
+    float:right;
 }
 
 img{
@@ -138,9 +183,9 @@ img{
 .flat-slider{
     vertical-align: middle;
     display: inline-block;
-    width: 200px;
+    width: 140px;
     position: relative;
-    margin: 10px 0 10px 0;
+    margin: 10px 10px 10px 10px;
     /*padding: 4px 0;*/
 }
 
@@ -165,4 +210,11 @@ span.modal-close{
 
 .radio .icon-unchecked{
     transition-duration: 0s;
+}
+
+.checkbox input.custom-checkbox[type="checkbox"]:checked + .icons, .radio input.custom-checkbox[type="checkbox"]:checked + .icons, .checkbox input.custom-radio[type="radio"]:checked + .icons, .radio input.custom-radio[type="radio"]:checked + .icons {
+    margin-top:9px;
+}
+.checkbox .icons, .radio .icons {
+    margin-top:9px;
 }

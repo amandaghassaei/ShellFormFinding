@@ -26,10 +26,63 @@ function initControls(globals){
         globals.dynamicModel.reset();
     });
 
+    var newMaterialNum = 1;
+    var newMaterialCallback = function(){
+        var newId = "material" + newMaterialNum;
+        $("#materialTypes").append(makeMaterialHTML(newId));
+        var $parent = $("#" + newId).parent();
+        var val = 4;
+        setSliderInput("#" + newId, val, 0.1, 30, 0.01, function(val){
+            globals.setMaterial(newId, val);
+        });
+        $parent.children(".editable").click(function(e){
+            e.preventDefault();
+            var $target = $(e.target);
+            $target.hide();
+            $target.blur();
+            $target.parent().children(".radioSlider").hide();
+            var $input = $target.parent().children(".editableInput");
+            $input.show();
+            $input.focus();
+        });
+        var editableInputCallback = function(e) {
+            var $target = $(e.target);
+            $target.hide();
+            var label = $target.parent().children(".editable");
+            label.html($target.val());
+            label.show();
+            $target.parent().children(".radioSlider").show();
+            globals.setMaterial(newId, null, null, $target.val());
+        };
+        $parent.children(".editableInput").blur(editableInputCallback);
+        $parent.children(".editableInput").change(editableInputCallback);
+        globals.setMaterial(newId, val, 0x123456, "Material " + newMaterialNum);
+        newMaterialNum++;
+    };
+    setLink("#addMaterial", newMaterialCallback);
+    newMaterialCallback();
+
+    function makeMaterialHTML(newId){
+        var html = '<label class="radio">' +
+            '<input name="materialTypes" value="' + newId + '" data-toggle="radio" checked="" class="custom-radio" type="radio">' +
+            '<span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>' +
+            '<a href="#" class="editable">Material ' + newMaterialNum + '</a><input class="editableInput" value="Material 1" type="text">' +
+            '<div class="radioSlider" id="' + newId + '">' +
+            '<span class="label-slider"></span><div class="flat-slider ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"></div>' +
+            '<input value="" placeholder="" class="form-control" type="text">'+
+            '</div>' +
+            '</label>';
+        return html;
+    }
+
+    setLink("#addRemoveFixed", function(){
+        globals.addRemoveFixedMode = true;
+    });
+
     function setLink(id, callback){
         $(id).click(function(e){
             e.preventDefault();
-            callback();
+            callback(e);
         });
     }
 
@@ -107,7 +160,6 @@ function initControls(globals){
     }
 
     function update(){
-
         function setInput(id, val){
             $(id).val(val);
         }

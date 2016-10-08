@@ -149,9 +149,9 @@
         }
     </script>
 
-
     <script type="text/javascript" src="js/GLBoilerplate.js"></script>
     <script type="text/javascript" src="js/GPUMath.js"></script>
+    <script type="text/javascript" src="js/material.js"></script>
     <script type="text/javascript" src="js/node.js"></script>
     <script type="text/javascript" src="js/beam.js"></script>
     <script type="text/javascript" src="js/force.js"></script>
@@ -172,6 +172,11 @@
 <div  id="threeContainer"></div>
 <canvas id="gpuMathCanvas"></canvas>
 <div id="controls">
+    Current Material:
+    <div id="materialTypes">
+    </div>
+    <a href="#" id="addMaterial" class="btn btn-lg btn-default">+ New Material</a><br/><br/>
+    <a href="#" id="addRemoveFixed" class="btn btn-lg btn-default">Add/Remove Fixed Constraint</a><br/><br/>
     <a href="#" id="resetDynamicSim" class="btn btn-lg btn-default">Reset Dynamic Simulation</a>
 </div>
 <div id="moreInfo"></div>

@@ -10,7 +10,8 @@ function initGlobals(){
         setZResolution: setZResolution,
         setXLength: setXLength,
         setZLength: setZLength,
-        setForceHasChanged: setForceHasChanged
+        setForceHasChanged: setForceHasChanged,
+        setMaterial: setMaterial
     };
 
     _globals.shouldResetDynamicSim = false;
@@ -22,6 +23,8 @@ function initGlobals(){
     _globals.planeHeight = 0;
     _globals.selfWeight = true;
     _globals.forceHasChanged = false;
+    _globals.addRemoveFixedMode = false;
+    _globals.materials = {};
 
     function setXResolution(val){
         _globals.xResolution = val;
@@ -50,6 +53,15 @@ function initGlobals(){
 
     function setForceHasChanged(){
         _globals.forceHasChanged = true;
+    }
+
+    function setMaterial(id, val, color, name){
+        if (_globals.materials[id]){
+            _globals.materials[id].setVal(val);
+            _globals.materials[id].setName(name);
+        } else {
+            _globals.materials[id] = new Material(val, color, name);
+        }
     }
 
     _globals.threeView = initThreeView(_globals);
