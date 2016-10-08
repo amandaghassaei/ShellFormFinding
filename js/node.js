@@ -7,7 +7,8 @@ var nodeMaterialFixed = new THREE.MeshBasicMaterial({color: 0x000000, side:THREE
 var nodeMaterialDelete = new THREE.MeshBasicMaterial({color: 0xff0000, side:THREE.DoubleSide});
 var nodeGeo = new THREE.CircleGeometry(0.2,20);
 nodeGeo.rotateX(Math.PI/2);
-var nodeFixedGeo = new THREE.CubeGeometry(1, 0.3, 1);
+var nodeFixedGeo = new THREE.CubeGeometry(1, 0.5, 1);
+nodeFixedGeo.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0.25, 0) );
 
 
 function Node(position, index){
