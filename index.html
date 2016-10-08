@@ -72,29 +72,80 @@
 
     <script id="positionCalcShader" type="x-shader/x-fragment">
         precision mediump float;
-        uniform vec2 u_floatTextureDim;
+        uniform vec2 u_textureDim;
+        uniform float u_dt;
         uniform sampler2D u_lastPosition;
         uniform sampler2D u_velocity;
-        uniform float u_vectorLength;
+        uniform sampler2D u_mass;
         void main(){
             vec2 fragCoord = gl_FragCoord.xy;
-            float textureXcoord = floor((fragCoord.x - 0.5)/u_vectorLength+0.0001) + 0.5;
-            vec3 lastPosition = texture2D(u_lastPosition, vec2(textureXcoord, fragCoord.y)/u_floatTextureDim).xyz;
-            gl_FragColor = vec4(0.0,0.0,0.0,0.0);
+            vec2 scaledFragCoord = fragCoord/u_textureDim;
+
+            float isFixed = texture2D(u_mass, scaledFragCoord).y;
+            if (isFixed == 1.0){
+                gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+                return;
+            }
+
+            vec3 lastPosition = texture2D(u_lastPosition, scaledFragCoord).xyz;
+            vec3 velocity = texture2D(u_velocity, scaledFragCoord).xyz;
+            vec3 position = velocity*u_dt + lastPosition;
+            gl_FragColor = vec4(position,0.0);
         }
     </script>
 
     <script id="velocityCalcShader" type="x-shader/x-fragment">
         precision mediump float;
-        uniform vec2 u_floatTextureDim;
+        uniform vec2 u_textureDim;
+        uniform float u_dt;
         uniform sampler2D u_lastPosition;
-        uniform sampler2D u_velocity;
-        uniform float u_vectorLength;
+        uniform sampler2D u_lastVelocity;
+        uniform sampler2D u_originalPosition;
+        uniform sampler2D u_externalForces;
+        uniform sampler2D u_mass;
+        uniform sampler2D u_meta;
+        uniform sampler2D u_beamK;
+        uniform sampler2D u_beamD;
+
         void main(){
             vec2 fragCoord = gl_FragCoord.xy;
-            float textureXcoord = floor((fragCoord.x - 0.5)/u_vectorLength+0.0001) + 0.5;
-            vec3 lastPosition = texture2D(u_lastPosition, vec2(textureXcoord, fragCoord.y)/u_floatTextureDim).xyz;
-            gl_FragColor = vec4(0.0,0.0,0.0,0.0);
+            vec2 scaledFragCoord = fragCoord/u_textureDim;
+
+            vec2 mass = texture2D(u_mass, scaledFragCoord).xy;
+            if (mass.y == 1.0){
+                gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+                return;
+            }
+            vec3 force = texture2D(u_externalForces, scaledFragCoord).xyz;
+            vec3 lastPosition = texture2D(u_lastPosition, scaledFragCoord).xyz;
+            vec3 lastVelocity = texture2D(u_lastVelocity, scaledFragCoord).xyz;
+            vec3 originalPosition = texture2D(u_originalPosition, scaledFragCoord).xyz;
+
+            vec4 neighborIndices = texture2D(u_meta, scaledFragCoord);
+            vec4 beamKs = texture2D(u_beamK, scaledFragCoord);
+            vec4 beamDs = texture2D(u_beamD, scaledFragCoord);
+
+            for (int j=0;j<4;j++){
+                float neighborIndex1D = neighborIndices[j];
+                if (neighborIndex1D<0.0) continue;//no beam
+
+                vec2 neighborIndex = vec2(mod(neighborIndex1D, u_textureDim.x)+0.5, floor(neighborIndex1D/u_textureDim.x)+0.5);
+                vec2 scaledNeighborIndex = neighborIndex/u_textureDim;
+                vec3 neighborLastPosition = texture2D(u_lastPosition, scaledNeighborIndex).xyz;
+                vec3 neighborLastVelocity = texture2D(u_lastVelocity, scaledNeighborIndex).xyz;
+                vec3 neighborOriginalPosition = texture2D(u_originalPosition, scaledNeighborIndex).xyz;
+
+                vec3 nominalDist = neighborOriginalPosition-originalPosition;
+                vec3 deltaP = neighborLastPosition-lastPosition+nominalDist;
+                deltaP -= normalize(deltaP)*length(nominalDist);
+                vec3 deltaV = neighborLastVelocity-lastVelocity;
+
+                vec3 _force = deltaP*beamKs[j] + deltaV*beamDs[j];
+                force += _force;
+            }
+
+            vec3 velocity = force*u_dt/mass.x + lastVelocity;
+            gl_FragColor = vec4(velocity,0.0);
         }
     </script>
 
