@@ -17,7 +17,7 @@ function initThreeView(globals) {
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.append(renderer.domElement);
 
-        scene.background = new THREE.Color(0xf4f4f4);
+        scene.background = new THREE.Color(0xe6e6e6);
         scene.fog = new THREE.FogExp2(0xf4f4f4, 1.7);
         renderer.setClearColor(scene.fog.color);
 

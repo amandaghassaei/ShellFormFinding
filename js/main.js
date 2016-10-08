@@ -24,7 +24,7 @@ $(function() {
 
     $(document).dblclick(function() {
         if (highlightedObj && highlightedObj.getMagnitude){
-            globals.controls.editMoreInfo(highlightedObj.getMagnitude(), function(val){
+            globals.controls.editMoreInfo(highlightedObj.getMagnitude().toFixed(2), function(val){
                 highlightedObj.setForce(new THREE.Vector3(0, val, 0));
                 globals.setForceHasChanged();
             });
@@ -37,7 +37,8 @@ $(function() {
                 var state = !highlightedObj.fixed;
                 globals.schematic.setFixed(highlightedObj.getIndex(), state);
                 highlightedObj.setFixed(state);
-                globals.shouldResetDynamicSim = true;
+                if (state == false) globals.fixedHasChanged = true;
+                else globals.shouldResetDynamicSim = true;
             }
             globals.addRemoveFixedMode = false;
             toolTipFixedNode.visible = false;
@@ -73,7 +74,7 @@ $(function() {
             isDraggingArrow = true;
             dragArrow();
             globals.controls.showMoreInfo("Force: " +
-                (highlightedObj.getMagnitude()*(highlightedObj.getDirection().y < 0 ? -1 : 1)).toFixed(2) + " N", e);
+                highlightedObj.getMagnitude().toFixed(2) + " N", e);
             return;
         }
 
@@ -102,7 +103,7 @@ $(function() {
                             _highlightedObj = thing.object._myForce;
                             objectFound = true;
                             globals.controls.showMoreInfo("Force: " +
-                                (_highlightedObj.getMagnitude()*(_highlightedObj.getDirection().y < 0 ? -1 : 1)).toFixed(2) + " N", e);
+                                _highlightedObj.getMagnitude().toFixed(2) + " N", e);
                         }
                     });
                 }

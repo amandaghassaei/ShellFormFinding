@@ -34,6 +34,10 @@ Beam.prototype.setColor = function(hex){
     this.object3D.material.color.setHex(hex);
 };
 
+Beam.prototype.setDefaultColor = function(){
+    this.setColor(0x222222);
+};
+
 Beam.prototype.setHSLColor = function(val, max, min){
     var scaledVal = (1-(val - min)/(max - min)) * 0.7;
     var color = new THREE.Color();

@@ -44,12 +44,24 @@ body{
     top:0;
     right:0;
     width:420px;
-    height:100%;
-    padding: 20px 20px;
-    background: rgba(255,255,255,0.5);
+    padding:20px 20px;
+    /*background: rgba(255,255,255,0.5);*/
 }
 #controls>a{
     float:right;
+}
+#controlsLeft{
+    position: absolute;
+    top:0;
+    left:0;
+    width: 420px;
+    padding: 20px 20px 20px 20px;
+}
+
+.sliderInput{
+    float:right;
+    display: inline-block;
+    margin-bottom:15px;
 }
 
 #materialTypes{
@@ -65,7 +77,6 @@ a{
 }
 a:hover{
     color:#6dd0f2;
-    cursor: text;
 }
 
 .editable{
@@ -80,6 +91,7 @@ a:hover{
 }
 .editable:hover{
     color:#34495e;
+    cursor: text;
 }
 .editableInput{
     display: none;
@@ -92,10 +104,36 @@ a:hover{
     outline: grey;
     border:none;
 }
-.radio{
+#controls .radio{
     height: 42px;
 display: inline-block;
     width: 100%;
+}
+
+#scaleBars{
+    height:100%;
+    padding: 20px 0 50px 10px;
+    width:100px;
+    position: absolute;
+    top:0;
+    right:-100px;
+    line-height: 0;
+}
+
+#scaleBars>div{
+    width:100%;
+    height:4.7%;
+}
+.colorSwatch{
+    width:10px;
+    height:100%;
+    background: black;
+    display: inline-block;
+}
+#scaleBars>div>span{
+    margin-left: 7px;
+    top: -25%;
+    position: relative;
 }
 
 input.form-control {
@@ -110,11 +148,12 @@ input.form-control {
 
 img{
     width:60px;
-    position: absolute;
+    /*position: absolute;*/
     top:0;
     left:0;
     z-index: 5;
-    margin:20px;
+    /*margin:20px;*/
+    margin-bottom:20px;
 }
 
 #activeLogo{
@@ -209,6 +248,14 @@ img{
 span.modal-close{
     display: none;
 }
+.titleSpan{
+    display: inline-block;
+    width:100%;
+    margin-top:15px;
+}
+.form-control:focus{
+    border-color: #6dd0f2;
+}
 
 .checkbox input.custom-checkbox[type="checkbox"]:checked + .icons .icon-checked, .radio input.custom-checkbox[type="checkbox"]:checked + .icons .icon-checked, .checkbox input.custom-radio[type="radio"]:checked + .icons .icon-checked, .radio input.custom-radio[type="radio"]:checked + .icons .icon-checked {
     color: #6dd0f2;
@@ -222,9 +269,13 @@ span.modal-close{
     transition-duration: 0s;
 }
 
-.checkbox input.custom-checkbox[type="checkbox"]:checked + .icons, .radio input.custom-checkbox[type="checkbox"]:checked + .icons, .checkbox input.custom-radio[type="radio"]:checked + .icons, .radio input.custom-radio[type="radio"]:checked + .icons {
+#controls .checkbox input.custom-checkbox[type="checkbox"]:checked + .icons, #controls .radio input.custom-checkbox[type="checkbox"]:checked + .icons, #controls .checkbox input.custom-radio[type="radio"]:checked + .icons, #controls .radio input.custom-radio[type="radio"]:checked + .icons {
     margin-top:9px;
 }
-.checkbox .icons, .radio .icons {
+#controls .checkbox .icons,#controls .radio .icons {
     margin-top:9px;
+}
+
+.sliderInput>.flat-slider{
+    width:180px;
 }

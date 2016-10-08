@@ -9,7 +9,7 @@ function initSchematic(globals){
     object3D.position.y = globals.planeHeight;
     globals.threeView.sceneAdd(object3D);
 
-    var baseplane = new THREE.Mesh(new THREE.BoxGeometry(1, 0.01, 1), new THREE.MeshBasicMaterial({color: 0xffffff, transparent:true, opacity:0.5}));
+    var baseplane = new THREE.Mesh(new THREE.BoxGeometry(1, 0.01, 1), new THREE.MeshBasicMaterial({color: 0xffffff, transparent:true, opacity:0.75}));
     baseplane.position.y = -0.015;
     globals.threeView.sceneAdd(baseplane);
     baseplane.scale.set(globals.xLength, 1, globals.zLength);

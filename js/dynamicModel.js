@@ -73,9 +73,16 @@ function initDynamicModel(globals){
             reset();
             globals.shouldResetDynamicSim = false;
             globals.forceHasChanged = false;
-        } else if (globals.forceHasChanged){
-            updateExternalForces();
-            globals.forceHasChanged = false;
+            globals.fixedHasChanged = false;
+        } else {
+            if (globals.forceHasChanged){
+                updateExternalForces();
+                globals.forceHasChanged = false;
+            }
+            if (globals.fixedHasChanged){
+                updateFixed();
+                globals.fixedHasChanged = false;
+            }
         }
 
         var gpuMath = globals.gpuMath;
@@ -154,6 +161,28 @@ function initDynamicModel(globals){
                 var rgbaIndex = i*4;
                 var nodePosition = new THREE.Vector3(parsedPixels[rgbaIndex], parsedPixels[rgbaIndex+1], parsedPixels[rgbaIndex+2]);
                 nodes[i].render(nodePosition);
+            }
+            //todo do this in shader
+            if (globals.viewMode == "none"){
+                if (globals.viewModeNeedsUpdate){
+                    for (var i=0;i<edges.length;i++){
+                        edges[i].setColor(0x8cbaed);
+                    }
+                    globals.viewModeNeedsUpdate = false;
+                }
+            } else {
+                var vals = [];
+                if (globals.viewMode == "length"){
+                    for (var i=0;i<edges.length;i++){
+                        vals.push(edges[i].getLength());
+                    }
+                }
+                var min = _.min(vals);
+                var max = _.max(vals);
+                for (var i=0;i<edges.length;i++){
+                    edges[i].setHSLColor(max-vals[i], min, max);
+                }
+                globals.controls.updateScaleBars(min, max);
             }
         }
 
@@ -248,9 +277,18 @@ function initDynamicModel(globals){
         globals.gpuMath.initTextureFromData("u_externalForces", textureDim, textureDim, "FLOAT", externalForces, true);
     }
 
-    function initTypedArrays(){
-
+    function updateFixed(){
         var _fixed = globals.schematic.getFixed();
+        for (var i=0;i<_fixed.length;i++){
+            for (var j=0;j<_fixed[i].length;j++){
+                var index = globals.zResolution*i+j;
+                mass[4*index+1] = (_fixed[i][j] ? 1 : 0);
+            }
+        }
+        globals.gpuMath.initTextureFromData("u_mass", textureDim, textureDim, "FLOAT", mass, true);
+    }
+
+    function initTypedArrays(){
 
         textureDim = calcTextureSize(nodes.length);
 
@@ -260,7 +298,6 @@ function initDynamicModel(globals){
         velocity = new Float32Array(textureDim*textureDim*4);
         lastVelocity = new Float32Array(textureDim*textureDim*4);
         externalForces = new Float32Array(textureDim*textureDim*4);
-        updateExternalForces();
         mass = new Float32Array(textureDim*textureDim*4);
         meta = new Float32Array(textureDim*textureDim*4);
         beamK = new Float32Array(textureDim*textureDim*4);
@@ -271,10 +308,6 @@ function initDynamicModel(globals){
         }
 
         _.each(nodes, function(node, index){
-            var externalForce = node.getExternalForce();
-            externalForces[4*index] = externalForce.x;
-            externalForces[4*index+1] = externalForce.y;
-            externalForces[4*index+2] = externalForce.z;
             var origPosition = node.getOriginalPosition();
             originalPosition[4*index] = origPosition.x;
             originalPosition[4*index+1] = origPosition.y;
@@ -292,12 +325,8 @@ function initDynamicModel(globals){
             });
         });
 
-        for (var i=0;i<_fixed.length;i++){
-            for (var j=0;j<_fixed[i].length;j++){
-                var index = globals.zResolution*i+j;
-                mass[4*index+1] = (_fixed[i][j] ? 1 : 0);
-            }
-        }
+        updateExternalForces();
+        updateFixed();
     }
 
 

@@ -77,6 +77,7 @@
         uniform sampler2D u_lastPosition;
         uniform sampler2D u_velocity;
         uniform sampler2D u_mass;
+
         void main(){
             vec2 fragCoord = gl_FragCoord.xy;
             vec2 scaledFragCoord = fragCoord/u_textureDim;
@@ -124,7 +125,6 @@
             vec4 neighborIndices = texture2D(u_meta, scaledFragCoord);
             vec4 beamKs = texture2D(u_beamK, scaledFragCoord);
             vec4 beamDs = texture2D(u_beamD, scaledFragCoord);
-
             for (int j=0;j<4;j++){
                 float neighborIndex1D = neighborIndices[j];
                 if (neighborIndex1D<0.0) continue;//no beam
@@ -143,7 +143,6 @@
                 vec3 _force = deltaP*beamKs[j] + deltaV*beamDs[j];
                 force += _force;
             }
-
             vec3 velocity = force*u_dt/mass.x + lastVelocity;
             gl_FragColor = vec4(velocity,0.0);
         }
@@ -165,21 +164,43 @@
     <script type="text/javascript" src="js/main.js"></script>
 </head>
 <body>
-<a id="logo" target="_blank" href="http://cba.mit.edu/">
-    <img src="logo.png"/>
-    <img id="activeLogo" src="logo-active.png"/>
-</a>
 <div  id="threeContainer"></div>
 <canvas id="gpuMathCanvas"></canvas>
 <div id="controls">
     <a href="#" id="about" class="btn btn-lg btn-default">About</a><br/><br/>
-    <a href="#" id="addRemoveFixed" class="btn btn-lg btn-default">Add/Remove Fixed Constraint</a><br/><br/>
-    Available Materials:
+    <div class="sliderInput" id="density">
+        <span class="label-slider">density : </span><div class="flat-slider ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"></div>
+        <input value="" placeholder="" class="form-control int" type="text">
+    </div>
+    <a href="#" id="addRemoveFixed" class="btn btn-lg btn-default">Add/Remove Fixed Constraint</a>
+    <span class="titleSpan">Available Materials:</span>
     <div id="materialTypes">
     </div>
     <a href="#" id="addMaterial" class="btn btn-lg btn-default">+ New Material</a><br/><br/>
     <a href="#" id="resetDynamicSim" class="btn btn-lg btn-default">Replay Dynamic Simulation</a>
 </div>
+<div id="controlsLeft">
+    <a id="logo" target="_blank" href="http://cba.mit.edu/">
+        <img id="inactiveLogo" src="logo.png"/>
+        <img id="activeLogo" src="logo-active.png"/>
+    </a>
+    <div id="viewModeSelection">
+        View Mode:
+        <label class="radio">
+            <input name="viewMode" value="none" data-toggle="radio" class="custom-radio" type="radio"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>
+            Geometry
+        </label>
+        <label class="radio">
+            <input name="viewMode" value="length" data-toggle="radio" class="custom-radio" type="radio"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>
+            Edge Length
+        </label>
+        <!--<label class="radio">-->
+            <!--<input name="viewMode" value="force" data-toggle="radio" class="custom-radio" type="radio"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>-->
+            <!--Internal Forces-->
+        <!--</label>-->
+    </div>
+</div>
+<div id="scaleBars"></div>
 <div id="moreInfo"><span></span><input value="" type="text"></div>
 
 </body>

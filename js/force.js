@@ -5,7 +5,7 @@
 
 function Force(force, origin){
     this.force = force;
-    this.arrow = new THREE.ArrowHelper(this.getDirection(), origin, this.getMagnitude(), 0xb67df0);
+    this.arrow = new THREE.ArrowHelper(this.getDirection(), origin,this.getLength(), 0xb67df0);
     this.arrow.line.material.linewidth = 4;
     this.update();
     this.arrow.cone._myForce = this;
@@ -21,6 +21,10 @@ Force.prototype.setForce = function(force){
 };
 
 Force.prototype.getMagnitude = function(){
+    return this.force.length()*(this.getDirection().y < 0 ? -1 : 1);
+};
+
+Force.prototype.getLength = function(){
     return this.force.length();
 };
 
@@ -35,7 +39,7 @@ Force.prototype.getDirection = function(){
 Force.prototype.setDirection = function(x, y){
     var unitVector = new THREE.Vector3(x,y,0);
     this.arrow.setDirection(unitVector);
-    this.setForce(unitVector.clone().multiplyScalar(this.getMagnitude()));
+    this.setForce(unitVector.clone().multiplyScalar(this.getLegnth()));
 };
 
 Force.prototype.getForce = function(){
@@ -66,7 +70,7 @@ Force.prototype.show = function(){
 
 Force.prototype.update = function(){
     this.arrow.setDirection(this.getDirection());
-    this.arrow.setLength(this.getMagnitude(), 1, 1);
+    this.arrow.setLength(this.getLength(), 1, 1);
 };
 
 Force.prototype.move = function(intersection){

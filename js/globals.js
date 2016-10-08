@@ -25,6 +25,8 @@ function initGlobals(){
     _globals.forceHasChanged = false;
     _globals.addRemoveFixedMode = false;
     _globals.materials = {};
+    _globals.viewMode = "none";
+    _globals.viewModeNeedsUpdate = false;
 
     function setXResolution(val){
         _globals.xResolution = val;

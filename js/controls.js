@@ -7,8 +7,10 @@ function initControls(globals){
 
     $("#logo").mouseenter(function(){
         $("#activeLogo").show();
+        $("#inactiveLogo").hide();
     });
     $("#logo").mouseleave(function(){
+        $("#inactiveLogo").show();
         $("#activeLogo").hide();
     });
 
@@ -30,7 +32,7 @@ function initControls(globals){
         $moreInfoInput.show();
         $moreInfoSpan.hide();
         $moreInfoInput.focus();
-        $moreInfoInput.val(val.toFixed(2));
+        $moreInfoInput.val(val);
         $moreInfoInput.change(function(){
             $moreInfoInput.hide();
             $moreInfoInput.unbind("change");
@@ -101,6 +103,47 @@ function initControls(globals){
     setLink("#addRemoveFixed", function(){
         globals.addRemoveFixedMode = true;
     });
+
+    setSliderInput("#density", 1, 0.1, 10, 0.01, function(){
+        console.log("density changed");
+    });
+
+    setRadio("viewMode", globals.viewMode, function(val){
+        globals.viewMode = val;
+        globals.viewModeNeedsUpdate = true;
+        var $scaleBars = $("#scaleBars");
+        var $controls = $("#controls");
+        if (val == "none"){
+            $scaleBars.animate({right: -100});
+            $controls.animate({right:0});
+        } else {
+            $scaleBars.animate({right: 0});
+            $controls.animate({right:100});
+        }
+    });
+
+    var scaleHTML = "";
+    for (var i=0;i<=20;i++){
+        scaleHTML += "<div>";
+        scaleHTML += "<div id='swatch" + i + "' class='colorSwatch'></div>";
+        if (i%5 == 0) scaleHTML += "<span id='label" + i + "'></span>";
+        scaleHTML += "</div>";
+    }
+    $("#scaleBars").html(scaleHTML);
+
+    function updateScaleBars(min, max){
+        for (var i=0;i<=20;i++){
+            var val = (max-min)*(20-i)/20+min;
+            $("#swatch" + i).css("background", hexForVal(val, min, max));
+            if (i%5 == 0) $("#label" + i).html(val.toFixed(2));
+        }
+    }
+    function hexForVal(val, min, max){
+        var scaledVal = (1-(val - min)/(max - min)) * 0.7;
+        var color = new THREE.Color();
+        color.setHSL(scaledVal, 1, 0.5);
+        return "#" + color.getHexString();
+    }
 
     function setLink(id, callback){
         $(id).click(function(e){
@@ -192,7 +235,8 @@ function initControls(globals){
         update:update,
         showMoreInfo: showMoreInfo,
         hideMoreInfo: hideMoreInfo,
-        editMoreInfo: editMoreInfo
+        editMoreInfo: editMoreInfo,
+        updateScaleBars: updateScaleBars
     }
 }
 
