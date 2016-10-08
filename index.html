@@ -202,6 +202,25 @@
 </div>
 <div id="scaleBars"></div>
 <div id="moreInfo"><span></span><input value="" type="text"></div>
+<div class="modal fade" id="aboutModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p><b>Instructions:</b><br/>
+            The force on each node is indicated by a purple vector.  Drag on force vectors to change the applied force at each node.<br/>
+            Fixed nodes are indicated with a black box.  Use the "Add/Remove Fixed Constraint" button and select a node to toggle its fixed state.<br/>
+            <br/>
+            The dynamic simulation uses a mass-spring-damper system to model interactions between nodes through edges.
+            Damping values were set to achieve critical damping for each node-node interaction.
+            Calculations of the dynamic simulation are executed in parallel in a GPU fragment shader.<br/>
+            <br/>
+            Built by <a href="http://www.amandaghassaei.com/" target="_blank">Amanda Ghassaei</a> as a homework assignment for <a href="https://architecture.mit.edu/subject/fall-2016-4450" target="_blank">Computational Structural Design and Optimization</a>.
+            Code available on <a href="https://github.com/amandaghassaei/ShellFormFinding" target="_blank">Github</a>.
 
+        </p>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 </body>
 </html>

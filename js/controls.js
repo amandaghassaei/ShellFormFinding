@@ -145,6 +145,10 @@ function initControls(globals){
         return "#" + color.getHexString();
     }
 
+    setLink("#about", function(){
+        $('#aboutModal').modal('show')
+    });
+
     function setLink(id, callback){
         $(id).click(function(e){
             e.preventDefault();
