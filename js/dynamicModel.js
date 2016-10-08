@@ -57,6 +57,7 @@ function initDynamicModel(globals){
     function runSolver(){
         reset();
         globals.threeView.startAnimation(function(){
+            if (!globals.dynamicSimVisible) return;
             for (var j=0;j<numSteps;j++){
                 solveStep();
             }
@@ -68,7 +69,12 @@ function initDynamicModel(globals){
 
     }
 
+    function setVisibility(state){
+        object3D.visible = state;
+    }
+
     function solveStep(){
+
         if (globals.shouldResetDynamicSim){
             reset();
             globals.shouldResetDynamicSim = false;
@@ -162,7 +168,7 @@ function initDynamicModel(globals){
                 var nodePosition = new THREE.Vector3(parsedPixels[rgbaIndex], parsedPixels[rgbaIndex+1], parsedPixels[rgbaIndex+2]);
                 nodes[i].render(nodePosition);
             }
-            //todo do this in shader
+            //todo do this in shader ?
             if (globals.viewMode == "none"){
                 if (globals.viewModeNeedsUpdate){
                     for (var i=0;i<edges.length;i++){
@@ -333,6 +339,7 @@ function initDynamicModel(globals){
     return {
         runSolver:runSolver,
         stopSolver: stopSolver,
-        reset: reset
+        reset: reset,
+        setVisibility: setVisibility
     }
 }

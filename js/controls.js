@@ -149,6 +149,15 @@ function initControls(globals){
         $('#aboutModal').modal('show')
     });
 
+    setCheckbox("#dynamic", globals.dynamicSimVisible, function(val){
+        globals.dynamicSimVisible = val;
+        globals.dynamicModel.setVisibility(val);
+    });
+    setCheckbox("#fdm", globals.fdmSimVisible, function(val){
+        globals.fdmSimVisible = val;
+        //globals.fdmModel.setVisibility(val);//todo add this in
+    });
+
     function setLink(id, callback){
         $(id).click(function(e){
             e.preventDefault();
