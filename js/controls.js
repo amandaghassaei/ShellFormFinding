@@ -22,6 +22,10 @@ function initControls(globals){
         $moreInfo.hide();
     }
 
+    setLink("#resetDynamicSim", function(){
+        globals.dynamicModel.reset();
+    });
+
     function setLink(id, callback){
         $(id).click(function(e){
             e.preventDefault();
