@@ -82,6 +82,11 @@ function initThreeView(globals) {
         render();
     }
 
+    function enableControls(state){
+        controls.enabled = state;
+        controls.enableRotate = state;
+    }
+
     return {
         sceneRemove: sceneRemove,
         sceneAdd: sceneAdd,
@@ -89,6 +94,7 @@ function initThreeView(globals) {
         render: render,
         onWindowResize: onWindowResize,
         startAnimation: startAnimation,
+        enableControls: enableControls,
         scene: scene,
         camera: camera
     }
