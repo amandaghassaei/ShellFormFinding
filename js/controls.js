@@ -13,13 +13,33 @@ function initControls(globals){
     });
 
     var $moreInfo = $("#moreInfo");
+    var $moreInfoInput = $("#moreInfo>input");
+    var $moreInfoSpan = $("#moreInfo>span");
     function showMoreInfo(string, e){
-        $moreInfo.html(string);
+        $moreInfo.children("span").html(string);
         $moreInfo.css({top: e.clientY - 50, left: e.clientX + 10});
+        $moreInfoSpan.show();
+        $moreInfoInput.hide();
         $moreInfo.show();
     }
     function hideMoreInfo(){
         $moreInfo.hide();
+    }
+    function editMoreInfo(val, callback){
+        var $moreInfo = $("#moreInfo");
+        $moreInfoInput.show();
+        $moreInfoSpan.hide();
+        $moreInfoInput.focus();
+        $moreInfoInput.val(val.toFixed(2));
+        $moreInfoInput.change(function(){
+            $moreInfoInput.hide();
+            $moreInfoInput.unbind("change");
+            $moreInfo.hide();
+            var newVal = $moreInfoInput.val();
+            if (isNaN(parseFloat(newVal))) return;
+            newVal = parseFloat(newVal);
+            callback(newVal);
+        })
     }
 
     setLink("#resetDynamicSim", function(){
@@ -44,6 +64,9 @@ function initControls(globals){
             var $input = $target.parent().children(".editableInput");
             $input.show();
             $input.focus();
+            var value = $input.val();
+            $input.val('');
+            $input.val(value);//put at end of string
         });
         var editableInputCallback = function(e) {
             var $target = $(e.target);
@@ -66,7 +89,7 @@ function initControls(globals){
         var html = '<label class="radio">' +
             '<input name="materialTypes" value="' + newId + '" data-toggle="radio" checked="" class="custom-radio" type="radio">' +
             '<span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>' +
-            '<a href="#" class="editable">Material ' + newMaterialNum + '</a><input class="editableInput" value="Material 1" type="text">' +
+            '<a href="#" class="editable">Material ' + newMaterialNum + '</a><input class="editableInput" value="Material ' + newMaterialNum + '" type="text">' +
             '<div class="radioSlider" id="' + newId + '">' +
             '<span class="label-slider"></span><div class="flat-slider ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"></div>' +
             '<input value="" placeholder="" class="form-control" type="text">'+
@@ -168,7 +191,8 @@ function initControls(globals){
     return {
         update:update,
         showMoreInfo: showMoreInfo,
-        hideMoreInfo: hideMoreInfo
+        hideMoreInfo: hideMoreInfo,
+        editMoreInfo: editMoreInfo
     }
 }
 

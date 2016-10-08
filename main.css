@@ -22,10 +22,20 @@ body{
 #moreInfo{
     position: absolute;
     background: white;
-    padding:3px 10px;
+    padding:0 10px;
     top: 0;
     left: 0;
+    height: 36px;
+    line-height: 36px;
     z-index: 3;
+    display: none;
+}
+
+#moreInfo>input{
+    height: 36px;
+    width: 90px;
+    outline:none;
+    border:none;
     display: none;
 }
 

@@ -22,6 +22,15 @@ $(function() {
     var isDragging = false;
     var isDraggingArrow = false;
 
+    $(document).dblclick(function() {
+        if (highlightedObj && highlightedObj.getMagnitude){
+            globals.controls.editMoreInfo(highlightedObj.getMagnitude(), function(val){
+                highlightedObj.setForce(new THREE.Vector3(0, val, 0));
+                globals.setForceHasChanged();
+            });
+        }
+    });
+
     document.addEventListener('mousedown', function(){
         if (globals.addRemoveFixedMode){
             if (highlightedObj){
