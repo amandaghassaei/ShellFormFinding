@@ -109,9 +109,10 @@ function initSchematic(globals){
             edge.destroy();
         });
         edges = [];
+    }
 
-
-
+    function getChildren(){
+        return object3D.children;
     }
 
 
@@ -123,6 +124,7 @@ function initSchematic(globals){
 
     return {
         update:update,
-        cloneGeo:cloneGeo
+        cloneGeo:cloneGeo,
+        getChildren:getChildren
     }
 }

@@ -15,16 +15,19 @@ function Beam(nodes){
     lineGeometry.dynamic = true;
     lineGeometry.vertices = this.vertices;
 
-    this.object3D = new THREE.Line(lineGeometry, new THREE.LineBasicMaterial({color: 0x444444, linewidth: 3}));
+    this.material = new THREE.LineBasicMaterial({color: 0x222222, linewidth: 3});
+    this.object3D = new THREE.Line(lineGeometry, this.material);
     this.object3D._myBeam = this;
 
     this.reset();
 }
 
 Beam.prototype.highlight = function(){
+    this.object3D.material = beamMaterialHighlight;
 };
 
 Beam.prototype.unhighlight = function(){
+    this.object3D.material = this.material;
 };
 
 Beam.prototype.setColor = function(hex){
@@ -91,5 +94,6 @@ Beam.prototype.destroy = function(){
     this.vertices = null;
     this.object3D._myBeam = null;
     this.object3D = null;
+    this.material = null;
     this.nodes = null;
 };

@@ -42,13 +42,13 @@ Force.prototype.getForce = function(){
 };
 
 Force.prototype.highlight = function(){
-    this.arrow.line.material.color.setHex(0x000000);
-    this.arrow.cone.material.color.setHex(0x000000);
+    this.arrow.line.material.color.setHex(0x7700f1);
+    this.arrow.cone.material.color.setHex(0x7700f1);
 };
 
 Force.prototype.unhighlight = function(){
-    this.arrow.line.material.color.setHex(0xaaaaaa);
-    this.arrow.cone.material.color.setHex(0xaaaaaa);
+    this.arrow.line.material.color.setHex(0xb67df0);
+    this.arrow.cone.material.color.setHex(0xb67df0);
 };
 
 Force.prototype.hide = function(){
