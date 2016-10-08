@@ -9,7 +9,8 @@ function initGlobals(){
         setXResolution: setXResolution,
         setZResolution: setZResolution,
         setXLength: setXLength,
-        setZLength: setZLength
+        setZLength: setZLength,
+        setForceHasChanged: setForceHasChanged
     };
 
     _globals.dynamicGeoNeedsClone = false;
@@ -20,6 +21,7 @@ function initGlobals(){
     _globals.zLength = 30;
     _globals.planeHeight = 0;
     _globals.selfWeight = true;
+    _globals.forceHasChanged = false;
 
     function setXResolution(val){
         _globals.xResolution = val;
@@ -44,6 +46,10 @@ function initGlobals(){
         schematic.update();
         _globals.dynamicGeoNeedsClone = true;
         _globals.FDMGeoNeedsClone = true;
+    }
+
+    function setForceHasChanged(){
+        _globals.forceHasChanged = true;
     }
 
     _globals.threeView = initThreeView(_globals);

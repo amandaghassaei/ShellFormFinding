@@ -28,6 +28,7 @@ $(function() {
     }, false);
 
     function dragArrow(){
+        globals.setForceHasChanged();
         globals.threeView.enableControls(false);
         plane.set(plane.normal, -highlightedObj.getPosition().z);
         var intersection = new THREE.Vector3();

@@ -68,6 +68,11 @@ function initDynamicModel(globals){
 
     function solveStep(){
 
+        if (globals.forceHasChanged){
+            updateExternalForces();
+            globals.forceHasChanged = false;
+        }
+
         var gpuMath = globals.gpuMath;
 
         gpuMath.step("velocityCalc", ["u_lastPosition", "u_lastVelocity", "u_originalPosition", "u_externalForces",
@@ -228,8 +233,18 @@ function initDynamicModel(globals){
         return 0;
     }
 
+    function updateExternalForces(){
+        for (var i=0;i<nodes.length;i++){
+            var externalForce = nodes[i].getExternalForce();
+            externalForces[4*i] = externalForce.x;
+            externalForces[4*i+1] = externalForce.y;
+            externalForces[4*i+2] = externalForce.z;
+        }
+        globals.gpuMath.initTextureFromData("u_externalForces", textureDim, textureDim, "FLOAT", externalForces, true);
+    }
+
     function initTypedArrays(){
-        var textureDim = calcTextureSize(nodes.length);
+        textureDim = calcTextureSize(nodes.length);
 
         originalPosition = new Float32Array(textureDim*textureDim*4);
         position = new Float32Array(textureDim*textureDim*4);
@@ -237,6 +252,7 @@ function initDynamicModel(globals){
         velocity = new Float32Array(textureDim*textureDim*4);
         lastVelocity = new Float32Array(textureDim*textureDim*4);
         externalForces = new Float32Array(textureDim*textureDim*4);
+        updateExternalForces();
         mass = new Float32Array(textureDim*textureDim*4);
         meta = new Float32Array(textureDim*textureDim*4);
         beamK = new Float32Array(textureDim*textureDim*4);
