@@ -3,9 +3,10 @@
  */
 
 var nodeMaterial = new THREE.MeshBasicMaterial({color: 0x000000, side:THREE.DoubleSide});
-var nodeMaterialFixed = new THREE.MeshBasicMaterial({color: 0xff0000, side:THREE.DoubleSide});
+var nodeMaterialFixed = new THREE.MeshBasicMaterial({color: 0x000000, side:THREE.DoubleSide});
 var nodeGeo = new THREE.CircleGeometry(0.2,20);
 nodeGeo.rotateX(Math.PI/2);
+var nodeFixedGeo = new THREE.CubeGeometry(1, 0.3, 1);
 
 
 function Node(position, index){
@@ -26,8 +27,14 @@ function Node(position, index){
 
 Node.prototype.setFixed = function(fixed){
     this.fixed = fixed;
-    if (fixed) this.object3D.material = nodeMaterialFixed;
-    else this.object3D.material = nodeMaterial;
+    if (fixed) {
+        this.object3D.material = nodeMaterialFixed;
+        this.object3D.geometry = nodeFixedGeo;
+    }
+    else {
+        this.object3D.material = nodeMaterial;
+        this.object3D.geometry = nodeGeo;
+    }
 };
 
 

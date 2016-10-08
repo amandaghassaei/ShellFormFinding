@@ -12,6 +12,15 @@ function initControls(globals){
         $("#activeLogo").hide();
     });
 
+    var $moreInfo = $("#moreInfo");
+    function showMoreInfo(string, e){
+        $moreInfo.html(string);
+        $moreInfo.css({top: e.clientY - 50, left: e.clientX + 10});
+        $moreInfo.show();
+    }
+    function hideMoreInfo(){
+        $moreInfo.hide();
+    }
 
     function setLink(id, callback){
         $(id).click(function(e){
@@ -101,7 +110,9 @@ function initControls(globals){
     }
 
     return {
-        update:update
+        update:update,
+        showMoreInfo: showMoreInfo,
+        hideMoreInfo: hideMoreInfo
     }
 }
 

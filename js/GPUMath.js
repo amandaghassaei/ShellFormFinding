@@ -145,5 +145,4 @@ function initGPUMath(){
     };
 
     return new GPUMath;
-
 }

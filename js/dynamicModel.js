@@ -19,8 +19,6 @@ function initDynamicModel(globals){
         edges.setColor(0x8cbaed);
     });
 
-
-
     //variables for solving
     var dt;
     var numSteps;
@@ -40,7 +38,8 @@ function initDynamicModel(globals){
 
     runSolver();
 
-    function runSolver(){
+    function reset(){
+
         initTypedArrays();
 
         var params = calcSolveParams();
@@ -53,7 +52,10 @@ function initDynamicModel(globals){
         gpuMath.setUniformForProgram("velocityCalc", "u_dt", dt, "1f");
         gpuMath.setProgram("positionCalc");
         gpuMath.setUniformForProgram("positionCalc", "u_dt", dt, "1f");
+    }
 
+    function runSolver(){
+        reset();
         globals.threeView.startAnimation(function(){
             for (var j=0;j<numSteps;j++){
                 solveStep();
@@ -67,8 +69,11 @@ function initDynamicModel(globals){
     }
 
     function solveStep(){
-
-        if (globals.forceHasChanged){
+        if (globals.shouldResetDynamicSim){
+            reset();
+            globals.shouldResetDynamicSim = false;
+            globals.forceHasChanged = false;
+        } else if (globals.forceHasChanged){
             updateExternalForces();
             globals.forceHasChanged = false;
         }
@@ -290,6 +295,7 @@ function initDynamicModel(globals){
 
     return {
         runSolver:runSolver,
-        stopSolver: stopSolver
+        stopSolver: stopSolver,
+        reset: reset
     }
 }

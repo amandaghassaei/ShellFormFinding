@@ -13,8 +13,8 @@ function initGlobals(){
         setForceHasChanged: setForceHasChanged
     };
 
-    _globals.dynamicGeoNeedsClone = false;
-    _globals.FDMGeoNeedsClone = false;
+    _globals.shouldResetDynamicSim = false;
+    _globals.shouldResetFDM = false;
     _globals.xResolution = 5;
     _globals.zResolution = 5;
     _globals.xLength = 30;
@@ -26,26 +26,26 @@ function initGlobals(){
     function setXResolution(val){
         _globals.xResolution = val;
         schematic.update();
-        _globals.dynamicGeoNeedsClone = true;
-        _globals.FDMGeoNeedsClone = true;
+        _globals.shouldResetDynamicSim = true;
+        _globals.shouldResetFDM = true;
     }
     function setZResolution(val){
         _globals.zResolution = val;
         schematic.update();
-        _globals.dynamicGeoNeedsClone = true;
-        _globals.FDMGeoNeedsClone = true;
+        _globals.shouldResetDynamicSim = true;
+        _globals.shouldResetFDM = true;
     }
     function setXLength(val){
         _globals.xLength = val;
         schematic.update();
-        _globals.dynamicGeoNeedsClone = true;
-        _globals.FDMGeoNeedsClone = true;
+        _globals.shouldResetDynamicSim = true;
+        _globals.shouldResetFDM = true;
     }
     function setZLength(val){
         _globals.ZLength = val;
         schematic.update();
-        _globals.dynamicGeoNeedsClone = true;
-        _globals.FDMGeoNeedsClone = true;
+        _globals.shouldResetDynamicSim = true;
+        _globals.shouldResetFDM = true;
     }
 
     function setForceHasChanged(){

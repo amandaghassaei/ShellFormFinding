@@ -47,13 +47,15 @@ $(function() {
         if ((isDragging && highlightedObj && highlightedObj.getMagnitude) || isDraggingArrow){//force
             isDraggingArrow = true;
             dragArrow();
+            globals.controls.showMoreInfo("Force: " +
+                (highlightedObj.getMagnitude()*(highlightedObj.getDirection().y < 0 ? -1 : 1)).toFixed(2) + " N", e);
             return;
         }
 
+        var _highlightedObj = null;
         if (!isDragging) {
             var intersections = raycaster.intersectObjects(globals.schematic.getChildren(), true);
             if (intersections.length > 0) {
-                var _highlightedObj = null;
                 var objectFound = false;
                 _.each(intersections, function (thing) {
                     if (objectFound) return;
@@ -65,11 +67,14 @@ $(function() {
                         thing.object._myForce.highlight();
                         _highlightedObj = thing.object._myForce;
                         objectFound = true;
+                        globals.controls.showMoreInfo("Force: " +
+                            (_highlightedObj.getMagnitude()*(_highlightedObj.getDirection().y < 0 ? -1 : 1)).toFixed(2) + " N", e);
                     }
                 });
             }
         }
         if (highlightedObj && (_highlightedObj != highlightedObj)) highlightedObj.unhighlight();
+        if (_highlightedObj === null) globals.controls.hideMoreInfo();
         highlightedObj = _highlightedObj;
     }
 
