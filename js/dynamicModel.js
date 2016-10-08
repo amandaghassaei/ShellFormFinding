@@ -249,6 +249,9 @@ function initDynamicModel(globals){
     }
 
     function initTypedArrays(){
+
+        var _fixed = globals.schematic.getFixed();
+
         textureDim = calcTextureSize(nodes.length);
 
         originalPosition = new Float32Array(textureDim*textureDim*4);
@@ -277,7 +280,6 @@ function initDynamicModel(globals){
             originalPosition[4*index+1] = origPosition.y;
             originalPosition[4*index+2] = origPosition.z;
             mass[4*index] = node.getMass();
-            mass[4*index+1] = (node.fixed ? 1 : 0);
 
             meta[4*index] = -1;
             meta[4*index+1] = -1;
@@ -288,8 +290,14 @@ function initDynamicModel(globals){
                 beamK[4*index+i] = beam.getK();
                 beamD[4*index+i] = beam.getD();
             });
-
         });
+
+        for (var i=0;i<_fixed.length;i++){
+            for (var j=0;j<_fixed[i].length;j++){
+                var index = globals.zResolution*i+j;
+                mass[4*index+1] = (_fixed[i][j] ? 1 : 0);
+            }
+        }
     }
 
 

@@ -9,9 +9,8 @@ function initSchematic(globals){
     object3D.position.y = globals.planeHeight;
     globals.threeView.sceneAdd(object3D);
 
-    
     var fixed = initFixed();
-    var forces = initForces(fixed);
+    var forces = initForces();
     var geo = calcNodesAndEdges(object3D);
     var nodes = geo.nodes;
     var edges = geo.edges;//todo need this?
@@ -33,7 +32,14 @@ function initSchematic(globals){
         return _fixed;
     }
 
-    function initForces(_fixed){
+    function setFixed(index, state){
+        var zResolution = globals.zResolution;
+        var i = index%zResolution;
+        var j = Math.floor(index/zResolution);
+        fixed[j][i] = state;
+    }
+
+    function initForces(){
         var xResolution = globals.xResolution;
         var zResolution = globals.zResolution;
         var xLength = globals.xLength;
@@ -47,7 +53,6 @@ function initSchematic(globals){
                 var z = j/(zResolution-1)*zLength-zLength/2;
                 var force = new Force(new THREE.Vector3(0,5,0), new THREE.Vector3(x, 0, z));
                 object3D.add(force.getObject3D());
-                if (_fixed[i][j]) force.hide();
                 _forces[i].push(force);
             }
         }
@@ -115,16 +120,19 @@ function initSchematic(globals){
         return object3D.children;
     }
 
-
+    function getFixed(){
+        return fixed;
+    }
 
     function update(){
 
     }
 
-
     return {
         update:update,
         cloneGeo:cloneGeo,
-        getChildren:getChildren
+        getChildren:getChildren,
+        getFixed: getFixed,
+        setFixed: setFixed
     }
 }

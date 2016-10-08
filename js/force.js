@@ -60,6 +60,10 @@ Force.prototype.hide = function(){
     this.arrow.visible = false;
 };
 
+Force.prototype.show = function(){
+    this.arrow.visible = true;
+};
+
 Force.prototype.update = function(){
     this.arrow.setDirection(this.getDirection());
     this.arrow.setLength(this.getMagnitude(), 1, 1);
