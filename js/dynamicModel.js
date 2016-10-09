@@ -97,17 +97,20 @@ function initDynamicModel(globals){
 
     function render(){
 
-        var vectorLength = 4;
+        var vectorLength = 3;
         globals.gpuMath.setProgram("packToBytes");
         globals.gpuMath.setUniformForProgram("packToBytes", "u_vectorLength", vectorLength, "1f");
         globals.gpuMath.setSize(textureDim*vectorLength, textureDim);
         globals.gpuMath.step("packToBytes", ["u_position"], "outputBytes");
+
         var pixels = new Uint8Array(textureDim*textureDim*4*vectorLength);
         if (globals.gpuMath.readyToRead()) {
-            globals.gpuMath.readPixels(0, 0, textureDim * vectorLength, textureDim, pixels);
+            var numPixels = nodes.length*vectorLength;
+            var height = Math.ceil(numPixels/(textureDim*vectorLength));
+            globals.gpuMath.readPixels(0, 0, textureDim * vectorLength, height, pixels);
             var parsedPixels = new Float32Array(pixels.buffer);
             for (var i = 0; i < nodes.length; i++) {
-                var rgbaIndex = i * 4;
+                var rgbaIndex = i * vectorLength;
                 var nodePosition = new THREE.Vector3(parsedPixels[rgbaIndex], parsedPixels[rgbaIndex + 1], parsedPixels[rgbaIndex + 2]);
                 nodes[i].render(nodePosition);
             }

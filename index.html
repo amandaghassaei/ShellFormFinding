@@ -246,12 +246,13 @@
     <div class="modal-content">
       <div class="modal-body">
         <p><b>Instructions:</b><br/>
-            The force on each node is indicated by a purple vector.  Drag on force vectors to change the applied force at each node.  Double click on a force vector to type in a value for it.<br/>
+            The force on each node is indicated by a grey arrow.  Drag on force vectors to change the applied force at each node.  Double click on a force vector to type in a value for it.<br/>
             Fixed nodes are indicated with a black box.  Use the "Add/Remove Fixed Constraint" button and select a node to toggle its fixed state.<br/>
+            By default, the structure is loaded under its own weight, turn off effects due to self weight using the "Apply Self-Weight" toggle or change the density (mass/area measured in kg/m<sup>2</sup>) of the structure with the "Density" slider.<br/>
             <br/>
             The dynamic simulation uses a mass-spring-damper system to model interactions between nodes through edges.
-            Damping values were set to achieve critical damping for each node-node interaction.
-            Calculations of the dynamic simulation are executed in parallel in a GPU fragment shader.<br/>
+            Damping values may range from 1% to 100% of critical damping for each node-node interaction (adjust this value with the "Damping" slider).
+            Calculations of the dynamic simulation are executed in parallel in a GPU fragment shader for increased performance.<br/>
             <br/>
             Built by <a href="http://www.amandaghassaei.com/" target="_blank">Amanda Ghassaei</a> as a homework assignment for <a href="https://architecture.mit.edu/subject/fall-2016-4450" target="_blank">Computational Structural Design and Optimization</a>.
             Code available on <a href="https://github.com/amandaghassaei/ShellFormFinding" target="_blank">Github</a>.
