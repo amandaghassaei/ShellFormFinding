@@ -153,6 +153,10 @@ input.form-control {
     float:right;
 }
 
+.floatRight{
+    float:right;
+}
+
 img{
     width:60px;
     /*position: absolute;*/
@@ -280,10 +284,10 @@ span.modal-close{
     transition-duration: 0s;
 }
 
-#controls .checkbox input.custom-checkbox[type="checkbox"]:checked + .icons, #controls .radio input.custom-checkbox[type="checkbox"]:checked + .icons, #controls .checkbox input.custom-radio[type="radio"]:checked + .icons, #controls .radio input.custom-radio[type="radio"]:checked + .icons {
+#controls .checkbox input.custom-radio[type="radio"]:checked + .icons, #controls .radio input.custom-radio[type="radio"]:checked + .icons {
     margin-top:9px;
 }
-#controls .checkbox .icons,#controls .radio .icons {
+#controls .radio .icons {
     margin-top:9px;
 }
 

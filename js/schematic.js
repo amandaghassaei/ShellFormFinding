@@ -24,7 +24,8 @@ function initSchematic(globals){
     function setSelfWeight(){
         for (var i=0;i<nodes.length;i++){
             var node = nodes[i];
-            forces[i].setSelfWeight(node.getSelfWeight());
+            if (globals.applySelfWeight) forces[i].setSelfWeight(node.getSelfWeight());
+            else forces[i].setSelfWeight(new THREE.Vector3(0,0,0));
         }
         globals.forceHasChanged = true;
     }

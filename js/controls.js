@@ -130,6 +130,14 @@ function initControls(globals){
         globals.schematic.setSelfWeight();
     });
 
+    setCheckbox("#selfWeight", globals.applySelfWeight, function(val){
+        var $density = $("#density");
+        if (val == true) $density.show();
+        else $density.hide();
+        globals.applySelfWeight = val;
+        globals.schematic.setSelfWeight();
+    });
+
     setRadio("viewMode", globals.viewMode, function(val){
         globals.viewMode = val;
         globals.viewModeNeedsUpdate = true;
