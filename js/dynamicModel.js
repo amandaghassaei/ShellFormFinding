@@ -57,10 +57,6 @@ function initDynamicModel(globals){
         });
     }
 
-    function stopSolver(){
-
-    }
-
     function setVisibility(state){
         object3D.visible = state;
     }
@@ -382,8 +378,6 @@ function initDynamicModel(globals){
     }
 
     return {
-        runSolver:runSolver,
-        stopSolver: stopSolver,
         reset: reset,
         setVisibility: setVisibility,
         getChildren: getChildren,
