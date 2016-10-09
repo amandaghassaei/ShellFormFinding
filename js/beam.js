@@ -2,7 +2,7 @@
  * Created by ghassaei on 9/16/16.
  */
 
-var beamMaterialHighlight = new THREE.LineBasicMaterial({color: 0x0000ff, linewidth: 4});
+var beamMaterialHighlight = new THREE.LineBasicMaterial({color: 0xffffff, linewidth: 4});
 
 function Beam(nodes, material){
 
@@ -28,7 +28,13 @@ function Beam(nodes, material){
 }
 
 Beam.prototype.highlight = function(){
-    if (this.type == "beam") this.object3D.material = beamMaterialHighlight;
+    if (this.type == "beam") {
+        //var hsl = this.material.color.getHSL();
+        //hsl.l += 0.2;
+        //if (hsl.l>1) hsl.l = 1;
+        //beamMaterialHighlight.color.setHSL(hsl.h, hsl.s, hsl.l);
+        this.object3D.material = beamMaterialHighlight;
+    }
 };
 
 Beam.prototype.unhighlight = function(){

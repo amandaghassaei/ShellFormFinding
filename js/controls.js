@@ -51,7 +51,7 @@ function initControls(globals){
     var colors=[
         "#b67df0",
         "#8cbaed",
-        "#000000",
+        "#555555",
         "#d0caca",
         "#f9cdad",
         "#ef4666"
