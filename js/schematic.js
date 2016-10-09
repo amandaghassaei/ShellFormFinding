@@ -18,30 +18,36 @@ function initSchematic(globals){
     var forces = initForces();
     var geo = calcNodesAndEdges(object3D);
     var nodes = geo.nodes;
-    var edges = geo.edges;//todo need this?
+    var edges = geo.edges;
+    setSelfWeight();
+
+    function setSelfWeight(){
+        for (var i=0;i<nodes.length;i++){
+            var node = nodes[i];
+            forces[i].setSelfWeight(node.getSelfWeight());
+        }
+        globals.forceHasChanged = true;
+    }
+
     
     function initFixed(){
         var xResolution = globals.xResolution;
         var zResolution = globals.zResolution;
         var _fixed = [];
         for (var i=0;i<xResolution;i++){
-            _fixed.push([]);
             for (var j=0;j<zResolution;j++){
                 if ((i==j && i==0) ||
                     (i==xResolution-1 && j==0) ||
                     (j==zResolution-1 && i==0) ||
-                    (i==xResolution-1 && j==zResolution-1)) _fixed[i].push(true);
-                else _fixed[i].push(false);
+                    (i==xResolution-1 && j==zResolution-1)) _fixed.push(true);
+                else _fixed.push(false);
             }
         }
         return _fixed;
     }
 
     function setFixed(index, state){
-        var zResolution = globals.zResolution;
-        var i = index%zResolution;
-        var j = Math.floor(index/zResolution);
-        fixed[j][i] = state;
+        fixed[index] = state;
     }
 
     function initForces(){
@@ -52,13 +58,12 @@ function initSchematic(globals){
 
         var _forces = [];
         for (var i=0;i<xResolution;i++){
-            _forces.push([]);
             for (var j=0;j<zResolution;j++){
                 var x = i/(xResolution-1)*xLength-xLength/2;
                 var z = j/(zResolution-1)*zLength-zLength/2;
-                var force = new Force(new THREE.Vector3(0,5,0), new THREE.Vector3(x, 0, z));
+                var force = new Force(new THREE.Vector3(0,0,0), new THREE.Vector3(x, 0, z));
                 object3D.add(force.getObject3D());
-                _forces[i].push(force);
+                _forces.push(force);
             }
         }
         return _forces;
@@ -79,8 +84,8 @@ function initSchematic(globals){
                 var z = j/(zResolution-1)*zLength-zLength/2;
                 var index = zResolution*i+j;
                 var node = new Node(new THREE.Vector3(x, 0, z), index);
-                node.addExternalForce(forces[i][j]);
-                if (fixed[i][j]) node.setFixed(true);
+                if (fixed[index]) node.setFixed(true);
+                node.addExternalForce(forces[index]);
 
                 if (j>0){
                     var minusJNode = _nodes[index-1];
@@ -99,6 +104,7 @@ function initSchematic(globals){
                 _object3D.add(node.getObject3D());
             }
         }
+
         return {
             nodes: _nodes,
             edges: _edges
@@ -151,7 +157,8 @@ function initSchematic(globals){
         getChildren:getChildren,
         getFixed: getFixed,
         setFixed: setFixed,
-        getNodes: getNodes,
-        getEdges: getEdges
+        //getNodes: getNodes,
+        getEdges: getEdges,
+        setSelfWeight: setSelfWeight
     }
 }

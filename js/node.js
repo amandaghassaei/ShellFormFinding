@@ -32,12 +32,12 @@ Node.prototype.setFixed = function(fixed){
     if (fixed) {
         this.object3D.material = nodeMaterialFixed;
         this.object3D.geometry = nodeFixedGeo;
-        this.externalForce.hide();
+        if (this.externalForce) this.externalForce.hide();
     }
     else {
         this.object3D.material = nodeMaterial;
         this.object3D.geometry = nodeGeo;
-        this.externalForce.show();
+        if (this.externalForce) this.externalForce.show();
     }
 };
 
@@ -52,6 +52,35 @@ Node.prototype.addExternalForce = function(force){
 
 Node.prototype.getExternalForce = function(){
     return this.externalForce.getForce();
+};
+
+Node.prototype.getArea = function(){
+    if (this.beams.length<2) return 0;//todo a beam has zero mass?
+    var area = 0;
+    for (var i=0;i<this.beams.length;i++){
+        for (var j=i;j<this.beams.length;j++) {
+            if (i==j) continue;
+            var beam1 = this.beams[i].getVector();
+            var beam1Direction = beam1.clone().normalize();
+            var beam2 = this.beams[j].getVector();
+            var beam2Direction = beam2.clone().normalize();
+            var cos = Math.acos(beam1Direction.dot(beam2Direction));
+            if (Math.abs(Math.PI / 2 - cos) < 0.01) {
+                //right angle
+                area += beam1.length() * beam2.length() * 0.25;
+            }
+        }
+    }
+    return area;
+};
+
+Node.prototype.getMass = function(){
+    return this.getArea()*globals.density;
+
+};
+
+Node.prototype.getSelfWeight = function(){
+    return new THREE.Vector3(0,9.8,0).multiplyScalar(this.getMass());
 };
 
 
@@ -122,12 +151,6 @@ Node.prototype.getPosition = function(){
 
 Node.prototype.getVelocity = function(){
     return this.velocity;
-};
-
-Node.prototype.getMass = function(){
-    var density = 1;
-    //var area =
-    return 1;
 };
 
 

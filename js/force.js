@@ -5,8 +5,10 @@
 //0xb67df0
 //0x7700f1
 
-function Force(force, origin){
+function Force(force, origin, selfWeight){
     this.force = force;
+    if (selfWeight === undefined) selfWeight = new THREE.Vector3(0,0,0);
+    this.selfWeight = selfWeight.clone();
     this.arrow = new THREE.ArrowHelper(this.getDirection(), origin,this.getLength(), 0x999999);
     this.arrow.line.material.linewidth = 4;
     this.update();
@@ -18,34 +20,34 @@ Force.prototype.getObject3D = function(){
 };
 
 Force.prototype.setForce = function(force){
-    this.force = force;
+    this.force = force.sub(this.selfWeight);
     this.update();
 };
 
-Force.prototype.getMagnitude = function(){
-    return this.force.length()*(this.getDirection().y < 0 ? -1 : 1);
+Force.prototype.setSelfWeight = function(selfWeight){
+    this.selfWeight = selfWeight;
+    this.update();
+};
+
+Force.prototype.getMagnitude = function(){//has sign
+    return this.getForce().length()*(this.getDirection().y < 0 ? -1 : 1);
 };
 
 Force.prototype.getLength = function(){
-    return this.force.length();
+    return this.getForce().length();
 };
 
 Force.prototype.setMagnitude = function(magnitude){
-    this.setForce(this.getDirection().multiplyScalar(magnitude));
+    var totalForce = this.getDirection().multiplyScalar(magnitude);
+    this.setForce(totalForce);
 };
 
 Force.prototype.getDirection = function(){
-    return this.force.clone().normalize();
-};
-
-Force.prototype.setDirection = function(x, y){
-    var unitVector = new THREE.Vector3(x,y,0);
-    this.arrow.setDirection(unitVector);
-    this.setForce(unitVector.clone().multiplyScalar(this.getLegnth()));
+    return this.getForce().normalize();
 };
 
 Force.prototype.getForce = function(){
-    return this.force.clone();
+    return this.force.clone().add(this.selfWeight);
 };
 
 Force.prototype.highlight = function(){
@@ -73,12 +75,6 @@ Force.prototype.show = function(){
 Force.prototype.update = function(){
     this.arrow.setDirection(this.getDirection());
     this.arrow.setLength(this.getLength(), 1, 1);
-};
-
-Force.prototype.move = function(intersection){
-    var force = (intersection.sub(new THREE.Vector3(-152.5, 20, 0)).sub(this.arrow.position)).multiplyScalar(1/3);
-    force.z = 0;
-    this.setForce(force);
 };
 
 Force.prototype.destroy = function(){

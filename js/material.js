@@ -20,6 +20,6 @@ Material.prototype.setName = function(name){
     this.name = name;
 };
 
-Material.prototype.getStiffness = function(){
+Material.prototype.getForceDensity = function(){
     return this.val;
 };

@@ -125,8 +125,9 @@ function initControls(globals){
         globals.addRemoveFixedMode = true;
     });
 
-    setSliderInput("#density", 1, 0.1, 10, 0.01, function(){
-        console.log("density changed");
+    setSliderInput("#density", globals.density, 0.0001, 0.1, 0.001, function(val){
+        globals.density = val;
+        globals.schematic.setSelfWeight();
     });
 
     setRadio("viewMode", globals.viewMode, function(val){

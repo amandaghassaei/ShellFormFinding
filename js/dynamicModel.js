@@ -290,10 +290,9 @@ function initDynamicModel(globals){
     }
 
     function updateMaterials(){
-        var _nodes = globals.schematic.getNodes();
-        for (var i=0;i<_nodes.length;i++){
-            for (var j=0;j<_nodes[i].beams.length;j++){
-                var beam = _nodes[i].beams[j];
+        for (var i=0;i<nodes.length;i++){
+            for (var j=0;j<nodes[i].beams.length;j++){
+                var beam = nodes[i].beams[j];
                 beamK[4*i+j] = beam.getK();
                 beamD[4*i+j] = beam.getD();
             }
@@ -306,9 +305,9 @@ function initDynamicModel(globals){
 
     function updateMaterialAssignments(){
         var _edges = globals.schematic.getEdges();
-        _.each(edges, function(edge, i){
-            edge.setMaterial(_edges[i].beamMaterial, true);
-        });
+        for (var i=0;i<edges.length;i++){
+            edges[i].setMaterial(_edges[i].beamMaterial, true);
+        }
         if (globals.viewMode == "material") setViewMode("material");
     }
 
@@ -325,10 +324,7 @@ function initDynamicModel(globals){
     function updateFixed(){
         var _fixed = globals.schematic.getFixed();
         for (var i=0;i<_fixed.length;i++){
-            for (var j=0;j<_fixed[i].length;j++){
-                var index = globals.zResolution*i+j;
-                mass[4*index+1] = (_fixed[i][j] ? 1 : 0);
-            }
+                mass[4*i+1] = (_fixed[i] ? 1 : 0);
         }
         globals.gpuMath.initTextureFromData("u_mass", textureDim, textureDim, "FLOAT", mass, true);
     }

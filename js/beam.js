@@ -66,6 +66,10 @@ Beam.prototype.getLength = function(){
     return this.vertices[0].clone().sub(this.vertices[1]).length();
 };
 
+Beam.prototype.getVector = function(){
+    return this.vertices[0].clone().sub(this.vertices[1]);
+};
+
 Beam.prototype.getNominalLength = function(){
     return this.nodes[0].originalPosition.clone().sub(this.nodes[1].originalPosition).length();
 };
@@ -75,7 +79,7 @@ Beam.prototype.getNominalLength = function(){
 //dynamic solve
 
 Beam.prototype.getK = function(){
-    return this.beamMaterial.getStiffness()/this.getNominalLength();
+    return this.beamMaterial.getForceDensity()/this.getNominalLength();
 };
 
 Beam.prototype.getD = function(){
