@@ -66,6 +66,7 @@ $(function() {
     function mouseMove(e){
 
         e.preventDefault();
+        globals.controls.hideMoreInfo();
         mouse.x = (e.clientX/window.innerWidth)*2-1;
         mouse.y = - (e.clientY/window.innerHeight)*2+1;
         raycaster.setFromCamera(mouse, globals.threeView.camera);
@@ -80,37 +81,11 @@ $(function() {
 
         var _highlightedObj = null;
         if (!isDragging) {
-            var intersections = raycaster.intersectObjects(globals.schematic.getChildren(), true);
-            if (intersections.length > 0) {
-                var objectFound = false;
-                if (globals.addRemoveFixedMode){
-                    _.each(intersections, function (thing) {//look for nodes
-                        if (objectFound) return;
-                        if (thing.object && thing.object._myNode) {
-                            _highlightedObj = thing.object._myNode;
-                            objectFound = true;
-                        }
-                    });
-                } else {
-                    _.each(intersections, function (thing) {
-                        if (objectFound) return;
-                        if (thing.object && thing.object._myBeam) {
-                            thing.object._myBeam.highlight();
-                            _highlightedObj = thing.object._myBeam;
-                            objectFound = true;
-                        } else if (thing.object && thing.object._myForce) {
-                            thing.object._myForce.highlight();
-                            _highlightedObj = thing.object._myForce;
-                            objectFound = true;
-                            globals.controls.showMoreInfo("Force: " +
-                                _highlightedObj.getMagnitude().toFixed(2) + " N", e);
-                        }
-                    });
-                }
-            }
+            var objsToIntersect = globals.schematic.getChildren();
+            if (globals.dynamicSimVisible && globals.viewMode == "length") objsToIntersect = objsToIntersect.concat(globals.dynamicModel.getChildren());
+            _highlightedObj = checkForIntersections(e, objsToIntersect);
         }
         if (highlightedObj && (_highlightedObj != highlightedObj)) highlightedObj.unhighlight();
-        if (_highlightedObj === null) globals.controls.hideMoreInfo();
         highlightedObj = _highlightedObj;
 
         if (globals.addRemoveFixedMode){
@@ -127,6 +102,48 @@ $(function() {
                 toolTipFixedNode.position.set(intersection.x, intersection.y, intersection.z);
             }
         }
+
+        if (globals.dynamicSimVisible && globals.viewMode == "length"){
+            if (highlightedObj && highlightedObj.type == "dynamicBeam"){
+                globals.controls.showMoreInfo("Length: " +
+                        highlightedObj.getLength().toFixed(2) + " m", e);
+            }
+        }
+
+    }
+
+    function checkForIntersections(e, objects){
+        var _highlightedObj = null;
+        var intersections = raycaster.intersectObjects(objects, true);
+        if (intersections.length > 0) {
+            var objectFound = false;
+            if (globals.addRemoveFixedMode){
+                _.each(intersections, function (thing) {//look for nodes
+                    if (objectFound) return;
+                    if (thing.object && thing.object._myNode) {
+                        _highlightedObj = thing.object._myNode;
+                        objectFound = true;
+                    }
+                });
+            } else {
+                _.each(intersections, function (thing) {
+                    if (thing.object && thing.object._myBeam) {
+                        if (objectFound) return;
+                        _highlightedObj = thing.object._myBeam;
+                        _highlightedObj.highlight();
+                        objectFound = true;
+                    } else if (thing.object && thing.object._myForce) {
+                        if (_highlightedObj) _highlightedObj.unhighlight();
+                        _highlightedObj = thing.object._myForce;
+                        thing.object._myForce.highlight();
+                        objectFound = true;
+                        globals.controls.showMoreInfo("Force: " +
+                            _highlightedObj.getMagnitude().toFixed(2) + " N", e);
+                    }
+                });
+            }
+        }
+        return _highlightedObj;
     }
 
     var globals = initGlobals();

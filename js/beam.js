@@ -6,6 +6,8 @@ var beamMaterialHighlight = new THREE.LineBasicMaterial({color: 0x4444ff, linewi
 
 function Beam(nodes){
 
+    this.type = "beam";//changes to dynamicBeam for dynamic sim
+
     nodes[0].addBeam(this);
     nodes[1].addBeam(this);
     this.vertices = [nodes[0].getPosition(), nodes[1].getPosition()];
@@ -23,7 +25,7 @@ function Beam(nodes){
 }
 
 Beam.prototype.highlight = function(){
-    this.object3D.material = beamMaterialHighlight;
+    if (this.type == "beam") this.object3D.material = beamMaterialHighlight;
 };
 
 Beam.prototype.unhighlight = function(){
@@ -39,7 +41,7 @@ Beam.prototype.setDefaultColor = function(){
 };
 
 Beam.prototype.setHSLColor = function(val, max, min){
-    var scaledVal = (1-(val - min)/(max - min)) * 0.7;
+    var scaledVal = (val - min)/(max - min) * 0.7;
     var color = new THREE.Color();
     color.setHSL(scaledVal, 1, 0.5);
     this.object3D.material.color.set(color);

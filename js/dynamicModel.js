@@ -15,8 +15,9 @@ function initDynamicModel(globals){
         node.hide();
     });
     var edges = geo.edges;
-    _.each(edges, function(edges){
-        edges.setColor(0x8cbaed);
+    _.each(edges, function(edge){
+        edge.setColor(0x8cbaed);
+        edge.type = "dynamicBeam";
     });
 
     //variables for solving
@@ -186,7 +187,7 @@ function initDynamicModel(globals){
                 var min = _.min(vals);
                 var max = _.max(vals);
                 for (var i=0;i<edges.length;i++){
-                    edges[i].setHSLColor(max-vals[i], min, max);
+                    edges[i].setHSLColor(vals[i], min, max);
                 }
                 globals.controls.updateScaleBars(min, max);
             }
@@ -335,11 +336,15 @@ function initDynamicModel(globals){
         updateFixed();
     }
 
+    function getChildren(){
+        return object3D.children;
+    }
 
     return {
         runSolver:runSolver,
         stopSolver: stopSolver,
         reset: reset,
-        setVisibility: setVisibility
+        setVisibility: setVisibility,
+        getChildren: getChildren
     }
 }
