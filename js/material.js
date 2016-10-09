@@ -6,6 +6,7 @@
 function Material(val, color, name){
     this.val = val;
     this.name = name;
+    this.color = color;
 }
 
 Material.prototype.setVal = function(val){

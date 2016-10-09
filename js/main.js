@@ -44,6 +44,10 @@ $(function() {
             globals.addRemoveFixedMode = false;
             toolTipFixedNode.visible = false;
         }
+        if (highlightedObj && highlightedObj.type == "beam"){
+            highlightedObj.setMaterial(globals.materials[globals.currentMaterial]);
+            globals.dynamicSimMaterialsChanged = true;
+        }
         isDragging = true;
     }, false);
     document.addEventListener('mouseup', function(e){

@@ -73,10 +73,10 @@ body{
 }
 
 a{
-    color:#6dd0f2;
+    color:#666;
 }
 a:hover{
-    color:#6dd0f2;
+    color:#666;
 }
 
 .editable{
@@ -156,6 +156,10 @@ img{
     margin-bottom:20px;
 }
 
+.colorPicker{
+    border-width: 6px;
+}
+
 #activeLogo{
     display: none;
 }
@@ -204,7 +208,7 @@ img{
 .flat-slider .ui-slider-handle {
   width: 20px;
   height: 20px;
-  background: #6dd0f2;
+  background: #666;
   border-radius: 50%;
   border: none;
   cursor: pointer;
@@ -254,11 +258,11 @@ span.modal-close{
     margin-top:15px;
 }
 .form-control:focus{
-    border-color: #6dd0f2;
+    border-color: #666;
 }
 
 .checkbox input.custom-checkbox[type="checkbox"]:checked + .icons .icon-checked, .radio input.custom-checkbox[type="checkbox"]:checked + .icons .icon-checked, .checkbox input.custom-radio[type="radio"]:checked + .icons .icon-checked, .radio input.custom-radio[type="radio"]:checked + .icons .icon-checked {
-    color: #6dd0f2;
+    color: #666;
 }
 
 .radio .icon-checked{

@@ -129,6 +129,10 @@ function initSchematic(globals){
         return fixed;
     }
 
+    function getNodes(){
+        return nodes;
+    }
+
     function update(){
         var xResolution = globals.xResolution;
         var zResolution = globals.zResolution;
@@ -142,6 +146,7 @@ function initSchematic(globals){
         cloneGeo:cloneGeo,
         getChildren:getChildren,
         getFixed: getFixed,
-        setFixed: setFixed
+        setFixed: setFixed,
+        getNodes: getNodes
     }
 }

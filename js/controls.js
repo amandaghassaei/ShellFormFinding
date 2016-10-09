@@ -48,13 +48,28 @@ function initControls(globals){
         globals.dynamicModel.reset();
     });
 
+    var colors=[
+        "#000000",
+        "#f6b08c",
+        "#ef4666",
+        "#c06c86",
+        "#6d5c80",
+        "#69d2e7",
+        "#e0e4cc",
+        "#315c7f"
+    ];
+
     var newMaterialNum = 1;
+    function materialTypeCallback(val){
+        globals.currentMaterial = val;
+    }
     var newMaterialCallback = function(){
         var newId = "material" + newMaterialNum;
-        $("#materialTypes").append(makeMaterialHTML(newId));
+        var color = colors[newMaterialNum-1];
+        $("#materialTypes").append(makeMaterialHTML(newId, color));
         var $parent = $("#" + newId).parent();
         var val = 15;
-        setSliderInput("#" + newId, val, 0.1, 50, 0.01, function(val){
+        setSliderInput("#" + newId, val, 0.1, 100, 0.01, function(val){
             globals.setMaterial(newId, val);
         });
         $parent.children(".editable").click(function(e){
@@ -81,20 +96,25 @@ function initControls(globals){
         };
         $parent.children(".editableInput").blur(editableInputCallback);
         $parent.children(".editableInput").change(editableInputCallback);
-        globals.setMaterial(newId, val, 0x123456, "Material " + newMaterialNum);
+        globals.setMaterial(newId, val, color, "Material " + newMaterialNum);
+        globals.currentMaterial = newId;
+        $parent.children("input[name=materialTypes]").on('change', function() {
+            var state = $("input[name=materialTypes]:checked").val();
+            materialTypeCallback(state);
+        });
         newMaterialNum++;
     };
     setLink("#addMaterial", newMaterialCallback);
     newMaterialCallback();
 
-    function makeMaterialHTML(newId){
+    function makeMaterialHTML(newId, color){
         var html = '<label class="radio">' +
             '<input name="materialTypes" value="' + newId + '" data-toggle="radio" checked="" class="custom-radio" type="radio">' +
             '<span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>' +
             '<a href="#" class="editable">Material ' + newMaterialNum + '</a><input class="editableInput" value="Material ' + newMaterialNum + '" type="text">' +
             '<div class="radioSlider" id="' + newId + '">' +
             '<span class="label-slider"></span><div class="flat-slider ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"></div>' +
-            '<input value="" placeholder="" class="form-control" type="text">'+
+            '<input value="" style="border-color:' + color + ';" placeholder="" class="form-control colorPicker" type="text">'+
             '</div>' +
             '</label>';
         return html;

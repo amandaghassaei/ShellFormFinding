@@ -283,9 +283,10 @@ function initDynamicModel(globals){
     }
 
     function updateMaterials(){
-        for (var i=0;i<nodes.length;i++){
-            for (var j=0;j<nodes[i].beams.length;j++){
-                var beam = nodes[i].beams[j];
+        var _nodes = globals.schematic.getNodes();
+        for (var i=0;i<_nodes.length;i++){
+            for (var j=0;j<_nodes[i].beams.length;j++){
+                var beam = _nodes[i].beams[j];
                 beamK[4*i+j] = beam.getK();
                 beamD[4*i+j] = beam.getD();
             }

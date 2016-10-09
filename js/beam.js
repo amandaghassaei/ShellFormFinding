@@ -2,7 +2,7 @@
  * Created by ghassaei on 9/16/16.
  */
 
-var beamMaterialHighlight = new THREE.LineBasicMaterial({color: 0x4444ff, linewidth: 3});
+var beamMaterialHighlight = new THREE.LineBasicMaterial({color: 0xffffff, linewidth: 4});
 
 function Beam(nodes, material){
 
@@ -50,6 +50,12 @@ Beam.prototype.setHSLColor = function(val, max, min){
     this.object3D.material.color.set(color);
 };
 
+Beam.prototype.setMaterial = function(material){
+    this.beamMaterial = material;
+    this.material.color.setStyle(material.color);
+    this.unhighlight();
+};
+
 Beam.prototype.reset = function(){
     this.inCompression = false;
     this.force = null;
@@ -72,13 +78,17 @@ Beam.prototype.getK = function(){
 };
 
 Beam.prototype.getD = function(){
-    return 2*this.getNaturalFrequency();
+    return 2*Math.sqrt(this.getK()*this.getMinMass());
 };
 
 Beam.prototype.getNaturalFrequency = function(){
+    return Math.sqrt(this.getK()/this.getMinMass());
+};
+
+Beam.prototype.getMinMass = function(){
     var minMass = this.nodes[0].getMass();
     if (this.nodes[1].getMass()<minMass) minMass = this.nodes[1].getMass();
-    return Math.sqrt(this.getK()/minMass);
+    return minMass;
 };
 
 Beam.prototype.getOtherNode = function(node){
