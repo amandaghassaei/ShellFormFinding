@@ -49,6 +49,8 @@ function initControls(globals){
     });
 
     var colors=[
+        "#b67df0",
+        "#8cbaed",
         "#000000",
         "#f6b08c",
         "#ef4666",

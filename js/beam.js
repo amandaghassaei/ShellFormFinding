@@ -6,9 +6,6 @@ var beamMaterialHighlight = new THREE.LineBasicMaterial({color: 0xffffff, linewi
 
 function Beam(nodes, material){
 
-    if (material === undefined) material = globals.materials.material1;
-    this.beamMaterial = material;
-
     this.type = "beam";//changes to dynamicBeam for dynamic sim
 
     nodes[0].addBeam(this);
@@ -20,9 +17,12 @@ function Beam(nodes, material){
     lineGeometry.dynamic = true;
     lineGeometry.vertices = this.vertices;
 
-    this.material = new THREE.LineBasicMaterial({color: 0x222222, linewidth: 3});
+    this.material = new THREE.LineBasicMaterial({linewidth: 3});
     this.object3D = new THREE.Line(lineGeometry, this.material);
     this.object3D._myBeam = this;
+
+    if (material === undefined) material = globals.materials.material1;
+    this.setMaterial(material);
 
     this.reset();
 }

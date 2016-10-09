@@ -2,10 +2,12 @@
  * Created by ghassaei on 10/2/16.
  */
 
+//0xb67df0
+//0x7700f1
 
 function Force(force, origin){
     this.force = force;
-    this.arrow = new THREE.ArrowHelper(this.getDirection(), origin,this.getLength(), 0xb67df0);
+    this.arrow = new THREE.ArrowHelper(this.getDirection(), origin,this.getLength(), 0x999999);
     this.arrow.line.material.linewidth = 4;
     this.update();
     this.arrow.cone._myForce = this;
@@ -47,13 +49,13 @@ Force.prototype.getForce = function(){
 };
 
 Force.prototype.highlight = function(){
-    this.arrow.line.material.color.setHex(0x7700f1);
-    this.arrow.cone.material.color.setHex(0x7700f1);
+    this.arrow.line.material.color.setHex(0x000000);
+    this.arrow.cone.material.color.setHex(0x000000);
 };
 
 Force.prototype.unhighlight = function(){
-    this.arrow.line.material.color.setHex(0xb67df0);
-    this.arrow.cone.material.color.setHex(0xb67df0);
+    this.arrow.line.material.color.setHex(0x999999);
+    this.arrow.cone.material.color.setHex(0x999999);
 };
 
 Force.prototype.getPosition = function(){

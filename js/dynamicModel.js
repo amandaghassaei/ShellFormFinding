@@ -16,7 +16,8 @@ function initDynamicModel(globals){
     });
     var edges = geo.edges;
     _.each(edges, function(edge){
-        edge.setColor(0x8cbaed);
+        //edge.setColor(0x8cbaed);
+        edge.setColor(0x222222);
         edge.type = "dynamicBeam";
     });
 
@@ -167,7 +168,7 @@ function initDynamicModel(globals){
             if (globals.viewMode == "none"){
                 if (globals.viewModeNeedsUpdate){
                     for (var i=0;i<edges.length;i++){
-                        edges[i].setColor(0x8cbaed);
+                        edges[i].setColor(0x777777);
                     }
                     globals.viewModeNeedsUpdate = false;
                 }
