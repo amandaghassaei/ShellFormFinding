@@ -52,13 +52,9 @@ function initControls(globals){
         "#b67df0",
         "#8cbaed",
         "#000000",
-        "#f6b08c",
-        "#ef4666",
-        "#c06c86",
-        "#6d5c80",
-        "#69d2e7",
-        "#e0e4cc",
-        "#315c7f"
+        "#d0caca",
+        "#f9cdad",
+        "#ef4666"
     ];
 
     var newMaterialNum = 1;
@@ -71,7 +67,7 @@ function initControls(globals){
         $("#materialTypes").append(makeMaterialHTML(newId, color));
         var $parent = $("#" + newId).parent();
         var val = 15;
-        setSliderInput("#" + newId, val, 0.1, 100, 0.01, function(val){
+        setSliderInput("#" + newId, val, 1, 70, 0.01, function(val){
             globals.setMaterial(newId, val);
         });
         $parent.children(".editable").click(function(e){
@@ -105,6 +101,9 @@ function initControls(globals){
             materialTypeCallback(state);
         });
         newMaterialNum++;
+        if (newMaterialNum> colors.length){
+            $("#addMaterial").hide();
+        }
     };
     setLink("#addMaterial", newMaterialCallback);
     newMaterialCallback();

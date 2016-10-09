@@ -174,10 +174,11 @@
     </div>
     <a href="#" id="addRemoveFixed" class="btn btn-lg btn-default">Add/Remove Fixed Constraint</a>
     <span class="titleSpan">Available Materials:</span>
-    <div id="materialTypes">
+    <div id="materialTypes" class="indent">
     </div>
-    <a href="#" id="addMaterial" class="btn btn-lg btn-default">+ New Material</a><br/><br/>
+    <a href="#" id="addMaterial" class="btn btn-lg btn-default">+ New Material</a>
     <a href="#" id="resetDynamicSim" class="btn btn-lg btn-default">Replay Dynamic Simulation</a>
+    <div id="extraSpace"></div>
 </div>
 <div id="controlsLeft">
     <a id="logo" target="_blank" href="http://cba.mit.edu/">
@@ -186,29 +187,33 @@
     </a>
     <div id="layersSelector">
         View:
-        <label class="checkbox" for="dynamic">
-            <input id="dynamic" data-toggle="checkbox" class="custom-checkbox layersSelector" type="checkbox"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>
-            Dynamic Simulation
-        </label>
-        <!--<label class="checkbox" for="fdm">-->
-            <!--<input id="fdm" data-toggle="checkbox" class="custom-checkbox layersSelector" type="checkbox"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>-->
-            <!--FDM Simulation-->
-        <!--</label>-->
+        <div class="indent">
+            <label class="checkbox" for="dynamic">
+                <input id="dynamic" data-toggle="checkbox" class="custom-checkbox layersSelector" type="checkbox"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>
+                Dynamic Simulation
+            </label>
+            <!--<label class="checkbox" for="fdm">-->
+                <!--<input id="fdm" data-toggle="checkbox" class="custom-checkbox layersSelector" type="checkbox"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>-->
+                <!--FDM Simulation-->
+            <!--</label>-->
+        </div>
     </div>
     <div id="viewModeSelection">
         View Mode:
-        <label class="radio">
-            <input name="viewMode" value="none" data-toggle="radio" class="custom-radio" type="radio"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>
-            Geometry
-        </label>
-        <label class="radio">
-            <input name="viewMode" value="length" data-toggle="radio" class="custom-radio" type="radio"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>
-            Edge Length
-        </label>
+        <div class="indent">
+            <label class="radio">
+                <input name="viewMode" value="none" data-toggle="radio" class="custom-radio" type="radio"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>
+                Geometry
+            </label>
+            <label class="radio">
+                <input name="viewMode" value="length" data-toggle="radio" class="custom-radio" type="radio"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>
+                Edge Length
+            </label>
         <!--<label class="radio">-->
             <!--<input name="viewMode" value="force" data-toggle="radio" class="custom-radio" type="radio"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>-->
             <!--Internal Forces-->
         <!--</label>-->
+        </div>
     </div>
 </div>
 <div id="scaleBars"></div>
@@ -227,7 +232,6 @@
             <br/>
             Built by <a href="http://www.amandaghassaei.com/" target="_blank">Amanda Ghassaei</a> as a homework assignment for <a href="https://architecture.mit.edu/subject/fall-2016-4450" target="_blank">Computational Structural Design and Optimization</a>.
             Code available on <a href="https://github.com/amandaghassaei/ShellFormFinding" target="_blank">Github</a>.
-
         </p>
       </div>
     </div><!-- /.modal-content -->
