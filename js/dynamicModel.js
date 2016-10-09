@@ -168,7 +168,7 @@ function initDynamicModel(globals){
             if (globals.viewMode == "none"){
                 if (globals.viewModeNeedsUpdate){
                     for (var i=0;i<edges.length;i++){
-                        edges[i].setColor(0x777777);
+                        edges[i].setColor(0x222222);
                     }
                     globals.viewModeNeedsUpdate = false;
                 }
