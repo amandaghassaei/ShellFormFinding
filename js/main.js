@@ -39,7 +39,7 @@ $(function() {
                 globals.schematic.setFixed(highlightedObj.getIndex(), state);
                 highlightedObj.setFixed(state);
                 globals.fixedHasChanged = true;
-                globals.shouldResetDynamicSim = true;
+                if (state) globals.shouldResetDynamicSim = true;
             }
             globals.addRemoveFixedMode = false;
             toolTipFixedNode.visible = false;

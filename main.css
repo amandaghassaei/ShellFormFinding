@@ -65,6 +65,10 @@ body{
     display: inline-block;
     margin-bottom:15px;
 }
+.sliderContainer{
+    display: inline-block;
+    margin-bottom:15px;
+}
 
 .indent{
     padding-left:20px;
@@ -293,6 +297,10 @@ span.modal-close{
 
 .sliderInput>.flat-slider{
     width:180px;
+}
+
+.label-slider{
+    font-size: 15px;
 }
 
 #extraSpace{
