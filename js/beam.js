@@ -4,7 +4,10 @@
 
 var beamMaterialHighlight = new THREE.LineBasicMaterial({color: 0x4444ff, linewidth: 3});
 
-function Beam(nodes){
+function Beam(nodes, material){
+
+    if (material === undefined) material = globals.materials.material1;
+    this.beamMaterial = material;
 
     this.type = "beam";//changes to dynamicBeam for dynamic sim
 
@@ -56,12 +59,16 @@ Beam.prototype.getLength = function(){
     return this.vertices[0].clone().sub(this.vertices[1]).length();
 };
 
+Beam.prototype.getNominalLength = function(){
+    return this.nodes[0].originalPosition.clone().sub(this.nodes[1].originalPosition).length();
+};
+
 
 
 //dynamic solve
 
 Beam.prototype.getK = function(){
-    return 30/this.getLength();
+    return this.beamMaterial.getStiffness()/this.getNominalLength();
 };
 
 Beam.prototype.getD = function(){
@@ -101,5 +108,6 @@ Beam.prototype.destroy = function(){
     this.object3D._myBeam = null;
     this.object3D = null;
     this.material = null;
+    this.beamMaterial = null;
     this.nodes = null;
 };

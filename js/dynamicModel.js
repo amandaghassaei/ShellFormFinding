@@ -40,19 +40,9 @@ function initDynamicModel(globals){
     runSolver();
 
     function reset(){
-
         initTypedArrays();
-
-        var params = calcSolveParams();
-        dt = params.dt;
-        numSteps = params.numSteps;
-
-        var gpuMath = globals.gpuMath;
-        initTexturesAndPrograms(gpuMath);
-        gpuMath.setProgram("velocityCalc");
-        gpuMath.setUniformForProgram("velocityCalc", "u_dt", dt, "1f");
-        gpuMath.setProgram("positionCalc");
-        gpuMath.setUniformForProgram("positionCalc", "u_dt", dt, "1f");
+        initTexturesAndPrograms(globals.gpuMath);
+        setSolveParams();
     }
 
     function runSolver(){
@@ -89,6 +79,10 @@ function initDynamicModel(globals){
             if (globals.fixedHasChanged){
                 updateFixed();
                 globals.fixedHasChanged = false;
+            }
+            if (globals.dynamicSimMaterialsChanged){
+                updateMaterials();
+                globals.dynamicSimMaterialsChanged = false;
             }
         }
 
@@ -204,16 +198,30 @@ function initDynamicModel(globals){
     }
 
     function calcSolveParams(){
-        var maxFreqNat = 0;
-        _.each(edges, function(beam){
-            if (beam.getNaturalFrequency()>maxFreqNat) maxFreqNat = beam.getNaturalFrequency();
-        });
-        var _dt = (1/(2*Math.PI*maxFreqNat))*0.5;//half of max delta t for good measure
+        var _dt = calcDt();
         var _numSteps = 0.5/_dt;
         return {
             dt: _dt,
             numSteps: _numSteps
         }
+    }
+
+    function setSolveParams(){
+        var params = calcSolveParams();
+        dt = params.dt;
+        numSteps = params.numSteps;
+        globals.gpuMath.setProgram("velocityCalc");
+        globals.gpuMath.setUniformForProgram("velocityCalc", "u_dt", dt, "1f");
+        globals.gpuMath.setProgram("positionCalc");
+        globals.gpuMath.setUniformForProgram("positionCalc", "u_dt", dt, "1f");
+    }
+
+    function calcDt(){
+        var maxFreqNat = 0;
+        _.each(edges, function(beam){
+            if (beam.getNaturalFrequency()>maxFreqNat) maxFreqNat = beam.getNaturalFrequency();
+        });
+        return (1/(2*Math.PI*maxFreqNat))*0.5;//half of max delta t for good measure
     }
 
     function initTexturesAndPrograms(gpuMath){
@@ -235,8 +243,8 @@ function initDynamicModel(globals){
         gpuMath.initTextureFromData("u_externalForces", textureDim, textureDim, "FLOAT", externalForces);
         gpuMath.initTextureFromData("u_mass", textureDim, textureDim, "FLOAT", mass);
         gpuMath.initTextureFromData("u_meta", textureDim, textureDim, "FLOAT", meta);
-        gpuMath.initTextureFromData("u_beamK", textureDim, textureDim, "FLOAT", beamK);
-        gpuMath.initTextureFromData("u_beamD", textureDim, textureDim, "FLOAT", beamD);
+        globals.gpuMath.initTextureFromData("u_beamK", textureDim, textureDim, "FLOAT", beamK);
+        globals.gpuMath.initTextureFromData("u_beamD", textureDim, textureDim, "FLOAT", beamD);
 
         gpuMath.createProgram("positionCalc", vertexShader, document.getElementById("positionCalcShader").text);
         gpuMath.setUniformForProgram("positionCalc", "u_velocity", 0, "1i");
@@ -272,6 +280,20 @@ function initDynamicModel(globals){
         }
         console.warn("no texture size found for " + numCells + " cells");
         return 0;
+    }
+
+    function updateMaterials(){
+        for (var i=0;i<nodes.length;i++){
+            for (var j=0;j<nodes[i].beams.length;j++){
+                var beam = nodes[i].beams[j];
+                beamK[4*i+j] = beam.getK();
+                beamD[4*i+j] = beam.getD();
+            }
+        }
+        globals.gpuMath.initTextureFromData("u_beamK", textureDim, textureDim, "FLOAT", beamK, true);
+        globals.gpuMath.initTextureFromData("u_beamD", textureDim, textureDim, "FLOAT", beamD, true);
+        //recalc dt
+        setSolveParams();
     }
 
     function updateExternalForces(){
@@ -327,11 +349,10 @@ function initDynamicModel(globals){
             meta[4*index+3] = -1;
             _.each(node.beams, function(beam, i){
                 meta[4*index+i] = beam.getOtherNode(node).getIndex();
-                beamK[4*index+i] = beam.getK();
-                beamD[4*index+i] = beam.getD();
             });
         });
 
+        updateMaterials();
         updateExternalForces();
         updateFixed();
     }

@@ -2,6 +2,7 @@
  * Created by ghassaei on 10/7/16.
  */
 
+globals = {};
 
 $(function() {
 
@@ -146,7 +147,9 @@ $(function() {
         return _highlightedObj;
     }
 
-    var globals = initGlobals();
+    globals = initGlobals();
+    globals.schematic = initSchematic(globals);
+    globals.dynamicModel = initDynamicModel(globals);
     globals.threeView.render();
     globals.threeView.sceneAdd(toolTipFixedNode);
 

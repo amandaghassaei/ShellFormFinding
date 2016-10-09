@@ -94,7 +94,8 @@ function initGPUMath(){
     };
 
     GPUMath.prototype.setProgram = function(programName){
-        gl.useProgram(this.programs[programName].program);
+        var program = this.programs[programName];
+        if (program) gl.useProgram(program.program);
     };
 
     GPUMath.prototype.step = function(programName, inputTextures, outputTexture, time){

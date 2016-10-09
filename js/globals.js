@@ -29,6 +29,7 @@ function initGlobals(){
     _globals.viewModeNeedsUpdate = false;
     _globals.dynamicSimVisible = true;
     _globals.fdmSimVisible = false;
+    _globals.dynamicSimMaterialsChanged = false;
 
     function setXResolution(val){
         _globals.xResolution = val;
@@ -71,9 +72,6 @@ function initGlobals(){
     _globals.threeView = initThreeView(_globals);
     _globals.gpuMath = initGPUMath();
     _globals.controls = initControls(_globals);
-    _globals.schematic = initSchematic(_globals);
-    _globals.dynamicModel = initDynamicModel(_globals);
-
 
     return _globals;
 }

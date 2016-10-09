@@ -5,7 +5,7 @@
 function initThreeView(globals) {
 
     var scene = new THREE.Scene();
-    var camera = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 0, 150);//-40, 40);
+    var camera = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 0, 10000);//-40, 40);
     var renderer = new THREE.WebGLRenderer({antialias: true});
     var controls;
 
@@ -18,8 +18,8 @@ function initThreeView(globals) {
         container.append(renderer.domElement);
 
         scene.background = new THREE.Color(0xe6e6e6);
-        scene.fog = new THREE.FogExp2(0xf4f4f4, 1.7);
-        renderer.setClearColor(scene.fog.color);
+        //scene.fog = new THREE.FogExp2(0xf4f4f4, 1.7);
+        //renderer.setClearColor(scene.fog.color);
 
         camera.zoom = 15;
         camera.updateProjectionMatrix();
