@@ -185,6 +185,7 @@
     <a href="#" id="addRemoveFixed" class="btn btn-lg btn-default">Add/Remove Fixed Constraint</a>
     <span class="titleSpan">Available Materials:</span>
     <div id="materialTypes" class="indent">
+        <label class="radio"><input name="materialTypes" value="none" data-toggle="radio" class="custom-radio" type="radio"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span><span id="noMaterial">No Material Selected</span></label>
     </div>
     <a href="#" id="addMaterial" class="btn btn-lg btn-default">+ New Material</a>
     <div id="extraSpace"></div>
@@ -201,10 +202,10 @@
                 <input id="dynamic" data-toggle="checkbox" class="custom-checkbox layersSelector" type="checkbox"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>
                 Dynamic Simulation
             </label>
-            <!--<label class="checkbox" for="fdm">-->
-                <!--<input id="fdm" data-toggle="checkbox" class="custom-checkbox layersSelector" type="checkbox"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>-->
-                <!--FDM Simulation-->
-            <!--</label>-->
+            <label class="checkbox" for="fdm">
+                <input id="fdm" data-toggle="checkbox" class="custom-checkbox layersSelector" type="checkbox"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>
+                Static Simulation
+            </label>
         </div>
     </div>
     <div id="viewModeSelection">

@@ -61,6 +61,10 @@ function initControls(globals){
     function materialTypeCallback(val){
         globals.currentMaterial = val;
     }
+    $("input[name=materialTypes]").on('change', function() {
+        var state = $("input[name=materialTypes]:checked").val();
+        materialTypeCallback(state);
+    });
     var newMaterialCallback = function(){
         var newId = "material" + newMaterialNum;
         var color = colors[newMaterialNum-1];
@@ -96,6 +100,7 @@ function initControls(globals){
         $parent.children(".editableInput").change(editableInputCallback);
         globals.setMaterial(newId, val, color, "Material " + newMaterialNum);
         globals.currentMaterial = newId;
+        $parent.children("input[name=materialTypes]").prop("checked", true);
         $parent.children("input[name=materialTypes]").on('change', function() {
             var state = $("input[name=materialTypes]:checked").val();
             materialTypeCallback(state);
@@ -107,10 +112,11 @@ function initControls(globals){
     };
     setLink("#addMaterial", newMaterialCallback);
     newMaterialCallback();
+    globals.currentMaterial = "none";
 
     function makeMaterialHTML(newId, color){
         var html = '<label class="radio">' +
-            '<input name="materialTypes" value="' + newId + '" data-toggle="radio" checked="" class="custom-radio" type="radio">' +
+            '<input name="materialTypes" value="' + newId + '" data-toggle="radio" class="custom-radio" type="radio">' +
             '<span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>' +
             '<a href="#" class="editable">Material ' + newMaterialNum + '</a><input class="editableInput" value="Material ' + newMaterialNum + '" type="text">' +
             '<div class="radioSlider" id="' + newId + '">' +

@@ -26,7 +26,7 @@ function initGlobals(){
     _globals.forceHasChanged = false;
     _globals.addRemoveFixedMode = false;
     _globals.materials = {};
-    _globals.currentMaterial = "material2";
+    _globals.currentMaterial = "none";
     _globals.viewMode = "none";
     _globals.viewModeNeedsUpdate = false;
     _globals.dynamicSimVisible = true;

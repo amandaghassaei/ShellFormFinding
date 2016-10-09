@@ -51,10 +51,15 @@ Beam.prototype.setHSLColor = function(val, max, min){
 };
 
 Beam.prototype.setMaterial = function(material, noRender){
+    if (this.beamMaterial == material) {
+        this.unhighlight();
+        return false;
+    }
     this.beamMaterial = material;
     if (noRender) return;
     this.material.color.setStyle(material.color);
     this.unhighlight();
+    return true;
 };
 
 Beam.prototype.reset = function(){

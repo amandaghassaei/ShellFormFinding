@@ -90,6 +90,11 @@ a:hover{
     margin-bottom: 15px;
 }
 
+#noMaterial{
+    height: 42px;
+    display: inline-block;
+    line-height: 42px;
+}
 .editable{
     color:#34495e;
     height: 42px;

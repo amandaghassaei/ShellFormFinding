@@ -45,9 +45,14 @@ $(function() {
             toolTipFixedNode.visible = false;
         }
         if (highlightedObj && highlightedObj.type == "beam"){
-            highlightedObj.setMaterial(globals.materials[globals.currentMaterial]);
-            globals.dynamicModel.updateMaterialAssignments();
-            globals.dynamicSimMaterialsChanged = true;
+            if (globals.currentMaterial == "none"){
+            } else {
+                var needsUpdate = highlightedObj.setMaterial(globals.materials[globals.currentMaterial]);
+                if (needsUpdate){
+                    globals.dynamicModel.updateMaterialAssignments();
+                    globals.dynamicSimMaterialsChanged = true;
+                }
+            }
         }
         isDragging = true;
     }, false);
