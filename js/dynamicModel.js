@@ -159,19 +159,21 @@ function initDynamicModel(globals){
         if (globals.gpuMath.readyToRead()) {
             globals.gpuMath.readPixels(0, 0, textureDim * vectorLength, textureDim, pixels);
             var parsedPixels = new Float32Array(pixels.buffer);
-            for (var i=0;i<nodes.length;i++){
-                var rgbaIndex = i*4;
-                var nodePosition = new THREE.Vector3(parsedPixels[rgbaIndex], parsedPixels[rgbaIndex+1], parsedPixels[rgbaIndex+2]);
+            for (var i = 0; i < nodes.length; i++) {
+                var rgbaIndex = i * 4;
+                var nodePosition = new THREE.Vector3(parsedPixels[rgbaIndex], parsedPixels[rgbaIndex + 1], parsedPixels[rgbaIndex + 2]);
                 nodes[i].render(nodePosition);
             }
             //todo do this in shader ?
-            if (globals.viewMode == "none"){
-                if (globals.viewModeNeedsUpdate){
-                    for (var i=0;i<edges.length;i++){
+            if (globals.viewMode == "none") {
+                if (globals.viewModeNeedsUpdate) {
+                    for (var i = 0; i < edges.length; i++) {
                         edges[i].setColor(0x222222);
                     }
                     globals.viewModeNeedsUpdate = false;
                 }
+            } else if (globals.viewMode == "material"){
+                //edges should already be set
             } else {
                 var vals = [];
                 if (globals.viewMode == "length"){
@@ -196,6 +198,14 @@ function initDynamicModel(globals){
         //}
         globals.threeView.render();
         globals.gpuMath.setSize(textureDim, textureDim);
+    }
+
+    function setViewMode(mode){
+        if (mode == "material"){
+            _.each(edges, function(edge){
+                edge.setMaterialColor();
+            })
+        }
     }
 
     function calcSolveParams(){
@@ -298,6 +308,14 @@ function initDynamicModel(globals){
         setSolveParams();
     }
 
+    function updateMaterialAssignments(){
+        var _edges = globals.schematic.getEdges();
+        _.each(edges, function(edge, i){
+            edge.setMaterial(_edges[i].beamMaterial, true);
+        });
+        if (globals.viewMode == "material") setViewMode("material");
+    }
+
     function updateExternalForces(){
         for (var i=0;i<nodes.length;i++){
             var externalForce = nodes[i].getExternalForce();
@@ -368,6 +386,8 @@ function initDynamicModel(globals){
         stopSolver: stopSolver,
         reset: reset,
         setVisibility: setVisibility,
-        getChildren: getChildren
+        getChildren: getChildren,
+        updateMaterialAssignments: updateMaterialAssignments,
+        setViewMode: setViewMode
     }
 }

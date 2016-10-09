@@ -39,8 +39,8 @@ Beam.prototype.setColor = function(hex){
     this.object3D.material.color.setHex(hex);
 };
 
-Beam.prototype.setDefaultColor = function(){
-    this.setColor(0x222222);
+Beam.prototype.setMaterialColor = function(){
+    this.material.color.setStyle(this.beamMaterial.color);
 };
 
 Beam.prototype.setHSLColor = function(val, max, min){
@@ -50,8 +50,9 @@ Beam.prototype.setHSLColor = function(val, max, min){
     this.object3D.material.color.set(color);
 };
 
-Beam.prototype.setMaterial = function(material){
+Beam.prototype.setMaterial = function(material, noRender){
     this.beamMaterial = material;
+    if (noRender) return;
     this.material.color.setStyle(material.color);
     this.unhighlight();
 };

@@ -133,6 +133,10 @@ function initSchematic(globals){
         return nodes;
     }
 
+    function getEdges(){
+        return edges;
+    }
+
     function update(){
         var xResolution = globals.xResolution;
         var zResolution = globals.zResolution;
@@ -147,6 +151,7 @@ function initSchematic(globals){
         getChildren:getChildren,
         getFixed: getFixed,
         setFixed: setFixed,
-        getNodes: getNodes
+        getNodes: getNodes,
+        getEdges: getEdges
     }
 }

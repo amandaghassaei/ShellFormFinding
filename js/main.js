@@ -47,6 +47,7 @@ $(function() {
         if (highlightedObj && highlightedObj.type == "beam"){
             highlightedObj.setMaterial(globals.materials[globals.currentMaterial]);
             globals.dynamicSimMaterialsChanged = true;
+            globals.dynamicModel.updateMaterialAssignments();
         }
         isDragging = true;
     }, false);

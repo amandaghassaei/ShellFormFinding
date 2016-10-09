@@ -134,13 +134,14 @@ function initControls(globals){
         globals.viewModeNeedsUpdate = true;
         var $scaleBars = $("#scaleBars");
         var $controls = $("#controls");
-        if (val == "none"){
+        if (val == "none" || val == "material"){
             $scaleBars.animate({right: -100});
             $controls.animate({right:0});
         } else {
             $scaleBars.animate({right: 0});
             $controls.animate({right:100});
         }
+        globals.dynamicModel.setViewMode(val);
     });
 
     var scaleHTML = "";
