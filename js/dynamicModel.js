@@ -21,10 +21,6 @@ function initDynamicModel(globals){
         edge.type = "dynamicBeam";
     });
 
-    //variables for solving
-    var dt;
-    var numSteps;
-
     var originalPosition;
     var position;
     var lastPosition;
@@ -152,19 +148,9 @@ function initDynamicModel(globals){
         }
     }
 
-    function calcSolveParams(){
-        var _dt = calcDt();
-        var _numSteps = 0.5/_dt;
-        return {
-            dt: _dt,
-            numSteps: _numSteps
-        }
-    }
-
     function setSolveParams(){
-        var params = calcSolveParams();
-        dt = params.dt;
-        numSteps = params.numSteps;
+        var dt = calcDt();
+        var numSteps = 0.5/dt;
         globals.gpuMath.setProgram("velocityCalc");
         globals.gpuMath.setUniformForProgram("velocityCalc", "u_dt", dt, "1f");
         globals.gpuMath.setProgram("positionCalc");
