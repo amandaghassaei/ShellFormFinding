@@ -76,7 +76,6 @@ Node.prototype.getArea = function(){
 
 Node.prototype.getMass = function(){
     return this.getArea()*globals.density;
-
 };
 
 Node.prototype.getSelfWeight = function(){

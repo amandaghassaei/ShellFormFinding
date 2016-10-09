@@ -45,7 +45,7 @@ function initControls(globals){
     }
 
     setLink("#resetDynamicSim", function(){
-        globals.dynamicModel.reset();
+        globals.shouldResetDynamicSim = true;
     });
 
     var colors=[

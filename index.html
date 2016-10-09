@@ -70,6 +70,12 @@
         }
     </script>
 
+    <script id="zeroTexture" type="x-shader/x-fragment">
+        void main(){
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+        }
+    </script>
+
     <script id="positionCalcShader" type="x-shader/x-fragment">
         precision mediump float;
         uniform vec2 u_textureDim;

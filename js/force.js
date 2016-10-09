@@ -74,7 +74,9 @@ Force.prototype.show = function(){
 
 Force.prototype.update = function(){
     this.arrow.setDirection(this.getDirection());
-    this.arrow.setLength(this.getLength(), 1, 1);
+    var length = this.getLength();
+    if (length<1.1) length = 1.1;//prevent arrow from having zero length
+    this.arrow.setLength(length, 1, 1);
 };
 
 Force.prototype.destroy = function(){

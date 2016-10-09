@@ -36,21 +36,26 @@ function initDynamicModel(globals){
     var beamK;
     var beamD;
 
+    var programsInited = false;//flag for initial setup
+
     var textureDim = 0;
 
     runSolver();
 
     function reset(){
-        initTypedArrays();
-        initTexturesAndPrograms(globals.gpuMath);
-        setSolveParams();
+        globals.gpuMath.step("zeroTexture", [], "u_position");
+        globals.gpuMath.step("zeroTexture", [], "u_lastPosition");
+        globals.gpuMath.step("zeroTexture", [], "u_velocity");
+        globals.gpuMath.step("zeroTexture", [], "u_lastVelocity");
     }
 
     function runSolver(){
-        reset();
+        initTypedArrays();
+        initTexturesAndPrograms(globals.gpuMath);
+        var steps = parseInt(setSolveParams());
         globals.threeView.startAnimation(function(){
             if (!globals.dynamicSimVisible) return;
-            for (var j=0;j<numSteps;j++){
+            for (var j=0;j<steps;j++){
                 solveStep();
             }
             render();
@@ -63,24 +68,21 @@ function initDynamicModel(globals){
 
     function solveStep(){
 
+        if (globals.forceHasChanged){
+            updateExternalForces();
+            globals.forceHasChanged = false;
+        }
+        if (globals.fixedHasChanged){
+            updateFixed();
+            globals.fixedHasChanged = false;
+        }
+        if (globals.dynamicSimMaterialsChanged){
+            updateMaterials();
+            globals.dynamicSimMaterialsChanged = false;
+        }
         if (globals.shouldResetDynamicSim){
             reset();
             globals.shouldResetDynamicSim = false;
-            globals.forceHasChanged = false;
-            globals.fixedHasChanged = false;
-        } else {
-            if (globals.forceHasChanged){
-                updateExternalForces();
-                globals.forceHasChanged = false;
-            }
-            if (globals.fixedHasChanged){
-                updateFixed();
-                globals.fixedHasChanged = false;
-            }
-            if (globals.dynamicSimMaterialsChanged){
-                updateMaterials();
-                globals.dynamicSimMaterialsChanged = false;
-            }
         }
 
         var gpuMath = globals.gpuMath;
@@ -91,57 +93,6 @@ function initDynamicModel(globals){
 
         gpuMath.swapTextures("u_velocity", "u_lastVelocity");
         gpuMath.swapTextures("u_position", "u_lastPosition");
-
-
-        //for (var i=0;i<nodes.length;i++){
-        //    var rgbaIndex = i*4;
-        //
-        //    if (mass[rgbaIndex+1] == 1) continue;
-        //    var force = new THREE.Vector3(externalForces[rgbaIndex], externalForces[rgbaIndex+1], externalForces[rgbaIndex+2]);
-        //    var nodePosition = new THREE.Vector3(lastPosition[rgbaIndex], lastPosition[rgbaIndex+1], lastPosition[rgbaIndex+2]);
-        //    var nodeVelocity = new THREE.Vector3(lastVelocity[rgbaIndex], lastVelocity[rgbaIndex+1], lastVelocity[rgbaIndex+2]);
-        //    var nodeOrigPosition = new THREE.Vector3(originalPosition[rgbaIndex], originalPosition[rgbaIndex+1], originalPosition[rgbaIndex+2]);
-        //
-        //    for (var j=0;j<4;j++){
-        //        var neighborIndex = meta[rgbaIndex+j]*4;
-        //        if (neighborIndex<0){
-        //            //no beam
-        //            continue;
-        //        }
-        //        var neighborPosition = new THREE.Vector3(lastPosition[neighborIndex], lastPosition[neighborIndex+1], lastPosition[neighborIndex+2]);
-        //        var neighborVelocity = new THREE.Vector3(lastVelocity[neighborIndex], lastVelocity[neighborIndex+1], lastVelocity[neighborIndex+2]);
-        //        var neighborOrigPosition = new THREE.Vector3(originalPosition[neighborIndex], originalPosition[neighborIndex+1], originalPosition[neighborIndex+2]);
-        //
-        //        var nominalDist = neighborOrigPosition.sub(nodeOrigPosition);
-        //        var deltaP = neighborPosition.sub(nodePosition).add(nominalDist);
-        //        deltaP.sub(deltaP.clone().normalize().multiplyScalar(nominalDist.length()));
-        //        var deltaV = neighborVelocity.sub(nodeVelocity);
-        //        var _force = deltaP.multiplyScalar(beamK[rgbaIndex+j]).add(deltaV.multiplyScalar(beamD[rgbaIndex+j]));
-        //        force.add(_force);
-        //    }
-        //
-        //    //euler integration
-        //    var _mass = mass[rgbaIndex];
-        //
-        //    nodeVelocity = force.multiplyScalar(dt/_mass).add(nodeVelocity);
-        //    velocity[rgbaIndex] = nodeVelocity.x;
-        //    velocity[rgbaIndex+1] = nodeVelocity.y;
-        //    velocity[rgbaIndex+2] = nodeVelocity.z;
-        //
-        //    nodePosition = nodeVelocity.multiplyScalar(dt).add(nodePosition);
-        //    position[rgbaIndex] = nodePosition.x;
-        //    position[rgbaIndex+1] = nodePosition.y;
-        //    position[rgbaIndex+2] = nodePosition.z;
-        //}
-        //
-        //var temp = lastPosition;
-        //lastPosition = position;
-        //position = temp;
-        //
-        //temp = lastVelocity;
-        //lastVelocity = velocity;
-        //velocity = temp;
-
     }
 
     function render(){
@@ -186,12 +137,6 @@ function initDynamicModel(globals){
             }
         }
 
-        //for (var i=0;i<nodes.length;i++){
-        //    var node = nodes[i];
-        //    var rgbaIndex = i*4;
-        //    var nodePosition = new THREE.Vector3(lastPosition[rgbaIndex], lastPosition[rgbaIndex+1], lastPosition[rgbaIndex+2]);
-        //    node.render(nodePosition);
-        //}
         globals.threeView.render();
         globals.gpuMath.setSize(textureDim, textureDim);
     }
@@ -221,6 +166,7 @@ function initDynamicModel(globals){
         globals.gpuMath.setUniformForProgram("velocityCalc", "u_dt", dt, "1f");
         globals.gpuMath.setProgram("positionCalc");
         globals.gpuMath.setUniformForProgram("positionCalc", "u_dt", dt, "1f");
+        return numSteps;
     }
 
     function calcDt(){
@@ -232,7 +178,7 @@ function initDynamicModel(globals){
     }
 
     function initTexturesAndPrograms(gpuMath){
-        gpuMath.reset();
+
         textureDim = calcTextureSize(nodes.length);
 
         var vertexShader = document.getElementById("vertexShader").text;
@@ -247,11 +193,7 @@ function initDynamicModel(globals){
         gpuMath.initFrameBufferForTexture("u_lastVelocity");
 
         gpuMath.initTextureFromData("u_originalPosition", textureDim, textureDim, "FLOAT", originalPosition);
-        gpuMath.initTextureFromData("u_externalForces", textureDim, textureDim, "FLOAT", externalForces);
-        gpuMath.initTextureFromData("u_mass", textureDim, textureDim, "FLOAT", mass);
         gpuMath.initTextureFromData("u_meta", textureDim, textureDim, "FLOAT", meta);
-        globals.gpuMath.initTextureFromData("u_beamK", textureDim, textureDim, "FLOAT", beamK);
-        globals.gpuMath.initTextureFromData("u_beamD", textureDim, textureDim, "FLOAT", beamD);
 
         gpuMath.createProgram("positionCalc", vertexShader, document.getElementById("positionCalcShader").text);
         gpuMath.setUniformForProgram("positionCalc", "u_velocity", 0, "1i");
@@ -275,7 +217,11 @@ function initDynamicModel(globals){
         gpuMath.initFrameBufferForTexture("outputBytes");
         gpuMath.setUniformForProgram("packToBytes", "u_floatTextureDim", [textureDim, textureDim], "2f");
 
+        gpuMath.createProgram("zeroTexture", vertexShader, document.getElementById("zeroTexture").text);
+
         gpuMath.setSize(textureDim, textureDim);
+
+        programsInited = true;
     }
 
     function calcTextureSize(numNodes){
@@ -300,7 +246,7 @@ function initDynamicModel(globals){
         globals.gpuMath.initTextureFromData("u_beamK", textureDim, textureDim, "FLOAT", beamK, true);
         globals.gpuMath.initTextureFromData("u_beamD", textureDim, textureDim, "FLOAT", beamD, true);
         //recalc dt
-        setSolveParams();
+        if (programsInited) setSolveParams();
     }
 
     function updateMaterialAssignments(){
@@ -323,8 +269,10 @@ function initDynamicModel(globals){
 
     function updateFixed(){
         var _fixed = globals.schematic.getFixed();
+        var num = 0;
         for (var i=0;i<_fixed.length;i++){
-                mass[4*i+1] = (_fixed[i] ? 1 : 0);
+            mass[4*i+1] = (_fixed[i] ? 1 : 0);
+            if (_fixed[i]) num++;
         }
         globals.gpuMath.initTextureFromData("u_mass", textureDim, textureDim, "FLOAT", mass, true);
     }
@@ -374,7 +322,6 @@ function initDynamicModel(globals){
     }
 
     return {
-        reset: reset,
         setVisibility: setVisibility,
         getChildren: getChildren,
         updateMaterialAssignments: updateMaterialAssignments,
