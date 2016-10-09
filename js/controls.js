@@ -191,6 +191,13 @@ function initControls(globals){
         //globals.fdmModel.setVisibility(val);//todo add this in
     });
 
+    setSlider("#damping", globals.percentDamping, 0.01, 1, 0.01, function(val){
+        globals.percentDamping = val;
+        globals.dynamicSimMaterialsChanged = true;
+    }, function(){
+        globals.shouldResetDynamicSim = true;
+    });
+
     function setLink(id, callback){
         $(id).click(function(e){
             e.preventDefault();
@@ -232,6 +239,25 @@ function initControls(globals){
             else callback(false);
         });
         $input.prop('checked', state);
+    }
+
+    function setSlider(id, val, min, max, incr, callback, callbackOnStop){
+        var slider = $(id).slider({
+            orientation: 'horizontal',
+            range: false,
+            value: val,
+            min: min,
+            max: max,
+            step: incr
+        });
+        slider.on("slide", function(){
+            var val = slider.slider('value');
+            callback(val);
+        });
+        slider.on("slidestop", function(){
+            var val = slider.slider('value');
+            if (callbackOnStop) callbackOnStop(val);
+        })
     }
 
     function setSliderInput(id, val, min, max, incr, callback){

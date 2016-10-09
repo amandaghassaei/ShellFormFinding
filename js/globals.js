@@ -32,6 +32,7 @@ function initGlobals(){
     _globals.dynamicSimVisible = true;
     _globals.fdmSimVisible = false;
     _globals.dynamicSimMaterialsChanged = false;
+    _globals.percentDamping = 0.5;
 
     function setXResolution(val){
         _globals.xResolution = val;

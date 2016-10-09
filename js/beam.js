@@ -2,7 +2,7 @@
  * Created by ghassaei on 9/16/16.
  */
 
-var beamMaterialHighlight = new THREE.LineBasicMaterial({color: 0xffffdd, linewidth: 4});
+var beamMaterialHighlight = new THREE.LineBasicMaterial({color: 0x0000ff, linewidth: 4});
 
 function Beam(nodes, material){
 
@@ -83,7 +83,7 @@ Beam.prototype.getK = function(){
 };
 
 Beam.prototype.getD = function(){
-    return 2*Math.sqrt(this.getK()*this.getMinMass());
+    return globals.percentDamping*2*Math.sqrt(this.getK()*this.getMinMass());
 };
 
 Beam.prototype.getNaturalFrequency = function(){
