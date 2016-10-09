@@ -91,8 +91,8 @@ Beam.prototype.getNaturalFrequency = function(){
 };
 
 Beam.prototype.getMinMass = function(){
-    var minMass = this.nodes[0].getMass();
-    if (this.nodes[1].getMass()<minMass) minMass = this.nodes[1].getMass();
+    var minMass = this.nodes[0].getSimMass();
+    if (this.nodes[1].getSimMass()<minMass) minMass = this.nodes[1].getSimMass();
     return minMass;
 };
 

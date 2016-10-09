@@ -301,7 +301,7 @@ function initDynamicModel(globals){
             originalPosition[4*index] = origPosition.x;
             originalPosition[4*index+1] = origPosition.y;
             originalPosition[4*index+2] = origPosition.z;
-            mass[4*index] = node.getMass();
+            mass[4*index] = node.getSimMass();
 
             meta[4*index] = -1;
             meta[4*index+1] = -1;

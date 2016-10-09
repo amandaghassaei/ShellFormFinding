@@ -152,6 +152,10 @@ Node.prototype.getVelocity = function(){
     return this.velocity;
 };
 
+Node.prototype.getSimMass = function(){
+    return 1;
+};
+
 
 
 
