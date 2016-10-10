@@ -127,8 +127,10 @@ function initDynamicModel(globals){
                         vals.push(edges[i].getLength());
                     }
                 }
-                var min = _.min(vals);
-                var max = _.max(vals);
+                var allVals = vals.concat(globals.staticModel.getEdgeLengths());
+                var min = _.min(allVals);
+                var max = _.max(allVals);
+                globals.staticModel.setEdgeColors(min, max);
                 for (var i=0;i<edges.length;i++){
                     edges[i].setHSLColor(vals[i], min, max);
                 }

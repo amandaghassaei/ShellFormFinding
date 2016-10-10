@@ -13,6 +13,7 @@ Material.prototype.setVal = function(val){
     if (val === undefined || val === null) return;
     this.val = val;
     globals.dynamicSimMaterialsChanged = true;
+    globals.staticModel.resetQArray();
 };
 
 Material.prototype.setName = function(name){

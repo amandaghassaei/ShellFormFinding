@@ -56,6 +56,14 @@ Beam.prototype.setHSLColor = function(val, max, min){
     this.object3D.material.color.set(color);
 };
 
+Beam.prototype.setThreeMaterial = function(material){
+    this.material = material;
+    this.object3D.material = this.material;
+    this.object3D.geometry.verticesNeedUpdate = true;
+    this.object3D.geometry.computeBoundingSphere();
+    this.object3D.geometry.computeLineDistances();
+};
+
 Beam.prototype.setMaterial = function(material, noRender){
     if (this.beamMaterial == material) {
         this.unhighlight();
@@ -124,9 +132,10 @@ Beam.prototype.getObject3D = function(){
     return this.object3D;
 };
 
-Beam.prototype.updatePosition = function(){
+Beam.prototype.updatePosition = function(shouldComputeLineDistance){
     this.object3D.geometry.verticesNeedUpdate = true;
     this.object3D.geometry.computeBoundingSphere();
+    if (shouldComputeLineDistance) this.object3D.geometry.computeLineDistances();
 };
 
 

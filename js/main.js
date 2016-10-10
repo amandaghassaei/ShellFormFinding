@@ -51,6 +51,8 @@ $(function() {
                 if (needsUpdate){
                     globals.dynamicModel.updateMaterialAssignments();
                     globals.dynamicSimMaterialsChanged = true;
+                    globals.staticModel.updateMaterialAssignments();
+                    globals.staticModel.resetQArray();
                 }
             }
         }
@@ -94,6 +96,7 @@ $(function() {
         if (!isDragging) {
             var objsToIntersect = globals.schematic.getChildren();
             if (globals.dynamicSimVisible && globals.viewMode == "length") objsToIntersect = objsToIntersect.concat(globals.dynamicModel.getChildren());
+            if (globals.staticSimVisible && globals.viewMode == "length") objsToIntersect = objsToIntersect.concat(globals.staticModel.getChildren());
             _highlightedObj = checkForIntersections(e, objsToIntersect);
         }
         if (highlightedObj && (_highlightedObj != highlightedObj)) highlightedObj.unhighlight();
@@ -115,7 +118,7 @@ $(function() {
         }
 
         if (globals.dynamicSimVisible && globals.viewMode == "length"){
-            if (highlightedObj && highlightedObj.type == "dynamicBeam"){
+            if (highlightedObj && (highlightedObj.type == "dynamicBeam" || highlightedObj.type == "staticBeam")){
                 globals.controls.showMoreInfo("Length: " +
                         highlightedObj.getLength().toFixed(2) + " m", e);
             }

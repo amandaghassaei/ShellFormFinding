@@ -157,6 +157,7 @@ function initControls(globals){
             $controls.animate({right:100});
         }
         globals.dynamicModel.setViewMode(val);
+        globals.staticModel.setViewMode(val);
     });
 
     var scaleHTML = "";
@@ -190,7 +191,10 @@ function initControls(globals){
         globals.dynamicSimVisible = val;
         globals.dynamicModel.setVisibility(val);
         if (val) $(".dynamicSim").show();
-        else  $(".dynamicSim").hide();
+        else  {
+            $(".dynamicSim").hide();
+            if (globals.viewMode == "length") globals.staticModel.setEdgeColors();
+        }
     });
     setCheckbox("#static", globals.staticSimVisible, function(val){
         globals.staticSimVisible = val;

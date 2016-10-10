@@ -118,11 +118,11 @@ Node.prototype.hide = function(){
     this.object3D.visible = false;
 };
 
-Node.prototype.render = function(position){
+Node.prototype.render = function(position, shouldComputeLineDistance){
     position.add(this.originalPosition);
     this.object3D.position.set(position.x, position.y, position.z);
     _.each(this.beams, function(beam){
-        beam.updatePosition();
+        beam.updatePosition(shouldComputeLineDistance);
     });
 };
 

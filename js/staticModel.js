@@ -18,12 +18,11 @@ function initStaticModel(globals){
     });
     var edges = geo.edges;
     _.each(edges, function(edge){
-        //edge.setColor(0x8cbaed);
-        edge.setColor(0xABCDEF);
+        edge.setThreeMaterial(new THREE.LineDashedMaterial({color:0x222222, linewidth: 3, gapSize:0.2, dashSize:0.2}));
         edge.type = "staticBeam";
     });
 
-    var arraysData = initArrays();
+    var arraysData = resetArrays();
     var indicesMapping = arraysData.indicesMapping;
     var C = arraysData.C;
     var Cf = arraysData.Cf;
@@ -39,11 +38,57 @@ function initStaticModel(globals){
     var Ctrans_Q_Cf = numeric.dot(Ctrans_Q, Cf);
     var Ctrans_Q_Cf_Yf = numeric.dot(Ctrans_Q_Cf, Yf);
 
-    var Y = numeric.solve(Ctrans_Q_C, numeric.sub(Fy, Ctrans_Q_Cf_Yf));
+    solve();
 
-    render(Y);
+    var edgeLengths = [];
 
-    function initArrays(){
+    function setViewMode(mode){
+        if (mode == "material"){
+            for (var i = 0; i < edges.length; i++) {
+                edges[i].setMaterialColor();
+            }
+        } else if (mode == "length"){
+            edgeLengths = [];
+            if (globals.viewMode == "length"){
+                for (var i=0;i<edges.length;i++){
+                    edgeLengths.push(edges[i].getLength());
+                }
+            }
+            if (!globals.dynamicSimVisible) setEdgeColors();
+        } else if (mode == "none"){
+            for (var i = 0; i < edges.length; i++) {
+                edges[i].setColor(0x222222);
+            }
+        }
+    }
+
+    function setEdgeColors(min, max){
+        if (min === undefined) min = _.min(edgeLengths);
+        if (max === undefined) max = _.max(edgeLengths);
+        for (var i=0;i<edges.length;i++){
+            edges[i].setHSLColor(edgeLengths[i], min, max);
+        }
+        globals.controls.updateScaleBars(min, max);
+    }
+
+    function updateMaterialAssignments(){
+        var _edges = globals.schematic.getEdges();
+        for (var i=0;i<edges.length;i++){
+            edges[i].setMaterial(_edges[i].beamMaterial, true);
+        }
+        if (globals.viewMode == "material") setViewMode("material");
+    }
+
+    function resetQArray(){
+        var _Q = initEmptyArray(edges.length, edges.length);
+        for (var i=0;i<edges.length;i++) {
+            _Q[i][i] = edges[i].getForceDensity();
+        }
+        Q = _Q;
+        solve();
+    }
+
+    function resetArrays(){
         var _indicesMapping = [];
         var _fixedIndicesMapping = [];
 
@@ -104,10 +149,15 @@ function initStaticModel(globals){
         return array;
     }
 
+    function solve(){
+        var Y = numeric.solve(Ctrans_Q_C, numeric.sub(Fy, Ctrans_Q_Cf_Yf));
+        render(Y);
+    }
+
     function render(yVals){
         for (var i=0;i<yVals.length;i++){
             var nodePosition = new THREE.Vector3(0,yVals[i]*10,0);
-            nodes[indicesMapping[i]].render(nodePosition);
+            nodes[indicesMapping[i]].render(nodePosition, true);
         }
     }
 
@@ -115,7 +165,21 @@ function initStaticModel(globals){
         object3D.visible = visible;
     }
 
+    function getChildren(){
+        return object3D.children;
+    }
+
+    function getEdgeLengths(){
+        return edgeLengths.slice();
+    }
+
     return {
-        setVisibility: setVisibility
+        setVisibility: setVisibility,
+        updateMaterialAssignments: updateMaterialAssignments,
+        setViewMode: setViewMode,
+        resetQArray: resetQArray,
+        getChildren: getChildren,
+        getEdgeLengths: getEdgeLengths,
+        setEdgeColors: setEdgeColors
     }
 }
