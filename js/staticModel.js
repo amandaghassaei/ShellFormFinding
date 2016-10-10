@@ -31,7 +31,7 @@ function initStaticModel(globals){
     var Fy = arraysData.Fy;
 
     var Ctranspose = numeric.transpose(C);
-    var Cftranspose = numeric.transpose(Cf);
+    //var Cftranspose = numeric.transpose(Cf);
 
     var Ctrans_Q = numeric.dot(Ctranspose, Q);
     var Ctrans_Q_C = numeric.dot(Ctrans_Q, C);

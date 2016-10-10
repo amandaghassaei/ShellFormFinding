@@ -264,8 +264,8 @@ function initControls(globals){
             max: max,
             step: incr
         });
-        slider.on("slide", function(){
-            var val = slider.slider('value');
+        slider.on("slide", function(e, ui){
+            var val = ui.value;
             callback(val);
         });
         slider.on("slidestop", function(){
@@ -304,8 +304,8 @@ function initControls(globals){
             callback(val);
         });
         $input.val(val);
-        slider.on("slide", function(){
-            var val = slider.slider('value');
+        slider.on("slide", function(e, ui){
+            var val = ui.value;
             $input.val(val);
             callback(val);
         });
