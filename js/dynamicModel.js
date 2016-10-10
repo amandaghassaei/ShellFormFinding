@@ -262,8 +262,9 @@ function initDynamicModel(globals){
     function updateFixed(){
         var _fixed = globals.schematic.getFixed();
         var num = 0;
-        for (var i=0;i<_fixed.length;i++){
+        for (var i=0;i<nodes.length;i++){
             mass[4*i+1] = (_fixed[i] ? 1 : 0);
+            nodes[i].fixed = _fixed[i];
             if (_fixed[i]) num++;
         }
         globals.gpuMath.initTextureFromData("u_mass", textureDim, textureDim, "FLOAT", mass, true);
