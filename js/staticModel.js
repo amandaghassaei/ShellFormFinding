@@ -88,6 +88,15 @@ function initStaticModel(globals){
         solve();
     }
 
+    function resetForceArray(){
+        var _Fy = initEmptyArray(nodes.length);
+        for (var i=0;i<indicesMapping.length;i++){
+            _Fy[i] = nodes[indicesMapping[i]].getExternalForce().y;
+        }
+        Fy = _Fy;
+        solve();
+    }
+
     function resetArrays(){
         var _indicesMapping = [];
         var _fixedIndicesMapping = [];
@@ -180,6 +189,7 @@ function initStaticModel(globals){
         resetQArray: resetQArray,
         getChildren: getChildren,
         getEdgeLengths: getEdgeLengths,
-        setEdgeColors: setEdgeColors
+        setEdgeColors: setEdgeColors,
+        resetForceArray: resetForceArray
     }
 }

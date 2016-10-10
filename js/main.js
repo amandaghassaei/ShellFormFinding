@@ -28,6 +28,7 @@ $(function() {
             globals.controls.editMoreInfo(highlightedObj.getMagnitude().toFixed(2), function(val){
                 highlightedObj.setForce(new THREE.Vector3(0, val, 0));
                 globals.forceHasChanged = true;
+                globals.staticModel.resetForceArray();
             });
         }
     });
@@ -73,6 +74,7 @@ $(function() {
         raycaster.ray.intersectPlane(raycasterPlane, intersection);
         highlightedObj.setForce(new THREE.Vector3(0, intersection.y, 0));
         globals.forceHasChanged = true;
+        globals.staticModel.resetForceArray();
     }
 
     document.addEventListener( 'mousemove', mouseMove, false );
