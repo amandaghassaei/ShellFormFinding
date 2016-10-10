@@ -56,8 +56,10 @@ body{
     position: absolute;
     top:0;
     left:0;
-    width: 420px;
+    /*width: 420px;*/
     padding: 20px 20px 20px 20px;
+    /*max-height: 100%;*/
+    /*overflow: auto;*/
 }
 
 .sliderInput{
@@ -66,7 +68,7 @@ body{
     margin-bottom:15px;
 }
 .sliderContainer{
-    display: inline-block;
+    display: block;
     margin-bottom:15px;
 }
 
