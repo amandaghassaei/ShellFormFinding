@@ -18,7 +18,7 @@ function initStaticModel(globals){
     });
     var edges = geo.edges;
     _.each(edges, function(edge){
-        edge.setThreeMaterial(new THREE.LineDashedMaterial({color:0x222222, linewidth: 3, gapSize:0.2, dashSize:0.2}));
+        edge.setThreeMaterial(new THREE.LineDashedMaterial({color:0x222222, linewidth: 3, gapSize:0.4, dashSize:0.4}));
         edge.type = "staticBeam";
     });
 

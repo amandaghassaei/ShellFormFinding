@@ -127,7 +127,8 @@ function initDynamicModel(globals){
                         vals.push(edges[i].getLength());
                     }
                 }
-                var allVals = vals.concat(globals.staticModel.getEdgeLengths());
+                var allVals = vals;
+                if (globals.staticSimVisible) allVals = vals.concat(globals.staticModel.getEdgeLengths());
                 var min = _.min(allVals);
                 var max = _.max(allVals);
                 globals.staticModel.setEdgeColors(min, max);
