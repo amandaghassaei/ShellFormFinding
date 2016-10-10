@@ -27,7 +27,7 @@ $(function() {
         if (highlightedObj && highlightedObj.getMagnitude){
             globals.controls.editMoreInfo(highlightedObj.getMagnitude().toFixed(2), function(val){
                 highlightedObj.setForce(new THREE.Vector3(0, val, 0));
-                globals.setForceHasChanged();
+                globals.forceHasChanged = true;
             });
         }
     });
@@ -70,7 +70,7 @@ $(function() {
         var intersection = new THREE.Vector3();
         raycaster.ray.intersectPlane(raycasterPlane, intersection);
         highlightedObj.setForce(new THREE.Vector3(0, intersection.y, 0));
-        globals.setForceHasChanged();
+        globals.forceHasChanged = true;
     }
 
     document.addEventListener( 'mousemove', mouseMove, false );
@@ -160,6 +160,7 @@ $(function() {
     globals = initGlobals();
     globals.schematic = initSchematic(globals);
     globals.dynamicModel = initDynamicModel(globals);
+    globals.staticModel = initStaticModel(globals);
     globals.threeView.render();
     globals.threeView.sceneAdd(toolTipFixedNode);
 

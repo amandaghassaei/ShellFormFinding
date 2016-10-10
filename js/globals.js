@@ -6,11 +6,6 @@
 function initGlobals(){
 
     var _globals = {
-        setXResolution: setXResolution,
-        setZResolution: setZResolution,
-        setXLength: setXLength,
-        setZLength: setZLength,
-        setForceHasChanged: setForceHasChanged,
         setMaterial: setMaterial
     };
 
@@ -20,7 +15,7 @@ function initGlobals(){
     _globals.zResolution = 5;
     _globals.xLength = 30;
     _globals.zLength = 30;
-    _globals.planeHeight = 0;
+    _globals.planeHeight = -10;
     _globals.density = 0.01;
     _globals.applySelfWeight = true;
     _globals.forceHasChanged = false;
@@ -33,35 +28,6 @@ function initGlobals(){
     _globals.fdmSimVisible = false;
     _globals.dynamicSimMaterialsChanged = false;
     _globals.percentDamping = 0.5;
-
-    function setXResolution(val){
-        _globals.xResolution = val;
-        schematic.update();
-        _globals.shouldResetDynamicSim = true;
-        _globals.shouldResetFDM = true;
-    }
-    function setZResolution(val){
-        _globals.zResolution = val;
-        schematic.update();
-        _globals.shouldResetDynamicSim = true;
-        _globals.shouldResetFDM = true;
-    }
-    function setXLength(val){
-        _globals.xLength = val;
-        schematic.update();
-        _globals.shouldResetDynamicSim = true;
-        _globals.shouldResetFDM = true;
-    }
-    function setZLength(val){
-        _globals.ZLength = val;
-        schematic.update();
-        _globals.shouldResetDynamicSim = true;
-        _globals.shouldResetFDM = true;
-    }
-
-    function setForceHasChanged(){
-        _globals.forceHasChanged = true;
-    }
 
     function setMaterial(id, val, color, name){
         if (_globals.materials[id]){

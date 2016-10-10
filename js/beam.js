@@ -112,6 +112,10 @@ Beam.prototype.getOtherNode = function(node){
     return this.nodes[0];
 };
 
+Beam.prototype.getForceDensity = function(){
+    return this.beamMaterial.getForceDensity();
+};
+
 
 
 //render
