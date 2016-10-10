@@ -27,8 +27,8 @@ function initStaticModel(globals){
     var C = arraysData.C;
     var Cf = arraysData.Cf;
     var Q = arraysData.Q;
-    var Yf = arraysData.Yf;
-    var Fy = arraysData.Fy;
+    var Xf = arraysData.Xf;
+    var F = arraysData.F;
 
     var Ctranspose = numeric.transpose(C);
     //var Cftranspose = numeric.transpose(Cf);
@@ -36,7 +36,7 @@ function initStaticModel(globals){
     var Ctrans_Q = numeric.dot(Ctranspose, Q);
     var Ctrans_Q_C = numeric.dot(Ctrans_Q, C);
     var Ctrans_Q_Cf = numeric.dot(Ctrans_Q, Cf);
-    var Ctrans_Q_Cf_Yf = numeric.dot(Ctrans_Q_Cf, Yf);
+    var Ctrans_Q_Cf_Xf = numeric.dot(Ctrans_Q_Cf, Xf);
 
     solve();
 
@@ -88,16 +88,16 @@ function initStaticModel(globals){
         Ctrans_Q = numeric.dot(Ctranspose, Q);
         Ctrans_Q_C = numeric.dot(Ctrans_Q, C);
         Ctrans_Q_Cf = numeric.dot(Ctrans_Q, Cf);
-        Ctrans_Q_Cf_Yf = numeric.dot(Ctrans_Q_Cf, Yf);
+        Ctrans_Q_Cf_Xf = numeric.dot(Ctrans_Q_Cf, Xf);
         solve();
     }
 
     function resetForceArray(){
-        var _Fy = initEmptyArray(nodes.length);
+        var _F = initEmptyArray(nodes.length);
         for (var i=0;i<indicesMapping.length;i++){
-            _Fy[i] = nodes[indicesMapping[i]].getExternalForce().y;
+            _F[i] = nodes[indicesMapping[i]].getExternalForce().y;
         }
-        Fy = _Fy;
+        F = _F;
         solve();
     }
 
@@ -113,8 +113,8 @@ function initStaticModel(globals){
         var _C = initEmptyArray(edges.length, _indicesMapping.length);
         var _Cf = initEmptyArray(edges.length, _fixedIndicesMapping.length);
         var _Q = initEmptyArray(edges.length, edges.length);
-        var _Fy = initEmptyArray(nodes.length);
-        var _Yf = initEmptyArray(_fixedIndicesMapping.length);
+        var _F = initEmptyArray(nodes.length);
+        var _Xf = initEmptyArray(_fixedIndicesMapping.length);
 
         for (var i=0;i<edges.length;i++){
             var edge = edges[i];
@@ -127,18 +127,18 @@ function initStaticModel(globals){
         }
 
         for (var i=0;i<_indicesMapping.length;i++){
-            _Fy[i] = nodes[_indicesMapping[i]].getExternalForce().y;
+            _F[i] = nodes[_indicesMapping[i]].getExternalForce().y;
         }
         for (var i=0;i<_fixedIndicesMapping.length;i++){
-            _Yf[i] = nodes[_fixedIndicesMapping[i]].getOriginalPosition().y;
+            _Xf[i] = nodes[_fixedIndicesMapping[i]].getOriginalPosition().y;
         }
 
         return {
             C: _C,
             Cf: _Cf,
             Q: _Q,
-            Fy: _Fy,
-            Yf: _Yf,
+            F: _F,
+            Xf: _Xf,
             indicesMapping: _indicesMapping,
             fixedIndicesMapping: _fixedIndicesMapping
         }
@@ -163,8 +163,8 @@ function initStaticModel(globals){
     }
 
     function solve(){
-        var Y = numeric.solve(Ctrans_Q_C, numeric.sub(Fy, Ctrans_Q_Cf_Yf));
-        render(Y);
+        var X = numeric.solve(Ctrans_Q_C, numeric.sub(F, Ctrans_Q_Cf_Xf));
+        render(X);
     }
 
     function render(yVals){
