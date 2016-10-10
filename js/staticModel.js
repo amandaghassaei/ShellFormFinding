@@ -85,6 +85,10 @@ function initStaticModel(globals){
             _Q[i][i] = edges[i].getForceDensity();
         }
         Q = _Q;
+        Ctrans_Q = numeric.dot(Ctranspose, Q);
+        Ctrans_Q_C = numeric.dot(Ctrans_Q, C);
+        Ctrans_Q_Cf = numeric.dot(Ctrans_Q, Cf);
+        Ctrans_Q_Cf_Yf = numeric.dot(Ctrans_Q_Cf, Yf);
         solve();
     }
 
