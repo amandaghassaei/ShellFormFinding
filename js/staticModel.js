@@ -7,6 +7,7 @@ function initStaticModel(globals){
 
     var object3D = new THREE.Object3D();
     globals.threeView.sceneAdd(object3D);
+    setVisibility(globals.staticSimVisible);
 
     var schematic = globals.schematic;
 
@@ -110,7 +111,11 @@ function initStaticModel(globals){
         }
     }
 
-    return {
+    function setVisibility(visible){
+        object3D.visible = visible;
+    }
 
+    return {
+        setVisibility: setVisibility
     }
 }

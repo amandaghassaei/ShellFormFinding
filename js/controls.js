@@ -192,6 +192,10 @@ function initControls(globals){
         if (val) $(".dynamicSim").show();
         else  $(".dynamicSim").hide();
     });
+    setCheckbox("#static", globals.staticSimVisible, function(val){
+        globals.staticSimVisible = val;
+        globals.staticModel.setVisibility(val);
+    });
     setCheckbox("#fdm", globals.fdmSimVisible, function(val){
         globals.fdmSimVisible = val;
         //globals.fdmModel.setVisibility(val);//todo add this in

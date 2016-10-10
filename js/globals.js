@@ -15,7 +15,7 @@ function initGlobals(){
     _globals.zResolution = 5;
     _globals.xLength = 30;
     _globals.zLength = 30;
-    _globals.planeHeight = -10;
+    _globals.planeHeight = 0;
     _globals.density = 0.01;
     _globals.applySelfWeight = true;
     _globals.forceHasChanged = false;
@@ -25,6 +25,7 @@ function initGlobals(){
     _globals.viewMode = "none";
     _globals.viewModeNeedsUpdate = false;
     _globals.dynamicSimVisible = true;
+    _globals.staticSimVisible = true;
     _globals.fdmSimVisible = false;
     _globals.dynamicSimMaterialsChanged = false;
     _globals.percentDamping = 0.5;
