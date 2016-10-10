@@ -27,8 +27,7 @@ function initSchematic(globals){
             if (globals.applySelfWeight) forces[i].setSelfWeight(node.getSelfWeight());
             else forces[i].setSelfWeight(new THREE.Vector3(0,0,0));
         }
-        globals.forceHasChanged = true;
-        if (globals.staticModel) globals.staticModel.resetForceArray();
+        globals.forceArrayUpdated();
     }
 
     

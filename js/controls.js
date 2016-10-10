@@ -45,7 +45,7 @@ function initControls(globals){
     }
 
     setLink("#resetDynamicSim", function(){
-        globals.shouldResetDynamicSim = true;
+        globals.resetSimFromInitialState();
     });
 
     var colors=[
@@ -145,8 +145,7 @@ function initControls(globals){
     });
 
     setRadio("viewMode", globals.viewMode, function(val){
-        globals.viewMode = val;
-        globals.viewModeNeedsUpdate = true;
+        globals.setViewMode(val);
         var $scaleBars = $("#scaleBars");
         var $controls = $("#controls");
         if (val == "none" || val == "material"){
@@ -200,16 +199,12 @@ function initControls(globals){
         globals.staticSimVisible = val;
         globals.staticModel.setVisibility(val);
     });
-    setCheckbox("#fdm", globals.fdmSimVisible, function(val){
-        globals.fdmSimVisible = val;
-        //globals.fdmModel.setVisibility(val);//todo add this in
-    });
 
     setSlider("#damping", globals.percentDamping, 0.01, 1, 0.01, function(val){
         globals.percentDamping = val;
         globals.dynamicSimMaterialsChanged = true;
     }, function(){
-        globals.shouldResetDynamicSim = true;
+        globals.resetSimFromInitialState();
     });
 
     function setLink(id, callback){

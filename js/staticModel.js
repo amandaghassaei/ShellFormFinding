@@ -22,22 +22,20 @@ function initStaticModel(globals){
         edge.type = "staticBeam";
     });
 
-    var arraysData = resetArrays();
-    var indicesMapping = arraysData.indicesMapping;
-    var C = arraysData.C;
-    var Cf = arraysData.Cf;
-    var Q = arraysData.Q;
-    var Xf = arraysData.Xf;
-    var F = arraysData.F;
+    var indicesMapping;
+    var fixedIndicesMapping;
+    var C;
+    var Cf;
+    var Q;
+    var Xf;
+    var F;
+    var Ctranspose;
+    var Ctrans_Q;
+    var Ctrans_Q_C;
+    var Ctrans_Q_Cf;
+    var Ctrans_Q_Cf_Xf;
 
-    var Ctranspose = numeric.transpose(C);
-    //var Cftranspose = numeric.transpose(Cf);
-
-    var Ctrans_Q = numeric.dot(Ctranspose, Q);
-    var Ctrans_Q_C = numeric.dot(Ctrans_Q, C);
-    var Ctrans_Q_Cf = numeric.dot(Ctrans_Q, Cf);
-    var Ctrans_Q_Cf_Xf = numeric.dot(Ctrans_Q_Cf, Xf);
-
+    resetArrays();
     solve();
 
     var edgeLengths = [];
@@ -133,15 +131,19 @@ function initStaticModel(globals){
             _Xf[i] = nodes[_fixedIndicesMapping[i]].getOriginalPosition().y;
         }
 
-        return {
-            C: _C,
-            Cf: _Cf,
-            Q: _Q,
-            F: _F,
-            Xf: _Xf,
-            indicesMapping: _indicesMapping,
-            fixedIndicesMapping: _fixedIndicesMapping
-        }
+        indicesMapping = _indicesMapping;
+        fixedIndicesMapping = _fixedIndicesMapping;
+        C = _C;
+        Cf = _Cf;
+        Q = _Q;
+        Xf = _Xf;
+        F = _F;
+
+        Ctranspose = numeric.transpose(C);
+        Ctrans_Q = numeric.dot(Ctranspose, Q);
+        Ctrans_Q_C = numeric.dot(Ctrans_Q, C);
+        Ctrans_Q_Cf = numeric.dot(Ctrans_Q, Cf);
+        Ctrans_Q_Cf_Xf = numeric.dot(Ctrans_Q_Cf, Xf);
     }
 
     function initEmptyArray(dim1, dim2, dim3){
