@@ -77,6 +77,15 @@ function initStaticModel(globals){
         if (globals.viewMode == "material") setViewMode("material");
     }
 
+    function updateFixed(){
+        var _fixed = globals.schematic.getFixed();
+        for (var i=0;i<nodes.length;i++){
+            nodes[i].fixed = _fixed[i];
+        }
+        resetArrays();
+        solve()
+    }
+
     function resetQArray(){
         var _Q = initEmptyArray(edges.length, edges.length);
         for (var i=0;i<edges.length;i++) {
@@ -111,7 +120,7 @@ function initStaticModel(globals){
         var _C = initEmptyArray(edges.length, _indicesMapping.length);
         var _Cf = initEmptyArray(edges.length, _fixedIndicesMapping.length);
         var _Q = initEmptyArray(edges.length, edges.length);
-        var _F = initEmptyArray(nodes.length);
+        var _F = initEmptyArray(_indicesMapping.length);
         var _Xf = initEmptyArray(_fixedIndicesMapping.length);
 
         for (var i=0;i<edges.length;i++){
@@ -165,6 +174,12 @@ function initStaticModel(globals){
     }
 
     function solve(){
+        if (fixedIndicesMapping.length == 0){//no boundary conditions
+            var X = initEmptyArray(nodes.length, 3);
+            render(X);
+            console.log("here");
+            return;
+        }
         var X = numeric.solve(Ctrans_Q_C, numeric.sub(F, Ctrans_Q_Cf_Xf));
         render(X);
     }
@@ -173,6 +188,9 @@ function initStaticModel(globals){
         for (var i=0;i<yVals.length;i++){
             var nodePosition = new THREE.Vector3(0,yVals[i]*10,0);
             nodes[indicesMapping[i]].render(nodePosition, true);
+        }
+        for (var i=0;i<fixedIndicesMapping.length;i++){
+            nodes[fixedIndicesMapping[i]].render(new THREE.Vector3(0,0,0));
         }
     }
 
@@ -196,6 +214,7 @@ function initStaticModel(globals){
         getChildren: getChildren,
         getEdgeLengths: getEdgeLengths,
         setEdgeColors: setEdgeColors,
-        resetForceArray: resetForceArray
+        resetForceArray: resetForceArray,
+        updateFixed: updateFixed
     }
 }

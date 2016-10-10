@@ -9,7 +9,8 @@ function initGlobals(){
         setMaterial: setMaterial,
         setViewMode: setViewMode,
         forceArrayUpdated: forceArrayUpdated,
-        resetSimFromInitialState: resetSimFromInitialState
+        resetSimFromInitialState: resetSimFromInitialState,
+        setFixedHasChanged: setFixedHasChanged
     };
 
     _globals.xResolution = 5;
@@ -31,6 +32,7 @@ function initGlobals(){
     _globals.applySelfWeight = true;
     _globals.forceHasChanged = false;
     _globals.addRemoveFixedMode = false;
+    _globals.fixedHasChanged = false;
     _globals.shouldResetDynamicSim = false;
 
     function setMaterial(id, val, color, name){
@@ -54,6 +56,12 @@ function initGlobals(){
 
     function resetSimFromInitialState(){//for dynamic simulation
         _globals.shouldResetDynamicSim = true;
+    }
+
+    function setFixedHasChanged(state){
+        _globals.fixedHasChanged = true;
+        _globals.staticModel.updateFixed();
+        if (state) resetSimFromInitialState();//reset dynamic sim flag
     }
 
     _globals.threeView = initThreeView(_globals);
