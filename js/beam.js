@@ -24,7 +24,7 @@ function Beam(nodes, material){
     if (material === undefined) material = globals.materials.material1;
     this.setMaterial(material);
 
-    this.reset();
+    this.force = null;
 }
 
 Beam.prototype.highlight = function(){
@@ -74,11 +74,6 @@ Beam.prototype.setMaterial = function(material, noRender){
     this.material.color.setStyle(material.color);
     this.unhighlight();
     return true;
-};
-
-Beam.prototype.reset = function(){
-    this.inCompression = false;
-    this.force = null;
 };
 
 Beam.prototype.getLength = function(){
@@ -132,11 +127,12 @@ Beam.prototype.getObject3D = function(){
     return this.object3D;
 };
 
-Beam.prototype.updatePosition = function(shouldComputeLineDistance){
+Beam.prototype.render = function(shouldComputeLineDistance){
     this.object3D.geometry.verticesNeedUpdate = true;
     this.object3D.geometry.computeBoundingSphere();
     if (shouldComputeLineDistance) this.object3D.geometry.computeLineDistances();
 };
+
 
 
 

@@ -16,7 +16,6 @@ function Node(position, index){
     this.index = index;
     position = position.clone();
     this.originalPosition = position.clone();
-    this.velocity = new THREE.Vector3(0,0,0);
 
     this.object3D = new THREE.Mesh(nodeGeo, nodeMaterial);
     this.object3D._myNode = this;
@@ -24,7 +23,8 @@ function Node(position, index){
     this.beams = [];
     this.externalForce = null;
     this.fixed = false;
-    this.reset();
+
+    this.render(new THREE.Vector3(0,0,0));
 }
 
 Node.prototype.setFixed = function(fixed){
@@ -118,22 +118,17 @@ Node.prototype.hide = function(){
     this.object3D.visible = false;
 };
 
-Node.prototype.render = function(position, shouldComputeLineDistance){
+Node.prototype.render = function(position){
     position.add(this.originalPosition);
     this.object3D.position.set(position.x, position.y, position.z);
-    _.each(this.beams, function(beam){
-        beam.updatePosition(shouldComputeLineDistance);
-    });
+    //_.each(this.beams, function(beam){
+    //    beam.updatePosition();
+    //});
 };
 
 
 
 
-
-Node.prototype.reset = function(){
-    this.velocity = new THREE.Vector3(0,0,0);
-    this.render(new THREE.Vector3(0,0,0));
-};
 
 
 
@@ -146,10 +141,6 @@ Node.prototype.getOriginalPosition = function(){
 
 Node.prototype.getPosition = function(){
     return this.object3D.position;
-};
-
-Node.prototype.getVelocity = function(){
-    return this.velocity;
 };
 
 Node.prototype.getSimMass = function(){

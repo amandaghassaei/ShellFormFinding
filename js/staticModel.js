@@ -187,10 +187,13 @@ function initStaticModel(globals){
     function render(yVals){
         for (var i=0;i<yVals.length;i++){
             var nodePosition = new THREE.Vector3(0,yVals[i]*10,0);
-            nodes[indicesMapping[i]].render(nodePosition, true);
+            nodes[indicesMapping[i]].render(nodePosition);
         }
         for (var i=0;i<fixedIndicesMapping.length;i++){
             nodes[fixedIndicesMapping[i]].render(new THREE.Vector3(0,0,0));
+        }
+        for (var i=0;i<edges.length;i++){
+            edges[i].render(true);
         }
     }
 

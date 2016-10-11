@@ -110,6 +110,9 @@ function initDynamicModel(globals){
                 var nodePosition = new THREE.Vector3(parsedPixels[rgbaIndex], parsedPixels[rgbaIndex + 1], parsedPixels[rgbaIndex + 2]);
                 nodes[i].render(nodePosition);
             }
+            for (var i=0;i<edges.length;i++){
+                edges[i].render();
+            }
             //todo do this in shader ?
             if (globals.viewMode == "none") {
                 if (globals.viewModeNeedsUpdate) {
@@ -220,6 +223,7 @@ function initDynamicModel(globals){
         if (numNodes == 1) return 2;
         for (var i=0;i<numNodes;i++){
             if (Math.pow(2, 2*i) >= numNodes){
+                console.log(Math.pow(2, i));
                 return Math.pow(2, i);
             }
         }
