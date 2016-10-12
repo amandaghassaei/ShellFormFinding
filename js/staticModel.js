@@ -192,9 +192,9 @@ function initStaticModel(globals){
 
     function render(X){
         for (var i=0;i<X.length;i++){
-            var nodePosition = new THREE.Vector3(X[i][0],X[i][1]*10,X[i][2]);
+            var nodePosition = new THREE.Vector3(X[i][0],X[i][1],X[i][2]);
             var node = nodes[indicesMapping[i]];
-            node.render(nodePosition.sub(node.originalPosition));
+            node.render(nodePosition.sub(node.getOriginalPosition()));
         }
         for (var i=0;i<fixedIndicesMapping.length;i++){
             nodes[fixedIndicesMapping[i]].render(new THREE.Vector3(0,0,0));
