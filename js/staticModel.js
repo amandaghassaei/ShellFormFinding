@@ -32,6 +32,7 @@ function initStaticModel(globals){
     var Ctranspose;
     var Ctrans_Q;
     var Ctrans_Q_C;
+    var inv_Ctrans_Q_C;
     var Ctrans_Q_Cf;
     var Ctrans_Q_Cf_Xf;
 
@@ -94,15 +95,17 @@ function initStaticModel(globals){
         Q = _Q;
         Ctrans_Q = numeric.dot(Ctranspose, Q);
         Ctrans_Q_C = numeric.dot(Ctrans_Q, C);
+        inv_Ctrans_Q_C = numeric.inv(inv_Ctrans_Q_C);
         Ctrans_Q_Cf = numeric.dot(Ctrans_Q, Cf);
         Ctrans_Q_Cf_Xf = numeric.dot(Ctrans_Q_Cf, Xf);
         solve();
     }
 
     function resetForceArray(){
-        var _F = initEmptyArray(nodes.length);
+        var _F = initEmptyArray(indicesMapping.length);
         for (var i=0;i<indicesMapping.length;i++){
-            _F[i] = nodes[indicesMapping[i]].getExternalForce().y;
+            var force = nodes[indicesMapping[i]].getExternalForce();
+            _F[i] = [force.x, force.y, force.z];
         }
         F = _F;
         solve();
@@ -134,10 +137,12 @@ function initStaticModel(globals){
         }
 
         for (var i=0;i<_indicesMapping.length;i++){
-            _F[i] = nodes[_indicesMapping[i]].getExternalForce().y;
+            var force = nodes[_indicesMapping[i]].getExternalForce();
+            _F[i] = [force.x, force.y, force.z];
         }
         for (var i=0;i<_fixedIndicesMapping.length;i++){
-            _Xf[i] = nodes[_fixedIndicesMapping[i]].getOriginalPosition().y;
+            var position = nodes[_fixedIndicesMapping[i]].getOriginalPosition();
+            _Xf[i] = [position.x, position.y, position.z];
         }
 
         indicesMapping = _indicesMapping;
@@ -151,6 +156,7 @@ function initStaticModel(globals){
         Ctranspose = numeric.transpose(C);
         Ctrans_Q = numeric.dot(Ctranspose, Q);
         Ctrans_Q_C = numeric.dot(Ctrans_Q, C);
+        inv_Ctrans_Q_C = numeric.inv(Ctrans_Q_C);
         Ctrans_Q_Cf = numeric.dot(Ctrans_Q, Cf);
         Ctrans_Q_Cf_Xf = numeric.dot(Ctrans_Q_Cf, Xf);
     }
@@ -177,17 +183,18 @@ function initStaticModel(globals){
         if (fixedIndicesMapping.length == 0){//no boundary conditions
             var X = initEmptyArray(nodes.length, 3);
             render(X);
-            console.log("here");
+            console.warn("no boundary conditions");
             return;
         }
-        var X = numeric.solve(Ctrans_Q_C, numeric.sub(F, Ctrans_Q_Cf_Xf));
+        var X = numeric.dot(inv_Ctrans_Q_C, numeric.sub(F, Ctrans_Q_Cf_Xf));
         render(X);
     }
 
-    function render(yVals){
-        for (var i=0;i<yVals.length;i++){
-            var nodePosition = new THREE.Vector3(0,yVals[i]*10,0);
-            nodes[indicesMapping[i]].render(nodePosition);
+    function render(X){
+        for (var i=0;i<X.length;i++){
+            var nodePosition = new THREE.Vector3(X[i][0],X[i][1]*10,X[i][2]);
+            var node = nodes[indicesMapping[i]];
+            node.render(nodePosition.sub(node.originalPosition));
         }
         for (var i=0;i<fixedIndicesMapping.length;i++){
             nodes[fixedIndicesMapping[i]].render(new THREE.Vector3(0,0,0));
