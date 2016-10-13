@@ -158,7 +158,7 @@ function initSchematic(globals){
         getChildren:getChildren,
         getFixed: getFixed,
         setFixed: setFixed,
-        //getNodes: getNodes,
+        getNodes: getNodes,
         getEdges: getEdges,
         setSelfWeight: setSelfWeight
     }

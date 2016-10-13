@@ -223,7 +223,6 @@ function initDynamicModel(globals){
         if (numNodes == 1) return 2;
         for (var i=0;i<numNodes;i++){
             if (Math.pow(2, 2*i) >= numNodes){
-                console.log(Math.pow(2, i));
                 return Math.pow(2, i);
             }
         }

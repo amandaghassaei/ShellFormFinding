@@ -109,7 +109,6 @@ $(function() {
                 if (highlightedObj) toolTipFixedNode.material.opacity = 1;
                 else toolTipFixedNode.material.opacity = 0.5;
                 toolTipFixedNode.visible = true;
-                nodesPlane.set(nodesPlane.normal, 0);
                 var intersection = new THREE.Vector3();
                 raycaster.ray.intersectPlane(nodesPlane, intersection);
                 toolTipFixedNode.position.set(intersection.x, intersection.y, intersection.z);
@@ -121,6 +120,38 @@ $(function() {
                 globals.controls.showMoreInfo("Length: " +
                         highlightedObj.getLength().toFixed(2) + " m", e);
             }
+        }
+
+        if (!highlightedObj){
+            var intersection = new THREE.Vector3();
+            raycaster.ray.intersectPlane(nodesPlane, intersection);
+            var nodes = globals.schematic.getNodes();
+            var minDist = globals.xLength+globals.zLength;
+            var maxDist = minDist;
+            var minVect = null;
+            var maxVect = null;
+            _.each(nodes, function(node){
+                var position = node.getOriginalPosition();
+                var diff = intersection.clone().sub(position);
+                if (diff.x<0 && diff.z<0){
+                    if (diff.length()<minDist) {
+                        minDist = diff.length();
+                        minVect = position.clone();
+                    }
+                } else if (diff.x>0 && diff.z>0){
+                    if (diff.length()<maxDist) {
+                        maxDist = diff.length();
+                        maxVect = position.clone();
+                    }
+                }
+            });
+            if (minVect && maxVect){
+                globals.highlighter.setPosition(maxVect.clone().add(minVect).multiplyScalar(0.5));
+                globals.highlighter.setScale(maxVect.clone().sub(minVect));
+                globals.highlighter.setVisiblitiy(true);
+            }
+        } else {
+            globals.highlighter.setVisiblitiy(false);
         }
 
     }
@@ -165,5 +196,6 @@ $(function() {
     globals.staticModel = initStaticModel(globals);
     globals.threeView.render();
     globals.threeView.sceneAdd(toolTipFixedNode);
+    globals.highlighter = initHighlighter();
 
 });
