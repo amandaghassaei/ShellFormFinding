@@ -121,7 +121,7 @@ function initSchematic(globals){
         _.each(edges, function(edge){
             var node1Index = edge.nodes[0].getIndex();
             var node2Index = edge.nodes[1].getIndex();
-            _edges.push(new Beam([_nodes[node1Index], _nodes[node2Index]]));
+            _edges.push(new Beam([_nodes[node1Index], _nodes[node2Index]], edge.getMaterial()));
         });
         return {
             nodes: _nodes,
@@ -184,6 +184,7 @@ function initSchematic(globals){
 
     function splitEdge(edge){
         var _nodes = edge.nodes;
+        var material = edge.getMaterial();
         deleteEdge(edge);
         var position1 = _nodes[0].getOriginalPosition();
         var position2 = _nodes[1].getOriginalPosition();
@@ -191,13 +192,13 @@ function initSchematic(globals){
         var node = new Node(position, nodes.length);
         object3D.add(node.getObject3D());
         nodes.push(node);
-        connectNodes(node, _nodes);
+        connectNodes(node, _nodes, material);
         return node;
     }
 
-    function connectNodes(node, _nodes){
+    function connectNodes(node, _nodes, material){
         _.each(_nodes, function(_node){
-            var edge = new Beam([node, _node]);
+            var edge = new Beam([node, _node], material || globals.materials[globals.currentMaterial]);
             edges.push(edge);
             object3D.add(edge.getObject3D());
         });

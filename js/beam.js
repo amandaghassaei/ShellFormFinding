@@ -76,6 +76,10 @@ Beam.prototype.setMaterial = function(material, noRender){
     return true;
 };
 
+Beam.prototype.getMaterial = function(){
+    return this.beamMaterial;
+};
+
 Beam.prototype.getLength = function(){
     return this.vertices[0].clone().sub(this.vertices[1]).length();
 };
