@@ -177,9 +177,14 @@ function initSchematic(globals){
         var node = new Node(middlePosition, nodes.length);
         object3D.add(node.getObject3D());
         nodes.push(node);
+        var force = new Force(new THREE.Vector3(0,0,0), node.getOriginalPosition());
+        object3D.add(force.getObject3D());
+        node.addExternalForce(force);
+        forces.push(force);
         connectNodes(node, _nodes);
         globals.resetSimFromInitialState();
         globals.dynamicModel.copyNodesAndEdges();
+        setSelfWeight();
     }
 
     function splitEdge(edge){
@@ -192,6 +197,10 @@ function initSchematic(globals){
         var node = new Node(position, nodes.length);
         object3D.add(node.getObject3D());
         nodes.push(node);
+        var force = new Force(new THREE.Vector3(0,0,0), node.getOriginalPosition());
+        object3D.add(force.getObject3D());
+        node.addExternalForce(force);
+        forces.push(force);
         connectNodes(node, _nodes, material);
         return node;
     }

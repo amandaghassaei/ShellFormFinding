@@ -82,7 +82,10 @@ $(function() {
     document.addEventListener( 'mousemove', mouseMove, false );
     function mouseMove(e){
 
-        if (mouseDown) isDragging = true;
+        if (mouseDown) {
+            isDragging = true;
+            globals.highlighter.setVisiblitiy(false);
+        }
 
         e.preventDefault();
         globals.controls.hideMoreInfo();
@@ -129,7 +132,7 @@ $(function() {
             }
         }
 
-        if (!globals.addRemoveFixedMode && !highlightedObj){
+        if (!isDragging && !globals.addRemoveFixedMode && !highlightedObj){
             var intersection = new THREE.Vector3();
             raycaster.ray.intersectPlane(nodesPlane, intersection);
             var nodes = globals.schematic.getNodes();

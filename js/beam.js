@@ -143,6 +143,10 @@ Beam.prototype.render = function(shouldComputeLineDistance){
 //deallocate
 
 Beam.prototype.destroy = function(){
+    var self = this;
+    _.each(this.nodes, function(node){
+        node.removeBeam(self);
+    });
     this.vertices = null;
     this.object3D._myBeam = null;
     this.object3D = null;

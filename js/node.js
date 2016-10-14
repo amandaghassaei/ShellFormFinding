@@ -90,6 +90,12 @@ Node.prototype.addBeam = function(beam){
     this.beams.push(beam);
 };
 
+Node.prototype.removeBeam = function(beam){
+    if (this.beams === null) return;
+    var index = this.beams.indexOf(beam);
+    if (index>=0) this.beams.splice(index, 1);
+};
+
 Node.prototype.getBeams = function(){
     return this.beams;
 };
