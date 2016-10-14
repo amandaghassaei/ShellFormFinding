@@ -9,17 +9,39 @@ function initDynamicModel(globals){
 
     var schematic = globals.schematic;
 
-    var geo = schematic.cloneGeo(object3D);
-    var nodes = geo.nodes;
-    _.each(nodes, function(node){
-        node.hide();
-    });
-    var edges = geo.edges;
-    _.each(edges, function(edge){
-        //edge.setColor(0x8cbaed);
-        edge.setColor(0x222222);
-        edge.type = "dynamicBeam";
-    });
+    var nodes;
+    var edges;
+
+    function copyNodesAndEdges(){
+        object3D.children = [];
+        if (nodes){
+            _.each(nodes, function(node){
+                node.destroy();
+            });
+        }
+        if (edges){
+            _.each(edges, function(edge){
+                edge.destroy();
+            });
+        }
+
+        var geo = schematic.cloneGeo(object3D);
+        nodes = geo.nodes;
+        _.each(nodes, function(node){
+            object3D.add(node.getObject3D());
+            node.hide();
+        });
+        edges = geo.edges;
+        _.each(edges, function(edge){
+            //edge.setColor(0x8cbaed);
+            object3D.add(edge.getObject3D());
+            edge.setColor(0x222222);
+            edge.type = "dynamicBeam";
+        });
+        initTypedArrays();
+        initTexturesAndPrograms(globals.gpuMath);
+        steps = parseInt(setSolveParams());
+    }
 
     var originalPosition;
     var position;
@@ -32,10 +54,12 @@ function initDynamicModel(globals){
     var beamK;
     var beamD;
 
+    var steps;
     var programsInited = false;//flag for initial setup
 
     var textureDim = 0;
 
+    copyNodesAndEdges();
     runSolver();
 
     function reset(){
@@ -46,9 +70,6 @@ function initDynamicModel(globals){
     }
 
     function runSolver(){
-        initTypedArrays();
-        initTexturesAndPrograms(globals.gpuMath);
-        var steps = parseInt(setSolveParams());
         globals.threeView.startAnimation(function(){
             if (!globals.dynamicSimVisible) return;
             for (var j=0;j<steps;j++){
@@ -321,6 +342,7 @@ function initDynamicModel(globals){
         setVisibility: setVisibility,
         getChildren: getChildren,
         updateMaterialAssignments: updateMaterialAssignments,
-        setViewMode: setViewMode
+        setViewMode: setViewMode,
+        copyNodesAndEdges: copyNodesAndEdges
     }
 }

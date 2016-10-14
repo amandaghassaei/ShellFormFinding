@@ -112,8 +112,21 @@ function initSchematic(globals){
         };
     }
 
-    function cloneGeo(_object3D){
-        return calcNodesAndEdges(_object3D);
+    function cloneGeo(){
+        var _nodes = [];
+        _.each(nodes, function(node){
+            _nodes.push(node.clone());
+        });
+        var _edges = [];
+        _.each(edges, function(edge){
+            var node1Index = edge.nodes[0].getIndex();
+            var node2Index = edge.nodes[1].getIndex();
+            _edges.push(new Beam([_nodes[node1Index], _nodes[node2Index]]));
+        });
+        return {
+            nodes: _nodes,
+            edges: _edges
+        }
     }
 
     function reset(){
@@ -165,6 +178,8 @@ function initSchematic(globals){
         object3D.add(node.getObject3D());
         nodes.push(node);
         connectNodes(node, _nodes);
+        globals.resetSimFromInitialState();
+        globals.dynamicModel.copyNodesAndEdges();
     }
 
     function splitEdge(edge){
@@ -172,7 +187,6 @@ function initSchematic(globals){
         deleteEdge(edge);
         var position1 = _nodes[0].getOriginalPosition();
         var position2 = _nodes[1].getOriginalPosition();
-
         var position = position1.clone().add(position2).multiplyScalar(0.5);
         var node = new Node(position, nodes.length);
         object3D.add(node.getObject3D());

@@ -51,6 +51,7 @@ Node.prototype.addExternalForce = function(force){
 };
 
 Node.prototype.getExternalForce = function(){
+    if (!this.externalForce) return new THREE.Vector3(0,0,0);
     return this.externalForce.getForce();
 };
 
@@ -148,6 +149,14 @@ Node.prototype.getSimMass = function(){
 };
 
 
+
+
+Node.prototype.clone = function(){
+    var node = new Node(this.getOriginalPosition().clone(), this.getIndex());
+    if (this.fixed) node.setFixed(true);
+    node.addExternalForce(this.externalForce);
+    return node;
+};
 
 
 //deallocate
