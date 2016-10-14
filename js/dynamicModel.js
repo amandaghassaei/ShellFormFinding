@@ -39,8 +39,10 @@ function initDynamicModel(globals){
             edge.type = "dynamicBeam";
         });
         initTypedArrays();
-        initTexturesAndPrograms(globals.gpuMath);
-        steps = parseInt(setSolveParams());
+        if (programsInited) {
+            updateTextures(globals.gpuMath);
+            steps = parseInt(setSolveParams());
+        }
     }
 
     var originalPosition;
@@ -60,6 +62,8 @@ function initDynamicModel(globals){
     var textureDim = 0;
 
     copyNodesAndEdges();
+    initTexturesAndPrograms(globals.gpuMath);
+    steps = parseInt(setSolveParams());
     runSolver();
 
     function reset(){
@@ -193,6 +197,12 @@ function initDynamicModel(globals){
         return (1/(2*Math.PI*maxFreqNat))*0.5;//half of max delta t for good measure
     }
 
+    function updateTextures(gpuMath){
+        reset();
+        gpuMath.initTextureFromData("u_originalPosition", textureDim, textureDim, "FLOAT", originalPosition, true);
+        gpuMath.initTextureFromData("u_meta", textureDim, textureDim, "FLOAT", meta, true);
+    }
+
     function initTexturesAndPrograms(gpuMath){
 
         textureDim = calcTextureSize(nodes.length);
@@ -241,6 +251,7 @@ function initDynamicModel(globals){
     }
 
     function calcTextureSize(numNodes){
+        return 10;
         if (numNodes == 1) return 2;
         for (var i=0;i<numNodes;i++){
             if (Math.pow(2, 2*i) >= numNodes){
