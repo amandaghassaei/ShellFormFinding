@@ -21,6 +21,7 @@ $(function() {
     toolTipFixedNode.visible = false;
     var highlightedObj;
     var isDragging = false;
+    var mouseDown = false;
     var isDraggingArrow = false;
 
     $(document).dblclick(function() {
@@ -55,7 +56,7 @@ $(function() {
                 }
             }
         }
-        isDragging = true;
+        mouseDown = true;
     }, false);
     document.addEventListener('mouseup', function(e){
         if (isDraggingArrow) {
@@ -63,6 +64,10 @@ $(function() {
             globals.threeView.enableControls(true);
         }
         isDragging = false;
+        mouseDown = false;
+
+        globals.highlighter.subDivide();
+
     }, false);
 
     function dragArrow(){
@@ -76,6 +81,8 @@ $(function() {
 
     document.addEventListener( 'mousemove', mouseMove, false );
     function mouseMove(e){
+
+        if (mouseDown) isDragging = true;
 
         e.preventDefault();
         globals.controls.hideMoreInfo();
@@ -122,7 +129,7 @@ $(function() {
             }
         }
 
-        if (!highlightedObj){
+        if (!globals.addRemoveFixedMode && !highlightedObj){
             var intersection = new THREE.Vector3();
             raycaster.ray.intersectPlane(nodesPlane, intersection);
             var nodes = globals.schematic.getNodes();

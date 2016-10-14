@@ -153,6 +153,48 @@ function initSchematic(globals){
 
     }
 
+    function subDivide(subDivEdges, subDivNodes){
+        //min, max, maxmin, minmax
+        var _nodes = [];
+        _.each(subDivEdges, function(edge){
+            _nodes.push(splitEdge(edge));
+        });
+
+        var middlePosition = subDivNodes[0].getOriginalPosition().clone().add(subDivNodes[1].getOriginalPosition()).multiplyScalar(0.5);
+        var node = new Node(middlePosition, nodes.length);
+        object3D.add(node.getObject3D());
+        nodes.push(node);
+        connectNodes(node, _nodes);
+    }
+
+    function splitEdge(edge){
+        var _nodes = edge.nodes;
+        deleteEdge(edge);
+        var position1 = _nodes[0].getOriginalPosition();
+        var position2 = _nodes[1].getOriginalPosition();
+
+        var position = position1.clone().add(position2).multiplyScalar(0.5);
+        var node = new Node(position, nodes.length);
+        object3D.add(node.getObject3D());
+        nodes.push(node);
+        connectNodes(node, _nodes);
+        return node;
+    }
+
+    function connectNodes(node, _nodes){
+        _.each(_nodes, function(_node){
+            var edge = new Beam([node, _node]);
+            edges.push(edge);
+            object3D.add(edge.getObject3D());
+        });
+    }
+
+    function deleteEdge(edge){
+        object3D.remove(edge.object3D);
+        edge.destroy();
+        edges.splice(edges.indexOf(edge), 1);
+    }
+
     return {
         cloneGeo:cloneGeo,
         getChildren:getChildren,
@@ -160,6 +202,7 @@ function initSchematic(globals){
         setFixed: setFixed,
         getNodes: getNodes,
         getEdges: getEdges,
-        setSelfWeight: setSelfWeight
+        setSelfWeight: setSelfWeight,
+        subDivide: subDivide
     }
 }
