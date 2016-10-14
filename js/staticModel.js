@@ -11,16 +11,37 @@ function initStaticModel(globals){
 
     var schematic = globals.schematic;
 
-    var geo = schematic.cloneGeo(object3D);
-    var nodes = geo.nodes;
-    _.each(nodes, function(node){
-        node.hide();
-    });
-    var edges = geo.edges;
-    _.each(edges, function(edge){
-        edge.setThreeMaterial(new THREE.LineDashedMaterial({color:0x222222, linewidth: 3, gapSize:0.4, dashSize:0.4}));
-        edge.type = "staticBeam";
-    });
+    var nodes;
+    var edges;
+
+    function copyNodesAndEdges(){
+        object3D.children = [];
+        if (nodes){
+            _.each(nodes, function(node){
+                node.destroy();
+            });
+        }
+        if (edges){
+            _.each(edges, function(edge){
+                edge.destroy();
+            });
+        }
+
+        var geo = schematic.cloneGeo(object3D);
+        nodes = geo.nodes;
+        _.each(nodes, function(node){
+            //object3D.add(node.getObject3D());
+            node.hide();
+        });
+        edges = geo.edges;
+        _.each(edges, function(edge){
+            object3D.add(edge.getObject3D());
+            edge.setThreeMaterial(new THREE.LineDashedMaterial({color:0x222222, linewidth: 3, gapSize:0.4, dashSize:0.4}));
+            edge.type = "staticBeam";
+        });
+        resetArrays();
+        solve();
+    }
 
     var indicesMapping;
     var fixedIndicesMapping;
@@ -36,10 +57,9 @@ function initStaticModel(globals){
     var Ctrans_Q_Cf;
     var Ctrans_Q_Cf_Xf;
 
-    resetArrays();
-    solve();
-
     var edgeLengths = [];
+
+    copyNodesAndEdges();
 
     function setViewMode(mode){
         if (mode == "material"){
@@ -225,6 +245,7 @@ function initStaticModel(globals){
         getEdgeLengths: getEdgeLengths,
         setEdgeColors: setEdgeColors,
         resetForceArray: resetForceArray,
-        updateFixed: updateFixed
+        updateFixed: updateFixed,
+        copyNodesAndEdges: copyNodesAndEdges
     }
 }

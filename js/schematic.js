@@ -184,6 +184,7 @@ function initSchematic(globals){
         connectNodes(node, _nodes);
         globals.resetSimFromInitialState();
         globals.dynamicModel.copyNodesAndEdges();
+        globals.staticModel.copyNodesAndEdges();
         setSelfWeight();
     }
 
