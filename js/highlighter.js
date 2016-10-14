@@ -71,8 +71,25 @@ function initHighlighter(){
             }
         });
 
-        if (subDivEdges.length<4) return;
-        globals.schematic.subDivide(subDivEdges, subDivNodes, indices);
+        if (subDivEdges.length<4) {
+
+            var existingNodes = [];
+            for (var i=0;i<4;i++) {
+                var vertex = object3D.position.clone();
+                if (i == 0) vertex.x += scale.x;
+                else if (i == 1) vertex.x -= scale.x;
+                else if (i == 2) vertex.y += scale.y;
+                else if (i == 3) vertex.y -= scale.y;
+                _.each(nodes, function (node) {
+                    var position = node.getOriginalPosition();
+                    var dist = vertex.clone().sub(position).length();
+                    if (dist < 0.001) {
+                        existingNodes.push(node);
+                    }
+                });
+            }
+        }
+        globals.schematic.subDivide(subDivEdges, subDivNodes, existingNodes);
         this.setVisiblitiy(false);
     }
 

@@ -166,7 +166,7 @@ function initSchematic(globals){
 
     }
 
-    function subDivide(subDivEdges, subDivNodes){
+    function subDivide(subDivEdges, subDivNodes, existingNodes){
         //min, max, maxmin, minmax
         var _nodes = [];
         _.each(subDivEdges, function(edge){
@@ -182,6 +182,7 @@ function initSchematic(globals){
         node.addExternalForce(force);
         forces.push(force);
         connectNodes(node, _nodes);
+        if (existingNodes) connectNodes(node, existingNodes);
         globals.resetSimFromInitialState();
         globals.dynamicModel.copyNodesAndEdges();
         globals.staticModel.copyNodesAndEdges();

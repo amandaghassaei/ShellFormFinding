@@ -38,7 +38,7 @@ Beam.prototype.highlight = function(){
 };
 
 Beam.prototype.unhighlight = function(){
-    this.object3D.material = this.material;
+    if (this.material) this.object3D.material = this.material;
 };
 
 Beam.prototype.setColor = function(hex){

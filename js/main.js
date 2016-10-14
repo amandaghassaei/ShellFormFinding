@@ -138,8 +138,12 @@ $(function() {
             var nodes = globals.schematic.getNodes();
             var minDist = globals.xLength+globals.zLength;
             var maxDist = minDist;
+            var minMaxDist = minDist;
+            var maxMinDist = maxDist;
             var minVect = null;
             var maxVect = null;
+            var minMaxVect = null;
+            var maxMinVect = null;
             _.each(nodes, function(node){
                 var position = node.getOriginalPosition();
                 var diff = intersection.clone().sub(position);
@@ -153,15 +157,27 @@ $(function() {
                         maxDist = diff.length();
                         maxVect = position.clone();
                     }
+                } else if (diff.x>0 && diff.z<0){
+                    if (diff.length()<maxMinDist) {
+                        maxMinDist = diff.length();
+                        maxMinVect = position.clone();
+                    }
+                } else if (diff.x<0 && diff.z>0){
+                    if (diff.length()<minMaxDist) {
+                        minMaxDist = diff.length();
+                        minMaxVect = position.clone();
+                    }
                 }
             });
-            if (minVect && maxVect){
+            if (minVect && maxVect && minMaxVect && maxMinVect){
+                minVect = new THREE.Vector3(Math.max(minVect.x, minMaxVect.x), 0, Math.max(minVect.z, maxMinVect.z));
+                maxVect = new THREE.Vector3(Math.min(maxVect.x, maxMinVect.x), 0, Math.min(maxVect.z, minMaxVect.z));
                 globals.highlighter.setPosition(maxVect.clone().add(minVect).multiplyScalar(0.5));
                 globals.highlighter.setScale(maxVect.clone().sub(minVect));
                 globals.highlighter.setVisiblitiy(true);
+            } else {
+                globals.highlighter.setVisiblitiy(false);
             }
-        } else {
-            globals.highlighter.setVisiblitiy(false);
         }
 
     }
