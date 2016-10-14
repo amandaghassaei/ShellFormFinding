@@ -78,8 +78,8 @@ function initHighlighter(){
                 var vertex = object3D.position.clone();
                 if (i == 0) vertex.x += scale.x;
                 else if (i == 1) vertex.x -= scale.x;
-                else if (i == 2) vertex.y += scale.y;
-                else if (i == 3) vertex.y -= scale.y;
+                else if (i == 2) vertex.z += scale.z;
+                else if (i == 3) vertex.z -= scale.z;
                 _.each(nodes, function (node) {
                     var position = node.getOriginalPosition();
                     var dist = vertex.clone().sub(position).length();
@@ -93,10 +93,94 @@ function initHighlighter(){
         this.setVisiblitiy(false);
     }
 
+    function findBoundingNodes(intersection){
+        var minDist = globals.xLength+globals.zLength;
+        var maxDist = minDist;
+        var minMaxDist = minDist;
+        var maxMinDist = maxDist;
+        var minVect = null;
+        var maxVect = null;
+        var minMaxVect = null;
+        var maxMinVect = null;
+        _.each(nodes, function(node){
+            var position = node.getOriginalPosition();
+            var diff = intersection.clone().sub(position);
+            var length = diff.length();
+            if (diff.x<0 && diff.z<0){
+                if (length<minDist) {
+                    minDist = length;
+                    minVect = position.clone();
+                }
+            } else if (diff.x>0 && diff.z>0){
+                if (length<maxDist) {
+                    maxDist = length;
+                    maxVect = position.clone();
+                }
+            } else if (diff.x>0 && diff.z<0){
+                if (length<maxMinDist) {
+                    maxMinDist = length;
+                    maxMinVect = position.clone();
+                }
+            } else if (diff.x<0 && diff.z>0){
+                if (length<minMaxDist) {
+                    minMaxDist = length;
+                    minMaxVect = position.clone();
+                }
+            }
+        });
+    }
+
+    function highlight(intersection){
+        var nodes = globals.schematic.getNodes();
+        var minDist = globals.xLength+globals.zLength;
+        var maxDist = minDist;
+        var minMaxDist = minDist;
+        var maxMinDist = maxDist;
+        var minVect = null;
+        var maxVect = null;
+        var minMaxVect = null;
+        var maxMinVect = null;
+        _.each(nodes, function(node){
+            var position = node.getOriginalPosition();
+            var diff = intersection.clone().sub(position);
+            if (diff.x<0 && diff.z<0){
+                if (diff.length()<minDist) {
+                    minDist = diff.length();
+                    minVect = position.clone();
+                }
+            } else if (diff.x>0 && diff.z>0){
+                if (diff.length()<maxDist) {
+                    maxDist = diff.length();
+                    maxVect = position.clone();
+                }
+            } else if (diff.x>0 && diff.z<0){
+                if (diff.length()<maxMinDist) {
+                    maxMinDist = diff.length();
+                    maxMinVect = position.clone();
+                }
+            } else if (diff.x<0 && diff.z>0){
+                if (diff.length()<minMaxDist) {
+                    minMaxDist = diff.length();
+                    minMaxVect = position.clone();
+                }
+            }
+        });
+        if (minVect && maxVect && minMaxVect && maxMinVect){
+            minVect = new THREE.Vector3(Math.max(minVect.x, minMaxVect.x), 0, Math.max(minVect.z, maxMinVect.z));
+            maxVect = new THREE.Vector3(Math.min(maxVect.x, maxMinVect.x), 0, Math.min(maxVect.z, minMaxVect.z));
+            globals.highlighter.setPosition(maxVect.clone().add(minVect).multiplyScalar(0.5));
+            globals.highlighter.setScale(maxVect.clone().sub(minVect));
+            globals.highlighter.setVisiblitiy(true);
+        } else {
+            globals.highlighter.setVisiblitiy(false);
+        }
+    }
+
     return {
         setVisiblitiy: setVisiblitiy,
         setPosition: setPosition,
         setScale: setScale,
-        subDivide: subDivide
+        subDivide: subDivide,
+        highlight: highlight
     }
 }
