@@ -15,7 +15,8 @@ function Node(position, index){
 
     this.index = index;
     position = position.clone();
-    this.originalPosition = position.clone();
+    this._originalPosition = position.clone();
+    this.updateOriginalPosition(globals.xLength, globals.zLength);
 
     this.object3D = new THREE.Mesh(nodeGeo, nodeMaterial);
     this.object3D._myNode = this;
@@ -48,6 +49,7 @@ Node.prototype.setFixed = function(fixed){
 
 Node.prototype.addExternalForce = function(force){
     this.externalForce = force;
+    this.externalForce.setOrigin(this.getOriginalPosition());
 };
 
 Node.prototype.getExternalForce = function(){
@@ -126,7 +128,7 @@ Node.prototype.hide = function(){
 };
 
 Node.prototype.render = function(position){
-    position.add(this.originalPosition);
+    position.add(this.getOriginalPosition());
     this.object3D.position.set(position.x, position.y, position.z);
     //_.each(this.beams, function(beam){
     //    beam.updatePosition();
@@ -144,6 +146,14 @@ Node.prototype.render = function(position){
 
 Node.prototype.getOriginalPosition = function(){
     return this.originalPosition;
+};
+
+Node.prototype.updateOriginalPosition = function(xLength, zLength){
+    var originalPosition = this._originalPosition.clone();
+    originalPosition.x *= xLength;
+    originalPosition.z *= zLength;
+    this.originalPosition = originalPosition;
+    if (this.externalForce) this.externalForce.setOrigin(this.getOriginalPosition());
 };
 
 Node.prototype.getPosition = function(){

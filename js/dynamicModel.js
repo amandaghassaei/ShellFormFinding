@@ -252,7 +252,7 @@ function initDynamicModel(globals){
     }
 
     function calcTextureSize(numNodes){
-        //return 10;
+        return 50;
         if (numNodes == 1) return 2;
         for (var i=0;i<numNodes;i++){
             if (Math.pow(2, 2*i) >= numNodes){

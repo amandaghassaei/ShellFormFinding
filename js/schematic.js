@@ -12,13 +12,13 @@ function initSchematic(globals){
     var baseplane = new THREE.Mesh(new THREE.BoxGeometry(1, 0.01, 1), new THREE.MeshBasicMaterial({color: 0xffffff, transparent:true, opacity:0.75}));
     baseplane.position.y = -0.015;
     globals.threeView.sceneAdd(baseplane);
-    baseplane.scale.set(globals.xLength, 1, globals.zLength);
 
     var fixed = initFixed();
     var forces = initForces();
     var geo = calcNodesAndEdges(object3D);
     var nodes = geo.nodes;
     var edges = geo.edges;
+    setScale(globals.xLength, globals.zLength);
     setSelfWeight();
 
     function setSelfWeight(){
@@ -54,15 +54,11 @@ function initSchematic(globals){
     function initForces(){
         var xResolution = globals.xResolution;
         var zResolution = globals.zResolution;
-        var xLength = globals.xLength;
-        var zLength = globals.zLength;
 
         var _forces = [];
         for (var i=0;i<xResolution;i++){
             for (var j=0;j<zResolution;j++){
-                var x = i/(xResolution-1)*xLength-xLength/2;
-                var z = j/(zResolution-1)*zLength-zLength/2;
-                var force = new Force(new THREE.Vector3(0,0,0), new THREE.Vector3(x, 0, z));
+                var force = new Force(new THREE.Vector3(0,0,0));
                 object3D.add(force.getObject3D());
                 _forces.push(force);
             }
@@ -73,16 +69,14 @@ function initSchematic(globals){
     function calcNodesAndEdges(_object3D){
         var xResolution = globals.xResolution;
         var zResolution = globals.zResolution;
-        var xLength = globals.xLength;
-        var zLength = globals.zLength;
 
         var _nodes = [];
         var _edges = [];
 
         for (var i=0;i<xResolution;i++){
             for (var j=0;j<zResolution;j++){
-                var x = i/(xResolution-1)*xLength-xLength/2;
-                var z = j/(zResolution-1)*zLength-zLength/2;
+                var x = i/(xResolution-1)-1/2;
+                var z = j/(zResolution-1)-1/2;
                 var index = zResolution*i+j;
                 var node = new Node(new THREE.Vector3(x, 0, z), index);
                 if (fixed[index]) node.setFixed(true);
@@ -157,13 +151,15 @@ function initSchematic(globals){
         return edges;
     }
 
-    function update(){
-        var xResolution = globals.xResolution;
-        var zResolution = globals.zResolution;
-        var xLength = globals.xLength;
-        var zLength = globals.zLength;
+    function setScale(xLength, zLength){
         baseplane.scale.set(xLength, 1, zLength);
-
+        _.each(nodes, function(node){
+            node.updateOriginalPosition(xLength, zLength);
+            node.render(new THREE.Vector3(0,0,0));
+        });
+        _.each(edges, function(edge){
+            edge.render();
+        });
     }
 
     function subDivide(subDivEdges, subDivNodes, existingNodes){
@@ -177,7 +173,7 @@ function initSchematic(globals){
         var node = new Node(middlePosition, nodes.length);
         object3D.add(node.getObject3D());
         nodes.push(node);
-        var force = new Force(new THREE.Vector3(0,0,0), node.getOriginalPosition());
+        var force = new Force(new THREE.Vector3(0,0,0));
         object3D.add(force.getObject3D());
         node.addExternalForce(force);
         forces.push(force);
@@ -199,7 +195,7 @@ function initSchematic(globals){
         var node = new Node(position, nodes.length);
         object3D.add(node.getObject3D());
         nodes.push(node);
-        var force = new Force(new THREE.Vector3(0,0,0), node.getOriginalPosition());
+        var force = new Force(new THREE.Vector3(0,0,0));
         object3D.add(force.getObject3D());
         node.addExternalForce(force);
         forces.push(force);
@@ -229,6 +225,7 @@ function initSchematic(globals){
         getNodes: getNodes,
         getEdges: getEdges,
         setSelfWeight: setSelfWeight,
-        subDivide: subDivide
+        subDivide: subDivide,
+        setScale: setScale
     }
 }

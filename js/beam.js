@@ -89,7 +89,7 @@ Beam.prototype.getVector = function(){
 };
 
 Beam.prototype.getNominalLength = function(){
-    return this.nodes[0].originalPosition.clone().sub(this.nodes[1].originalPosition).length();
+    return this.nodes[0].getOriginalPosition().clone().sub(this.nodes[1].getOriginalPosition()).length();
 };
 
 

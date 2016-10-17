@@ -135,6 +135,14 @@ function initControls(globals){
         globals.density = val;
         globals.schematic.setSelfWeight();
     });
+    setSliderInput("#width", globals.xLength, 1, 100, 0.1, function(val){
+        globals.xLength = val;
+        globals.schematic.setScale(globals.xLength, globals.zLength);
+    });
+    setSliderInput("#length", globals.zLength, 1, 100, 0.1, function(val){
+        globals.zLength = val;
+        globals.schematic.setScale(globals.xLength, globals.zLength);
+    });
 
     setCheckbox("#selfWeight", globals.applySelfWeight, function(val){
         var $density = $("#density");

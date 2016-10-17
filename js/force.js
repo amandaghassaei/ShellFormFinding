@@ -5,11 +5,11 @@
 //0xb67df0
 //0x7700f1
 
-function Force(force, origin, selfWeight){
+function Force(force, selfWeight){
     this.force = force;
     if (selfWeight === undefined) selfWeight = new THREE.Vector3(0,0,0);
     this.selfWeight = selfWeight.clone();
-    this.arrow = new THREE.ArrowHelper(this.getDirection(), origin,this.getLength(), 0x999999);
+    this.arrow = new THREE.ArrowHelper(this.getDirection(), new THREE.Vector3(), this.getLength(), 0x999999);
     this.arrow.line.material.linewidth = 4;
     this.update();
     this.arrow.cone._myForce = this;
@@ -22,6 +22,10 @@ Force.prototype.getObject3D = function(){
 Force.prototype.setForce = function(force){
     this.force = force.sub(this.selfWeight);
     this.update();
+};
+
+Force.prototype.setOrigin = function(origin){
+    this.arrow.position.set(origin.x, origin.y, origin.z);
 };
 
 Force.prototype.setSelfWeight = function(selfWeight){
