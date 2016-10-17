@@ -67,18 +67,23 @@ function initStaticModel(globals){
                 edges[i].setMaterialColor();
             }
         } else if (mode == "length"){
-            edgeLengths = [];
-            if (globals.viewMode == "length"){
-                for (var i=0;i<edges.length;i++){
-                    edgeLengths.push(edges[i].getLength());
-                }
-            }
-            if (!globals.dynamicSimVisible) setEdgeColors();
+            calcEdgeLengths();
         } else if (mode == "none"){
             for (var i = 0; i < edges.length; i++) {
                 edges[i].setColor(0x222222);
             }
         }
+    }
+
+    function calcEdgeLengths(){
+        var _edgeLengths = [];
+        if (globals.viewMode == "length"){
+            for (var i=0;i<edges.length;i++){
+                _edgeLengths.push(edges[i].getLength());
+            }
+        }
+        edgeLengths = _edgeLengths;
+        if (!globals.dynamicSimVisible) setEdgeColors();
     }
 
     function setEdgeColors(min, max){
@@ -115,7 +120,7 @@ function initStaticModel(globals){
         Q = _Q;
         Ctrans_Q = numeric.dot(Ctranspose, Q);
         Ctrans_Q_C = numeric.dot(Ctrans_Q, C);
-        inv_Ctrans_Q_C = numeric.inv(inv_Ctrans_Q_C);
+        inv_Ctrans_Q_C = numeric.inv(Ctrans_Q_C);
         Ctrans_Q_Cf = numeric.dot(Ctrans_Q, Cf);
         Ctrans_Q_Cf_Xf = numeric.dot(Ctrans_Q_Cf, Xf);
         solve();
@@ -221,6 +226,9 @@ function initStaticModel(globals){
         }
         for (var i=0;i<edges.length;i++){
             edges[i].render(true);
+        }
+        if (globals.viewMode == "length") {
+            calcEdgeLengths();
         }
     }
 
