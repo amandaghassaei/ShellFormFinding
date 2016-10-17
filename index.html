@@ -144,7 +144,7 @@
 
                 vec3 nominalDist = neighborOriginalPosition-originalPosition;
                 vec3 deltaP = neighborLastPosition-lastPosition+nominalDist;
-                deltaP -= normalize(deltaP)*length(nominalDist);
+//                deltaP -= normalize(deltaP)*length(nominalDist);
                 vec3 deltaV = neighborLastVelocity-lastVelocity;
 
                 vec3 _force = deltaP*beamKs[j] + deltaV*beamDs[j];
