@@ -306,6 +306,23 @@ function initDynamicModel(globals){
         globals.gpuMath.initTextureFromData("u_mass", textureDim, textureDim, "FLOAT", mass, true);
     }
 
+    function updateOriginalPosition(){
+        for (var i=0;i<nodes.length;i++){
+            var origPosition = nodes[i].getOriginalPosition();
+            originalPosition[4*i] = origPosition.x;
+            originalPosition[4*i+1] = origPosition.y;
+            originalPosition[4*i+2] = origPosition.z;
+        }
+        globals.gpuMath.initTextureFromData("u_originalPosition", textureDim, textureDim, "FLOAT", originalPosition, true);
+    }
+
+    function setScale(xLength, zLength){
+        _.each(nodes, function(node){
+            node.updateOriginalPosition(xLength, zLength);
+        });
+        updateOriginalPosition();
+    }
+
     function initTypedArrays(){
 
         textureDim = calcTextureSize(nodes.length);
@@ -326,10 +343,10 @@ function initDynamicModel(globals){
         }
 
         _.each(nodes, function(node, index){
-            var origPosition = node.getOriginalPosition();
-            originalPosition[4*index] = origPosition.x;
-            originalPosition[4*index+1] = origPosition.y;
-            originalPosition[4*index+2] = origPosition.z;
+            //var origPosition = node.getOriginalPosition();
+            //originalPosition[4*index] = origPosition.x;
+            //originalPosition[4*index+1] = origPosition.y;
+            //originalPosition[4*index+2] = origPosition.z;
             mass[4*index] = node.getSimMass();
 
             meta[4*index] = -1;
@@ -341,6 +358,7 @@ function initDynamicModel(globals){
             });
         });
 
+        updateOriginalPosition();
         updateMaterials();
         updateExternalForces();
         updateFixed();
@@ -355,6 +373,7 @@ function initDynamicModel(globals){
         getChildren: getChildren,
         updateMaterialAssignments: updateMaterialAssignments,
         setViewMode: setViewMode,
-        copyNodesAndEdges: copyNodesAndEdges
+        copyNodesAndEdges: copyNodesAndEdges,
+        setScale: setScale
     }
 }

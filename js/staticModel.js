@@ -186,6 +186,17 @@ function initStaticModel(globals){
         Ctrans_Q_Cf_Xf = numeric.dot(Ctrans_Q_Cf, Xf);
     }
 
+    function updateFixed(){
+        var _Xf = initEmptyArray(fixedIndicesMapping.length);
+        for (var i=0;i<fixedIndicesMapping.length;i++){
+            var position = nodes[fixedIndicesMapping[i]].getOriginalPosition();
+            _Xf[i] = [position.x, position.y, position.z];
+        }
+        Xf = _Xf;
+        Ctrans_Q_Cf_Xf = numeric.dot(Ctrans_Q_Cf, Xf);
+        solve();
+    }
+
     function initEmptyArray(dim1, dim2, dim3){
         if (dim2 === undefined) dim2 = 0;
         if (dim3 === undefined) dim3 = 0;
@@ -236,6 +247,13 @@ function initStaticModel(globals){
         }
     }
 
+    function setScale(xLength, zLength){
+        _.each(nodes, function(node){
+            node.updateOriginalPosition(xLength, zLength);
+        });
+        updateFixed();
+    }
+
     function setVisibility(visible){
         object3D.visible = visible;
     }
@@ -258,6 +276,7 @@ function initStaticModel(globals){
         setEdgeColors: setEdgeColors,
         resetForceArray: resetForceArray,
         updateFixed: updateFixed,
-        copyNodesAndEdges: copyNodesAndEdges
+        copyNodesAndEdges: copyNodesAndEdges,
+        setScale: setScale
     }
 }

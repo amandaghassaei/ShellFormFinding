@@ -14,7 +14,6 @@ nodeFixedGeo.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0.25, 0) );
 function Node(position, index){
 
     this.index = index;
-    position = position.clone();
     this._originalPosition = position.clone();
     this.updateOriginalPosition(globals.xLength, globals.zLength);
 
@@ -168,7 +167,7 @@ Node.prototype.getSimMass = function(){
 
 
 Node.prototype.clone = function(){
-    var node = new Node(this.getOriginalPosition().clone(), this.getIndex());
+    var node = new Node(this._originalPosition.clone(), this.getIndex());
     if (this.fixed) node.setFixed(true);
     node.addExternalForce(this.externalForce);
     return node;
