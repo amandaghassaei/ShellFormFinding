@@ -229,6 +229,10 @@ function initStaticModel(globals){
         }
         if (globals.viewMode == "length") {
             calcEdgeLengths();
+        } else if (globals.viewMode == "material"){
+            for (var i = 0; i < edges.length; i++) {
+                edges[i].setMaterialColor();
+            }
         }
     }
 

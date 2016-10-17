@@ -43,6 +43,7 @@ function initDynamicModel(globals){
             updateTextures(globals.gpuMath);
             steps = parseInt(setSolveParams());
         }
+        setViewMode(globals.viewMode);
     }
 
     var originalPosition;
@@ -251,7 +252,7 @@ function initDynamicModel(globals){
     }
 
     function calcTextureSize(numNodes){
-        return 10;
+        //return 10;
         if (numNodes == 1) return 2;
         for (var i=0;i<numNodes;i++){
             if (Math.pow(2, 2*i) >= numNodes){
