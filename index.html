@@ -235,13 +235,14 @@
         <input value="" placeholder="" class="form-control int" type="text">
     </div>
     <div class="sliderInput" id="width">
-        <span class="label-slider">Width : </span><div class="flat-slider ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"></div>
+        <span class="label-slider">Width (m) : </span><div class="flat-slider ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"></div>
         <input value="" placeholder="" class="form-control int" type="text">
     </div>
     <div class="sliderInput" id="length">
-        <span class="label-slider">Length : </span><div class="flat-slider ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"></div>
+        <span class="label-slider">Length (m) : </span><div class="flat-slider ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"></div>
         <input value="" placeholder="" class="form-control int" type="text">
     </div>
+    <div id="FLContainer">&Sigma; | F<sub>i</sub> L<sub>i</sub> | = <span id="FL"></span> Nm</div>
     <a href="#" id="addRemoveFixed" class="btn btn-lg btn-default">Add/Remove Fixed Constraint</a>
     <span class="titleSpan">Available Materials:</span>
     <div id="materialTypes" class="indent">
@@ -283,10 +284,10 @@
                 <input name="viewMode" value="length" data-toggle="radio" class="custom-radio" type="radio"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>
                 Edge Length
             </label>
-        <!--<label class="radio">-->
-            <!--<input name="viewMode" value="force" data-toggle="radio" class="custom-radio" type="radio"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>-->
-            <!--Internal Forces-->
-        <!--</label>-->
+        <label class="radio">
+            <input name="viewMode" value="force" data-toggle="radio" class="custom-radio" type="radio"><span class="icons"><span class="icon-unchecked"></span><span class="icon-checked"></span></span>
+            Internal Forces
+        </label>
         </div>
     </div>
     <br/>

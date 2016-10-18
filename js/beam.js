@@ -84,6 +84,10 @@ Beam.prototype.getLength = function(){
     return this.vertices[0].clone().sub(this.vertices[1]).length();
 };
 
+Beam.prototype.getForce = function(){
+    return this.getLength()*this.beamMaterial.getForceDensity();
+};
+
 Beam.prototype.getVector = function(){
     return this.vertices[0].clone().sub(this.vertices[1]);
 };

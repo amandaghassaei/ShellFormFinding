@@ -104,8 +104,8 @@ $(function() {
         var _highlightedObj = null;
         if (!isDragging) {
             var objsToIntersect = globals.schematic.getChildren();
-            if (globals.dynamicSimVisible && globals.viewMode == "length") objsToIntersect = objsToIntersect.concat(globals.dynamicModel.getChildren());
-            if (globals.staticSimVisible && globals.viewMode == "length") objsToIntersect = objsToIntersect.concat(globals.staticModel.getChildren());
+            if (globals.dynamicSimVisible && (globals.viewMode == "length" || globals.viewMode == "force")) objsToIntersect = objsToIntersect.concat(globals.dynamicModel.getChildren());
+            if (globals.staticSimVisible && (globals.viewMode == "length" || globals.viewMode == "force")) objsToIntersect = objsToIntersect.concat(globals.staticModel.getChildren());
             _highlightedObj = checkForIntersections(e, objsToIntersect);
         }
         if (highlightedObj && (_highlightedObj != highlightedObj)) highlightedObj.unhighlight();
@@ -125,10 +125,15 @@ $(function() {
             }
         }
 
-        if (globals.dynamicSimVisible && globals.viewMode == "length"){
+        if (globals.viewMode == "length"){
             if (highlightedObj && (highlightedObj.type == "dynamicBeam" || highlightedObj.type == "staticBeam")){
                 globals.controls.showMoreInfo("Length: " +
                         highlightedObj.getLength().toFixed(2) + " m", e);
+            }
+        } else if (globals.viewMode == "force"){
+            if (highlightedObj && (highlightedObj.type == "dynamicBeam" || highlightedObj.type == "staticBeam")){
+                globals.controls.showMoreInfo("Internal Force: " +
+                        highlightedObj.getForce().toFixed(2) + " N", e);
             }
         }
 

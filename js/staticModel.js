@@ -58,6 +58,7 @@ function initStaticModel(globals){
     var Ctrans_Q_Cf_Xf;
 
     var edgeLengths = [];
+    var edgeForces = [];
 
     copyNodesAndEdges();
 
@@ -68,6 +69,8 @@ function initStaticModel(globals){
             }
         } else if (mode == "length"){
             calcEdgeLengths();
+        } else if (mode == "force") {
+            calcEdgeForces();
         } else if (mode == "none"){
             for (var i = 0; i < edges.length; i++) {
                 edges[i].setColor(0x222222);
@@ -75,22 +78,32 @@ function initStaticModel(globals){
         }
     }
 
+    function calcEdgeForces(){
+        var _edgeForces = [];
+        for (var i=0;i<edges.length;i++){
+            _edgeForces.push(edges[i].getForce());
+        }
+        edgeForces = _edgeForces;
+        if (!globals.dynamicSimVisible) setEdgeColors();
+    }
+
     function calcEdgeLengths(){
         var _edgeLengths = [];
-        if (globals.viewMode == "length"){
-            for (var i=0;i<edges.length;i++){
-                _edgeLengths.push(edges[i].getLength());
-            }
+        for (var i=0;i<edges.length;i++){
+            _edgeLengths.push(edges[i].getLength());
         }
         edgeLengths = _edgeLengths;
         if (!globals.dynamicSimVisible) setEdgeColors();
     }
 
     function setEdgeColors(min, max){
-        if (min === undefined) min = _.min(edgeLengths);
-        if (max === undefined) max = _.max(edgeLengths);
+        var data;
+        if (globals.viewMode == "length") data = edgeLengths;
+        else if (globals.viewMode == "force") data = edgeForces;
+        if (min === undefined) min = _.min(data);
+        if (max === undefined) max = _.max(data);
         for (var i=0;i<edges.length;i++){
-            edges[i].setHSLColor(edgeLengths[i], min, max);
+            edges[i].setHSLColor(data[i], min, max);
         }
         globals.controls.updateScaleBars(min, max);
     }
@@ -238,9 +251,15 @@ function initStaticModel(globals){
         for (var i=0;i<edges.length;i++){
             edges[i].render(true);
         }
-        if (globals.viewMode == "length") {
-            calcEdgeLengths();
-        } else if (globals.viewMode == "material"){
+        calcEdgeLengths();
+        calcEdgeForces();
+        var sumFL = 0;
+        for (var i=0;i<edgeForces.length;i++){
+            sumFL += edgeForces[i]*edgeLengths[i];
+        }
+        $("#FL").html(sumFL.toFixed(2));
+
+        if (globals.viewMode == "material"){
             for (var i = 0; i < edges.length; i++) {
                 edges[i].setMaterialColor();
             }
@@ -266,6 +285,10 @@ function initStaticModel(globals){
         return edgeLengths.slice();
     }
 
+    function getEdgeForces(){
+        return edgeForces.slice();
+    }
+
     return {
         setVisibility: setVisibility,
         updateMaterialAssignments: updateMaterialAssignments,
@@ -273,6 +296,7 @@ function initStaticModel(globals){
         resetQArray: resetQArray,
         getChildren: getChildren,
         getEdgeLengths: getEdgeLengths,
+        getEdgeForces: getEdgeForces,
         setEdgeColors: setEdgeColors,
         resetForceArray: resetForceArray,
         updateFixed: updateFixed,

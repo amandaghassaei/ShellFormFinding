@@ -162,13 +162,22 @@ function initDynamicModel(globals){
                 //edges should already be set
             } else {
                 var vals = [];
+                var allVals;
                 if (globals.viewMode == "length"){
                     for (var i=0;i<edges.length;i++){
                         vals.push(edges[i].getLength());
                     }
+                    allVals = vals;
+                    if (globals.staticSimVisible) allVals = vals.concat(globals.staticModel.getEdgeLengths());
                 }
-                var allVals = vals;
-                if (globals.staticSimVisible) allVals = vals.concat(globals.staticModel.getEdgeLengths());
+                if (globals.viewMode == "force"){
+                    for (var i=0;i<edges.length;i++){
+                        vals.push(edges[i].getForce());
+                    }
+                    allVals = vals;
+                    if (globals.staticSimVisible) allVals = vals.concat(globals.staticModel.getEdgeForces());
+                }
+
                 var min = _.min(allVals);
                 var max = _.max(allVals);
                 globals.staticModel.setEdgeColors(min, max);

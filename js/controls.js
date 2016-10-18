@@ -200,7 +200,7 @@ function initControls(globals){
         if (val) $(".dynamicSim").show();
         else  {
             $(".dynamicSim").hide();
-            if (globals.viewMode == "length") globals.staticModel.setEdgeColors();
+            if (globals.viewMode == "length" || globals.viewMode == "force") globals.staticModel.setEdgeColors();
         }
     });
     setCheckbox("#static", globals.staticSimVisible, function(val){
