@@ -186,6 +186,10 @@ img{
     margin-bottom:20px;
 }
 
+#download{
+    margin-top: 30px;
+}
+
 .colorPicker{
     border-width: 6px;
 }
@@ -277,6 +281,7 @@ img{
 }
 .modal-body{
     padding: 20px 35px;
+    padding-top: 40px;
 }
 
 span.modal-close{

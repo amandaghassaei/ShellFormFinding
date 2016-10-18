@@ -177,7 +177,10 @@ function initHighlighter(){
                 globals.highlighter.setVisiblitiy(true);
             } else {
                 var data = findLoop(minVect);
-                if (data === null) globals.highlighter.setVisiblitiy(false);
+                if (data === null) {
+                    globals.highlighter.setVisiblitiy(false);
+                    console.log("couldn't find loop");
+                }
                 else {
                     minVect = data.minVect;
                     maxVect = data.maxVect;
@@ -201,7 +204,7 @@ function initHighlighter(){
             if (otherNode == node2) connected = true;
             else {
                 var otherVector = otherNode.getOriginalPosition().clone().sub(node1.getOriginalPosition()).normalize();
-                if (otherVector.equals(vector)) intermediate = otherNode;
+                if (otherVector.clone().sub(vector).length()<0.001) intermediate = otherNode;
             }
         });
         if (connected) return true;
@@ -215,12 +218,12 @@ function initHighlighter(){
             if (corner) return;
             var otherNode = beam.getOtherNode(node);
             var direction = otherNode.getOriginalPosition().clone().sub(node.getOriginalPosition()).normalize();
-            if (direction.equals(dir)) {
+            if (direction.clone().sub(dir).length()<0.001) {
                 _.each(otherNode.beams, function(otherBeam){
                     if (corner) return;
                     var otherOtherNode = otherBeam.getOtherNode(otherNode);
                     var otherDirection = otherOtherNode.getOriginalPosition().clone().sub(otherNode.getOriginalPosition()).normalize();
-                    if (otherDirection.equals(nextDir)) {
+                    if (otherDirection.clone().sub(nextDir).length()<0.001) {
                         corner = otherNode;
                     }
                 });
@@ -235,7 +238,7 @@ function initHighlighter(){
         var min;
         var nodes = globals.schematic.getNodes();
         _.each(nodes, function(node){
-            if (node.getOriginalPosition().equals(minVect)) min = node;
+            if (node.getOriginalPosition().clone().sub(minVect).length()<0.001) min = node;
         });
 
         var maxMin = findCorner(min, new THREE.Vector3(-1,0,0), new THREE.Vector3(0,0,-1));
@@ -262,10 +265,10 @@ function initHighlighter(){
 
         var nodes = globals.schematic.getNodes();
         _.each(nodes, function(node){
-            if (node.getOriginalPosition().equals(minVect)) min = node;
-            else if (node.getOriginalPosition().equals(maxVect)) max = node;
-            else if (node.getOriginalPosition().equals(minMaxVect)) minMax = node;
-            else if (node.getOriginalPosition().equals(maxMinVect)) maxMin = node;
+            if (node.getOriginalPosition().clone().sub(minVect).length()<0.001) min = node;
+            else if (node.getOriginalPosition().clone().sub(maxVect).length()<0.001) max = node;
+            else if (node.getOriginalPosition().clone().sub(minMaxVect).length()<0.001) minMax = node;
+            else if (node.getOriginalPosition().clone().sub(maxMinVect).length()<0.001) maxMin = node;
         });
 
         if (!min || !max || !minMax || !maxMin) return false;

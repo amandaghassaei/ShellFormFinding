@@ -290,7 +290,8 @@
         </label>
         </div>
     </div>
-    <br/>
+    <a href="#" id="download" class="btn btn-lg btn-default">Download Design Info (.txt)</a>
+    <br/><br/>
     <div class="dynamicSim">
         Settings:<br/>
         <div class="indent">
@@ -307,14 +308,33 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-body">
-        <p><b>Instructions:</b><br/>
-            The force on each node is indicated by a grey arrow.  Drag on force vectors to change the applied force at each node.  Double click on a force vector to type in a value for it.<br/>
-            Fixed nodes are indicated with a black box.  Use the "Add/Remove Fixed Constraint" button and select a node to toggle its fixed state.<br/>
-            By default, the structure is loaded under its own weight, turn off effects due to self weight using the "Apply Self-Weight" toggle or change the density (mass/area measured in kg/m<sup>2</sup>) of the structure with the "Density" slider.<br/>
-            <br/>
-            The dynamic simulation uses a mass-spring-damper system to model interactions between nodes through edges.
+        <p>This design tool simulates and visualizes the behavior of preloaded thin-shell structures under pure tension.
+            Traditionally, shell form finding was achieved by <a href="http://www.fabwiki.fabric-formedconcrete.com/lib/exe/fetch.php?media=nottingham:form-finding_and_fabric_forming_in_the_work_of_heinz_isler.pdf" target="_blank">creating physical models</a> from cloth and string, which were loaded with hanging weights or other forces and carefully measured.
+            In the era of personal computing, anyone can run form finding simulations from their laptop and design these forms virutally.
+            <br/><br/>
+            <b>A bit about the simulation:</b><br/><br/>
+            This tool implements both static and dynamic simulation methods to solve for shell geometry.
+            The static simulation uses the <a href="http://www.sciencedirect.com/science/article/pii/0045782574900450" target="_blank">force-density method</a> to solve a linear system of equations for the steady-state equilibrium positions of every node in the system.
+            The static solution is indicated by a dotted line.
+            Adjust the visibility of the static vs dynamic simulation with the checkboxes in the upper right.
+            <br/><br/>
+            The dynamic simulation uses a <a href="https://graphics.stanford.edu/~mdfisher/cloth.html" target="_blank">mass-spring-damper</a> system to model interactions between nodes through edges.
+            The nominal length of the springs connecting nodes in the system is assumed to be zero.
             Damping values may range from 1% to 100% of critical damping for each node-node interaction (adjust this value with the "Damping" slider).
-            Calculations of the dynamic simulation are executed in parallel in a GPU fragment shader for increased performance.<br/>
+            Calculations of the dynamic simulation are executed in parallel in a GPU fragment shader for increased performance.
+            After time-dependant effects have damped out, the steady-state solution of the dynamic simulation should equal the static solution for every scenario.<br/>
+            <br/>
+            <b>Instructions:</b><br/><br/>
+            By adjusting the topology and material properties of the structure, it is possible to achieve many diverse forms.
+            By default, the geometric shape of the mesh is indicated in black, and its topology, external forces, and materials are indicated in the "schematic view" underneath.<br/>
+            <br/>
+            - Adjust the dimensions of the shell with the "Width" and "Length" sliders on the left.<br/>
+            - Subdivide the mesh by mousing over the white plane in the schematic view and clicking.<br/>
+            - Fixed nodes pinned to the ground, indicated with a black box.  Use the "Add/Remove Fixed Constraint" button and select a node to toggle its fixed state.<br/>
+            - Change the material properties of the mesh by dragging the slider next to "Material 1".  Create new materials and assign them to edges of the mesh by selecting a new material type and clicking on edges in the schematic view.<br/>
+            - The force on each node is indicated by a grey arrow.  Drag on force vectors to change the applied force at each node.  Double click on a force vector to type in a value for it.<br/>
+            - By default, the structure is loaded under its own weight, turn off effects due to self weight using the "Apply Self-Weight" toggle or change the density of the mesh lines (mass/length measured in kg/m) of the structure with the "Density" slider.<br/>
+            - Download a text file containing all geometric and material properties of your design by clicking "Download Design Info".
             <br/>
             Built by <a href="http://www.amandaghassaei.com/" target="_blank">Amanda Ghassaei</a> as a homework assignment for <a href="https://architecture.mit.edu/subject/fall-2016-4450" target="_blank">Computational Structural Design and Optimization</a>.
             Code available on <a href="https://github.com/amandaghassaei/ShellFormFinding" target="_blank">Github</a>.

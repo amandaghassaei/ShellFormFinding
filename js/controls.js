@@ -215,6 +215,10 @@ function initControls(globals){
         globals.resetSimFromInitialState();
     });
 
+    setLink("#download", function(){
+        console.log("download");
+    });
+
     function setLink(id, callback){
         $(id).click(function(e){
             e.preventDefault();

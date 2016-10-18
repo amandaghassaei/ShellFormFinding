@@ -255,7 +255,7 @@ function initStaticModel(globals){
         calcEdgeForces();
         var sumFL = 0;
         for (var i=0;i<edgeForces.length;i++){
-            sumFL += edgeForces[i]*edgeLengths[i];
+            sumFL += Math.abs(edgeForces[i]*edgeLengths[i]);
         }
         $("#FL").html(sumFL.toFixed(2));
 
