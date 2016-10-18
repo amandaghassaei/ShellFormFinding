@@ -168,12 +168,117 @@ function initHighlighter(){
         if (minVect && maxVect && minMaxVect && maxMinVect){
             minVect = new THREE.Vector3(Math.max(minVect.x, minMaxVect.x), 0, Math.max(minVect.z, maxMinVect.z));
             maxVect = new THREE.Vector3(Math.min(maxVect.x, maxMinVect.x), 0, Math.min(maxVect.z, minMaxVect.z));
-            globals.highlighter.setPosition(maxVect.clone().add(minVect).multiplyScalar(0.5));
-            globals.highlighter.setScale(maxVect.clone().sub(minVect));
-            globals.highlighter.setVisiblitiy(true);
+            minMaxVect = new THREE.Vector3(minVect.x, 0, maxVect.z);
+            maxMinVect = new THREE.Vector3(maxVect.x, 0, minVect.z);
+
+            if (checkCompleteLoop(minVect, maxVect, minMaxVect, maxMinVect)){
+                globals.highlighter.setPosition(maxVect.clone().add(minVect).multiplyScalar(0.5));
+                globals.highlighter.setScale(maxVect.clone().sub(minVect));
+                globals.highlighter.setVisiblitiy(true);
+            } else {
+                var data = findLoop(minVect);
+                if (data === null) globals.highlighter.setVisiblitiy(false);
+                else {
+                    minVect = data.minVect;
+                    maxVect = data.maxVect;
+                    globals.highlighter.setPosition(maxVect.clone().add(minVect).multiplyScalar(0.5));
+                    globals.highlighter.setScale(maxVect.clone().sub(minVect));
+                    globals.highlighter.setVisiblitiy(true);
+                }
+            }
         } else {
             globals.highlighter.setVisiblitiy(false);
         }
+    }
+
+    function isConnected(node1, node2){
+        var connected = false;
+        var intermediate = false;
+        var vector = node2.getOriginalPosition().clone().sub(node1.getOriginalPosition()).normalize();
+        _.each(node1.beams, function(beam){
+            if (connected) return;
+            var otherNode = beam.getOtherNode(node1);
+            if (otherNode == node2) connected = true;
+            else {
+                var otherVector = otherNode.getOriginalPosition().clone().sub(node1.getOriginalPosition()).normalize();
+                if (otherVector.equals(vector)) intermediate = otherNode;
+            }
+        });
+        if (connected) return true;
+        if (intermediate) return isConnected(intermediate, node2);
+        return false;
+    }
+
+    function findCorner(node, dir, nextDir){
+        var corner;
+        _.each(node.beams, function(beam){
+            if (corner) return;
+            var otherNode = beam.getOtherNode(node);
+            var direction = otherNode.getOriginalPosition().clone().sub(node.getOriginalPosition()).normalize();
+            if (direction.equals(dir)) {
+                _.each(otherNode.beams, function(otherBeam){
+                    if (corner) return;
+                    var otherOtherNode = otherBeam.getOtherNode(otherNode);
+                    var otherDirection = otherOtherNode.getOriginalPosition().clone().sub(otherNode.getOriginalPosition()).normalize();
+                    if (otherDirection.equals(nextDir)) {
+                        corner = otherNode;
+                    }
+                });
+                if (corner) return;
+                corner = findCorner(otherNode, dir, nextDir);
+            }
+        });
+        return corner;
+    }
+
+    function findLoop(minVect){
+        var min;
+        var nodes = globals.schematic.getNodes();
+        _.each(nodes, function(node){
+            if (node.getOriginalPosition().equals(minVect)) min = node;
+        });
+
+        var maxMin = findCorner(min, new THREE.Vector3(-1,0,0), new THREE.Vector3(0,0,-1));
+        if (!maxMin) return null;
+        var max = findCorner(maxMin, new THREE.Vector3(0,0,-1), new THREE.Vector3(1,0,0));
+        if (!max) return null;
+        var minMax = findCorner(max, new THREE.Vector3(1,0,0), new THREE.Vector3(0,0,1));
+        if (!minMax) return null;
+        var min = findCorner(minMax, new THREE.Vector3(0,0,1), new THREE.Vector3(-1,0,0));
+        if (!min) return null;
+
+        if (checkCompleteLoop(min.getOriginalPosition(), max.getOriginalPosition(), minMax.getOriginalPosition(), maxMin.getOriginalPosition())){
+            return {minVect:min.getOriginalPosition(), maxVect:max.getOriginalPosition()};
+        }
+        return null;
+    }
+
+    function checkCompleteLoop(minVect, maxVect, minMaxVect, maxMinVect){
+
+        var min;
+        var max;
+        var minMax;
+        var maxMin;
+
+        var nodes = globals.schematic.getNodes();
+        _.each(nodes, function(node){
+            if (node.getOriginalPosition().equals(minVect)) min = node;
+            else if (node.getOriginalPosition().equals(maxVect)) max = node;
+            else if (node.getOriginalPosition().equals(minMaxVect)) minMax = node;
+            else if (node.getOriginalPosition().equals(maxMinVect)) maxMin = node;
+        });
+
+        if (!min || !max || !minMax || !maxMin) return false;
+
+        var connected = isConnected(min, minMax);
+        if (!connected) return false;
+        connected = isConnected(minMax, max);
+        if (!connected) return false;
+        connected = isConnected(max, maxMin);
+        if (!connected) return false;
+        connected = isConnected(maxMin, min);
+        if (!connected) return false;
+        return true;
     }
 
     return {
