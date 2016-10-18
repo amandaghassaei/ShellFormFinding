@@ -162,6 +162,7 @@ function initSchematic(globals){
         });
         if(globals.dynamicModel) globals.dynamicModel.setScale(xLength, zLength);
         if(globals.staticModel) globals.staticModel.setScale(xLength, zLength);
+        if(globals.applySelfWeight) setSelfWeight();
     }
 
     function subDivide(subDivEdges, subDivNodes, existingNodes){

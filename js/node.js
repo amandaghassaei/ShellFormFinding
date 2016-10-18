@@ -49,11 +49,20 @@ Node.prototype.setFixed = function(fixed){
 Node.prototype.addExternalForce = function(force){
     this.externalForce = force;
     this.externalForce.setOrigin(this.getOriginalPosition());
+    if (this.fixed) this.externalForce.hide();
 };
 
 Node.prototype.getExternalForce = function(){
     if (!this.externalForce) return new THREE.Vector3(0,0,0);
     return this.externalForce.getForce();
+};
+
+Node.prototype.getLocalLength = function(){
+    var length = 0;
+    _.each(this.beams, function(beam){
+        length += beam.getLength()/2;
+    });
+    return length;
 };
 
 Node.prototype.getArea = function(){
@@ -77,7 +86,8 @@ Node.prototype.getArea = function(){
 };
 
 Node.prototype.getMass = function(){
-    return this.getArea()*globals.density;
+    //return this.getArea()*globals.density;
+    return globals.density*this.getLocalLength();
 };
 
 Node.prototype.getSelfWeight = function(){

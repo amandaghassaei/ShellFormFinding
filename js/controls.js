@@ -70,8 +70,8 @@ function initControls(globals){
         var color = colors[newMaterialNum-1];
         $("#materialTypes").append(makeMaterialHTML(newId, color));
         var $parent = $("#" + newId).parent();
-        var val = 15;
-        setSliderInput("#" + newId, val, 0.1, 40, 0.01, function(val){
+        var val = 2;
+        setSliderInput("#" + newId, val, 0.1, 30, 0.01, function(val){
             globals.setMaterial(newId, val);
         });
         $parent.children(".editable").click(function(e){

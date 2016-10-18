@@ -186,7 +186,7 @@ function initStaticModel(globals){
         Ctrans_Q_Cf_Xf = numeric.dot(Ctrans_Q_Cf, Xf);
     }
 
-    function updateFixed(){
+    function updateFixedScale(){
         var _Xf = initEmptyArray(fixedIndicesMapping.length);
         for (var i=0;i<fixedIndicesMapping.length;i++){
             var position = nodes[fixedIndicesMapping[i]].getOriginalPosition();
@@ -251,7 +251,7 @@ function initStaticModel(globals){
         _.each(nodes, function(node){
             node.updateOriginalPosition(xLength, zLength);
         });
-        updateFixed();
+        updateFixedScale();
     }
 
     function setVisibility(visible){

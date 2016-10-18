@@ -97,7 +97,7 @@ Beam.prototype.getNominalLength = function(){
 //dynamic solve
 
 Beam.prototype.getK = function(){
-    return this.beamMaterial.getForceDensity()/this.getNominalLength();
+    return this.beamMaterial.getForceDensity();
 };
 
 Beam.prototype.getD = function(){
@@ -120,7 +120,7 @@ Beam.prototype.getOtherNode = function(node){
 };
 
 Beam.prototype.getForceDensity = function(){
-    return this.beamMaterial.getForceDensity()/this.getNominalLength();
+    return this.beamMaterial.getForceDensity();
 };
 
 
