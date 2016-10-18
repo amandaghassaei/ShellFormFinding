@@ -71,6 +71,55 @@
         }
     </script>
 
+    <script id="averageSubdividePosition" type="x-shader/x-fragment">
+        precision mediump float;
+        uniform vec2 u_textureDim;
+        uniform sampler2D u_lastPosition;
+        uniform sampler2D u_meta;
+        uniform sampler2D u_mass;
+
+        void main(){
+            vec2 fragCoord = gl_FragCoord.xy;
+            vec2 scaledFragCoord = fragCoord/u_textureDim;
+
+            float isFixed = texture2D(u_mass, scaledFragCoord).y;
+            if (isFixed == 1.0){
+                gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+                return;
+            }
+
+            vec3 lastPosition = texture2D(u_lastPosition, scaledFragCoord).xyz;
+
+            if (lastPosition.x != 0.0 || lastPosition.y != 0.0 || lastPosition.z != 0.0){
+                gl_FragColor = vec4(lastPosition, 0.0);
+                return;
+            }
+
+            vec4 neighborIndices = texture2D(u_meta, scaledFragCoord);
+
+            vec3 avgPosition = vec3(0.0,0.0,0.0);
+            float numNeighbors = 0.0;
+            for (int j=0;j<4;j++){
+                float neighborIndex1D = neighborIndices[j];
+                if (neighborIndex1D<0.0) continue;//no beam
+
+                vec2 neighborIndex = vec2(mod(neighborIndex1D, u_textureDim.x)+0.5, floor(neighborIndex1D/u_textureDim.x)+0.5);
+                vec2 scaledNeighborIndex = neighborIndex/u_textureDim;
+                vec3 neighborLastPosition = texture2D(u_lastPosition, scaledNeighborIndex).xyz;
+
+//                if (neighborLastPosition.x == 0.0 && neighborLastPosition.y == 0.0 && neighborLastPosition.z == 0.0){
+//                    continue;
+//                }
+
+                avgPosition += neighborLastPosition;
+                numNeighbors += 1.0;
+            }
+
+            avgPosition /= numNeighbors;
+            gl_FragColor = vec4(avgPosition,0.0);
+        }
+    </script>
+
     <script id="zeroTexture" type="x-shader/x-fragment">
         void main(){
             gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);

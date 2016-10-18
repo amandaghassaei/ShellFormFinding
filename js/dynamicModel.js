@@ -12,7 +12,7 @@ function initDynamicModel(globals){
     var nodes;
     var edges;
 
-    function copyNodesAndEdges(){
+    function copyNodesAndEdges(isSubdivide){
         object3D.children = [];
         if (nodes){
             _.each(nodes, function(node){
@@ -38,9 +38,9 @@ function initDynamicModel(globals){
             edge.setColor(0x222222);
             edge.type = "dynamicBeam";
         });
-        initTypedArrays();
+        initTypedArrays(isSubdivide);
         if (programsInited) {
-            updateTextures(globals.gpuMath);
+            updateTextures(globals.gpuMath, isSubdivide);
             steps = parseInt(setSolveParams());
         }
         setViewMode(globals.viewMode);
@@ -66,6 +66,17 @@ function initDynamicModel(globals){
     initTexturesAndPrograms(globals.gpuMath);
     steps = parseInt(setSolveParams());
     runSolver();
+
+    function averageSubdivide(){
+        globals.gpuMath.step("averageSubdivide", ["u_lastPosition", "u_meta", "u_mass"], "u_position");
+        globals.gpuMath.swapTextures("u_position", "u_lastPosition");
+        globals.gpuMath.step("averageSubdivide", ["u_lastPosition", "u_meta", "u_mass"], "u_position");
+        globals.gpuMath.swapTextures("u_position", "u_lastPosition");
+        globals.gpuMath.step("averageSubdivide", ["u_lastPosition", "u_meta", "u_mass"], "u_position");
+        globals.gpuMath.swapTextures("u_position", "u_lastPosition");
+        globals.gpuMath.step("averageSubdivide", ["u_lastPosition", "u_meta", "u_mass"], "u_position");
+        globals.gpuMath.swapTextures("u_position", "u_lastPosition");
+    }
 
     function reset(){
         globals.gpuMath.step("zeroTexture", [], "u_position");
@@ -198,10 +209,11 @@ function initDynamicModel(globals){
         return (1/(2*Math.PI*maxFreqNat))*0.5;//half of max delta t for good measure
     }
 
-    function updateTextures(gpuMath){
-        reset();
+    function updateTextures(gpuMath, isSubdivide){
         gpuMath.initTextureFromData("u_originalPosition", textureDim, textureDim, "FLOAT", originalPosition, true);
         gpuMath.initTextureFromData("u_meta", textureDim, textureDim, "FLOAT", meta, true);
+        if (isSubdivide) averageSubdivide();
+        else reset();
     }
 
     function initTexturesAndPrograms(gpuMath){
@@ -245,6 +257,11 @@ function initDynamicModel(globals){
         gpuMath.setUniformForProgram("packToBytes", "u_floatTextureDim", [textureDim, textureDim], "2f");
 
         gpuMath.createProgram("zeroTexture", vertexShader, document.getElementById("zeroTexture").text);
+        gpuMath.createProgram("averageSubdivide", vertexShader, document.getElementById("averageSubdividePosition").text);
+        gpuMath.setUniformForProgram("averageSubdivide", "u_lastPosition", 0, "1i");
+        gpuMath.setUniformForProgram("averageSubdivide", "u_meta", 1, "1i");
+        gpuMath.setUniformForProgram("averageSubdivide", "u_mass", 2, "1i");
+        gpuMath.setUniformForProgram("averageSubdivide", "u_textureDim", [textureDim, textureDim], "2f");
 
         gpuMath.setSize(textureDim, textureDim);
 
@@ -323,15 +340,18 @@ function initDynamicModel(globals){
         updateOriginalPosition();
     }
 
-    function initTypedArrays(){
+    function initTypedArrays(isSubdivide){
 
         textureDim = calcTextureSize(nodes.length);
 
         originalPosition = new Float32Array(textureDim*textureDim*4);
-        position = new Float32Array(textureDim*textureDim*4);
-        lastPosition = new Float32Array(textureDim*textureDim*4);
-        velocity = new Float32Array(textureDim*textureDim*4);
-        lastVelocity = new Float32Array(textureDim*textureDim*4);
+        if (isSubdivide) {
+        } else {
+            position = new Float32Array(textureDim*textureDim*4);
+            lastPosition = new Float32Array(textureDim*textureDim*4);
+            velocity = new Float32Array(textureDim*textureDim*4);
+            lastVelocity = new Float32Array(textureDim*textureDim*4);
+        }
         externalForces = new Float32Array(textureDim*textureDim*4);
         mass = new Float32Array(textureDim*textureDim*4);
         meta = new Float32Array(textureDim*textureDim*4);
@@ -343,10 +363,6 @@ function initDynamicModel(globals){
         }
 
         _.each(nodes, function(node, index){
-            //var origPosition = node.getOriginalPosition();
-            //originalPosition[4*index] = origPosition.x;
-            //originalPosition[4*index+1] = origPosition.y;
-            //originalPosition[4*index+2] = origPosition.z;
             mass[4*index] = node.getSimMass();
 
             meta[4*index] = -1;

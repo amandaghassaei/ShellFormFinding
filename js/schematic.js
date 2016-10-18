@@ -173,7 +173,8 @@ function initSchematic(globals){
         });
 
         var middlePosition = subDivNodes[0].getOriginalPosition().clone().add(subDivNodes[1].getOriginalPosition()).multiplyScalar(0.5);
-        //todo divide by scale
+        middlePosition.x /= globals.xLength;
+        middlePosition.z /= globals.zLength;
         var node = new Node(middlePosition, nodes.length);
         object3D.add(node.getObject3D());
         nodes.push(node);
@@ -183,8 +184,8 @@ function initSchematic(globals){
         forces.push(force);
         connectNodes(node, _nodes);
         if (existingNodes) connectNodes(node, existingNodes);
-        globals.resetSimFromInitialState();
-        globals.dynamicModel.copyNodesAndEdges();
+        //globals.resetSimFromInitialState();
+        globals.dynamicModel.copyNodesAndEdges(true);
         globals.staticModel.copyNodesAndEdges();
         setSelfWeight();
     }
@@ -196,7 +197,8 @@ function initSchematic(globals){
         var position1 = _nodes[0].getOriginalPosition();
         var position2 = _nodes[1].getOriginalPosition();
         var position = position1.clone().add(position2).multiplyScalar(0.5);
-        //todo divide by scale
+        position.x /= globals.xLength;
+        position.z /= globals.zLength;
         var node = new Node(position, nodes.length);
         object3D.add(node.getObject3D());
         nodes.push(node);
