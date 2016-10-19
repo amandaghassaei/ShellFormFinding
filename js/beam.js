@@ -50,6 +50,10 @@ Beam.prototype.setMaterialColor = function(){
 };
 
 Beam.prototype.setHSLColor = function(val, max, min){
+    if (val === null){
+        this.object3D.material.color.setHex(0x000000);
+        return;
+    }
     var scaledVal = (val - min)/(max - min) * 0.7;
     var color = new THREE.Color();
     color.setHSL(scaledVal, 1, 0.5);
@@ -85,6 +89,7 @@ Beam.prototype.getLength = function(){
 };
 
 Beam.prototype.getForce = function(){
+    if (this.nodes[0].fixed && this.nodes[1].fixed) return null;
     return this.getLength()*this.beamMaterial.getForceDensity();
 };
 

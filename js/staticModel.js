@@ -100,8 +100,8 @@ function initStaticModel(globals){
         var data;
         if (globals.viewMode == "length") data = edgeLengths;
         else if (globals.viewMode == "force") data = edgeForces;
-        if (min === undefined) min = _.min(data);
-        if (max === undefined) max = _.max(data);
+        if (min === undefined) min = _.min(_.compact(data));
+        if (max === undefined) max = _.max(_.compact(data));
         for (var i=0;i<edges.length;i++){
             edges[i].setHSLColor(data[i], min, max);
         }

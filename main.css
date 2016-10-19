@@ -176,6 +176,10 @@ input.form-control {
     float:right;
 }
 
+.modal-body li{
+    margin-bottom:10px;
+}
+
 img{
     width:60px;
     /*position: absolute;*/

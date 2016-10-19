@@ -178,8 +178,8 @@ function initDynamicModel(globals){
                     if (globals.staticSimVisible) allVals = vals.concat(globals.staticModel.getEdgeForces());
                 }
 
-                var min = _.min(allVals);
-                var max = _.max(allVals);
+                var min = _.min(_.compact(allVals));
+                var max = _.max(_.compact(allVals));
                 globals.staticModel.setEdgeColors(min, max);
                 for (var i=0;i<edges.length;i++){
                     edges[i].setHSLColor(vals[i], min, max);
