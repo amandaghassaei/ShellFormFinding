@@ -88,8 +88,12 @@ Beam.prototype.getLength = function(){
     return this.vertices[0].clone().sub(this.vertices[1]).length();
 };
 
+Beam.prototype.isFixed = function(){
+    return this.nodes[0].fixed && this.nodes[1].fixed;
+};
+
 Beam.prototype.getForce = function(){
-    if (this.nodes[0].fixed && this.nodes[1].fixed) return null;
+    if (this.isFixed()) return null;
     return this.getLength()*this.beamMaterial.getForceDensity();
 };
 

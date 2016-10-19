@@ -178,7 +178,7 @@ Node.prototype.getSimMass = function(){
 
 Node.prototype.clone = function(){
     var node = new Node(this._originalPosition.clone(), this.getIndex());
-    if (this.fixed) node.setFixed(true);
+    node.setFixed(this.fixed);
     node.addExternalForce(this.externalForce);
     return node;
 };

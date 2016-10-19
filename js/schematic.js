@@ -193,6 +193,8 @@ function initSchematic(globals){
     function splitEdge(edge){
         var _nodes = edge.nodes;
         var material = edge.getMaterial();
+
+        var _fixed = edge.isFixed();
         deleteEdge(edge);
         var position1 = _nodes[0].getOriginalPosition();
         var position2 = _nodes[1].getOriginalPosition();
@@ -200,6 +202,8 @@ function initSchematic(globals){
         position.x /= globals.xLength;
         position.z /= globals.zLength;
         var node = new Node(position, nodes.length);
+        node.setFixed(_fixed);
+        setFixed(node.getIndex(), _fixed);
         object3D.add(node.getObject3D());
         nodes.push(node);
         var force = new Force(new THREE.Vector3(0,0,0));
