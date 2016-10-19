@@ -216,7 +216,8 @@ function initControls(globals){
     });
 
     setLink("#download", function(){
-        console.log("download");
+        var blob = new Blob([globals.staticModel.getInfo()], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, "shell.txt");
     });
 
     function setLink(id, callback){

@@ -289,6 +289,55 @@ function initStaticModel(globals){
         return edgeForces.slice();
     }
 
+    function getInfo(){
+        var string = "";
+        string += "num nodes: ";
+        string += nodes.length + "\n";
+        string += "node positions: [";
+        _.each(nodes, function(node, index){
+            var position = node.getPosition();
+            string += "[" + position.x + ", " + position.y + ", " + position.z + "]";
+            if (index < nodes.length-1) string += ", ";
+        });
+        string += "]\n";
+        string += "external forces: [";
+        _.each(nodes, function(node, index){
+            var force = node.getExternalForce();
+            string += "[" + force.x + ", " + force.y + ", " + force.z + "]";
+            if (index < nodes.length-1) string += ", ";
+        });
+        string += "]\n";
+        string += "num fixed nodes: ";
+        string += fixedIndicesMapping.length + "\n";
+        string += "fixed node indices: [";
+        _.each(fixedIndicesMapping, function(index){
+            string += index;
+            if (index < nodes.length-1) string += ", ";
+        });
+        string += "]\n";
+        string += "num edges: ";
+        string += edges.length + "\n";
+        string += "edges ([node 1 index, node 2 index]): [";
+        _.each(edges, function(edge, index){
+            string += "[" + edge.nodes[0].getIndex() + ", " + edge.nodes[1].getIndex() + "]";
+            if (index < edges.length-1) string += ", ";
+        });
+        string += "]\n";
+        string += "edge q's: [";
+        _.each(edges, function(edge, index){
+            string += edge.getForceDensity();
+            if (index < edges.length-1) string += ", ";
+        });
+        string += "]\n";
+        string += "edge lengths: [";
+        _.each(edges, function(edge, index){
+            string += edge.getLength();
+            if (index < edges.length-1) string += ", ";
+        });
+        string += "]\n";
+        return string;
+    }
+
     return {
         setVisibility: setVisibility,
         updateMaterialAssignments: updateMaterialAssignments,
@@ -301,6 +350,7 @@ function initStaticModel(globals){
         resetForceArray: resetForceArray,
         updateFixed: updateFixed,
         copyNodesAndEdges: copyNodesAndEdges,
-        setScale: setScale
+        setScale: setScale,
+        getInfo: getInfo
     }
 }
