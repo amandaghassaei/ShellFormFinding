@@ -93,7 +93,7 @@ $(function() {
         mouse.y = - (e.clientY/window.innerHeight)*2+1;
         raycaster.setFromCamera(mouse, globals.threeView.camera);
 
-        if (!globals.addRemoveFixedMode && ((isDragging && highlightedObj && highlightedObj.getMagnitude) || isDraggingArrow)){//force
+        if (globals.schematicVisible && !globals.addRemoveFixedMode && ((isDragging && highlightedObj && highlightedObj.getMagnitude) || isDraggingArrow)){//force
             isDraggingArrow = true;
             dragArrow();
             globals.controls.showMoreInfo("Force: " +
@@ -103,7 +103,8 @@ $(function() {
 
         var _highlightedObj = null;
         if (!isDragging) {
-            var objsToIntersect = globals.schematic.getChildren();
+            var objsToIntersect = [];
+            if (globals.schematicVisible) objsToIntersect = objsToIntersect.concat(globals.schematic.getChildren());
             if (globals.dynamicSimVisible && (globals.viewMode == "length" || globals.viewMode == "force")) objsToIntersect = objsToIntersect.concat(globals.dynamicModel.getChildren());
             if (globals.staticSimVisible && (globals.viewMode == "length" || globals.viewMode == "force")) objsToIntersect = objsToIntersect.concat(globals.staticModel.getChildren());
             _highlightedObj = checkForIntersections(e, objsToIntersect);
@@ -111,7 +112,7 @@ $(function() {
         if (highlightedObj && (_highlightedObj != highlightedObj)) highlightedObj.unhighlight();
         highlightedObj = _highlightedObj;
 
-        if (globals.addRemoveFixedMode){
+        if (globals.schematicVisible && globals.addRemoveFixedMode){
             if (highlightedObj && highlightedObj.fixed){
                 highlightedObj.highlight();
                 toolTipFixedNode.visible = false;
@@ -137,7 +138,7 @@ $(function() {
             }
         }
 
-        if (!isDragging && !globals.addRemoveFixedMode && !highlightedObj){
+        if (globals.schematicVisible && !isDragging && !globals.addRemoveFixedMode && !highlightedObj){
             var intersection = new THREE.Vector3();
             raycaster.ray.intersectPlane(nodesPlane, intersection);
             globals.highlighter.highlight(intersection);

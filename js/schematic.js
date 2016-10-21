@@ -7,6 +7,7 @@ function initSchematic(globals){
 
     var object3D = new THREE.Object3D();
     object3D.position.y = globals.planeHeight;
+    setVisibility(globals.schematicVisible);
     globals.threeView.sceneAdd(object3D);
 
     var baseplane = new THREE.Mesh(new THREE.BoxGeometry(1, 0.01, 1), new THREE.MeshBasicMaterial({color: 0xffffff, transparent:true, opacity:0.75}));
@@ -190,10 +191,13 @@ function initSchematic(globals){
         setSelfWeight();
     }
 
+    function setVisibility(visible){
+        object3D.visible = visible;
+    }
+
     function splitEdge(edge){
         var _nodes = edge.nodes;
         var material = edge.getMaterial();
-
         var _fixed = edge.isFixed();
         deleteEdge(edge);
         var position1 = _nodes[0].getOriginalPosition();
@@ -237,6 +241,7 @@ function initSchematic(globals){
         getEdges: getEdges,
         setSelfWeight: setSelfWeight,
         subDivide: subDivide,
-        setScale: setScale
+        setScale: setScale,
+        setVisibility: setVisibility
     }
 }

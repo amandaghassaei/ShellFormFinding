@@ -208,6 +208,11 @@ function initControls(globals){
         globals.staticModel.setVisibility(val);
     });
 
+    setCheckbox("#schematic", globals.schematicVisible, function(val){
+        globals.schematicVisible = val;
+        globals.schematic.setVisibility(val);
+    });
+
     setSlider("#damping", globals.percentDamping, 0.01, 1, 0.01, function(val){
         globals.percentDamping = val;
         globals.dynamicSimMaterialsChanged = true;
