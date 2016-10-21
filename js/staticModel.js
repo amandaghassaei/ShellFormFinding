@@ -14,6 +14,11 @@ function initStaticModel(globals){
     var nodes;
     var edges;
 
+    function setSolid(isSolid){
+        //if (isSolid) dashedMaterial.gapSize = 0.1;
+        //else dashedMaterial.gapSize = 0.1;
+    }
+
     function copyNodesAndEdges(){
         object3D.children = [];
         if (nodes){
@@ -36,7 +41,7 @@ function initStaticModel(globals){
         edges = geo.edges;
         _.each(edges, function(edge){
             object3D.add(edge.getObject3D());
-            edge.setThreeMaterial(new THREE.LineDashedMaterial({color:0x222222, linewidth: 3, gapSize:0.4, dashSize:0.4}));
+            edge.setThreeMaterial(new THREE.LineDashedMaterial({color:0x222222, linewidth: 3, gapSize:0.1, dashSize:0.6}));
             edge.type = "staticBeam";
         });
         resetArrays();
@@ -257,7 +262,7 @@ function initStaticModel(globals){
         for (var i=0;i<edgeForces.length;i++){
             sumFL += Math.abs(edgeForces[i]*edgeLengths[i]);
         }
-        $("#FL").html(sumFL.toFixed(2));
+        $("#FL").html(sumFL.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
         if (globals.viewMode == "material"){
             for (var i = 0; i < edges.length; i++) {
@@ -275,6 +280,7 @@ function initStaticModel(globals){
 
     function setVisibility(visible){
         object3D.visible = visible;
+        setSolid(!globals.dynamicSimVisible);
     }
 
     function getChildren(){
@@ -351,6 +357,7 @@ function initStaticModel(globals){
         updateFixed: updateFixed,
         copyNodesAndEdges: copyNodesAndEdges,
         setScale: setScale,
-        getInfo: getInfo
+        getInfo: getInfo,
+        setSolid: setSolid
     }
 }
