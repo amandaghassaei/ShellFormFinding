@@ -25,6 +25,7 @@ $(function() {
     var isDraggingArrow = false;
 
     $(document).dblclick(function() {
+        if (globals.lockForces) return;
         if (highlightedObj && highlightedObj.getMagnitude){
             globals.controls.editMoreInfo(highlightedObj.getMagnitude().toFixed(2), function(val){
                 highlightedObj.setForce(new THREE.Vector3(0, val, 0));
@@ -72,6 +73,7 @@ $(function() {
 
     function dragArrow(){
         globals.threeView.enableControls(false);
+        if (globals.lockForces) return;
         raycasterPlane.set(raycasterPlane.normal, -highlightedObj.getPosition().z);
         var intersection = new THREE.Vector3();
         raycaster.ray.intersectPlane(raycasterPlane, intersection);
@@ -138,7 +140,7 @@ $(function() {
             }
         }
 
-        if (globals.schematicVisible && !isDragging && !globals.addRemoveFixedMode && !highlightedObj){
+        if (!globals.lockTopology && globals.schematicVisible && !isDragging && !globals.addRemoveFixedMode && !highlightedObj){
             var intersection = new THREE.Vector3();
             raycaster.ray.intersectPlane(nodesPlane, intersection);
             globals.highlighter.highlight(intersection);
@@ -164,6 +166,7 @@ $(function() {
             } else {
                 _.each(intersections, function (thing) {
                     if (thing.object && thing.object._myBeam) {
+                        if (globals.currentMaterial == "none") return;
                         if (objectFound) return;
                         _highlightedObj = thing.object._myBeam;
                         _highlightedObj.highlight();

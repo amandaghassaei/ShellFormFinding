@@ -211,6 +211,15 @@ function initControls(globals){
     setCheckbox("#schematic", globals.schematicVisible, function(val){
         globals.schematicVisible = val;
         globals.schematic.setVisibility(val);
+        if (val) $("#schematicOptions").show();
+        else $("#schematicOptions").hide();
+    });
+    setCheckbox("#lockForces", globals.lockForces, function(val){
+        globals.lockForces = val;
+    });
+    setCheckbox("#lockTopology", globals.lockTopology, function(val){
+        globals.lockTopology = val;
+        //globals.schematic.setVisibility(val);
     });
 
     setSlider("#damping", globals.percentDamping, 0.01, 1, 0.01, function(val){

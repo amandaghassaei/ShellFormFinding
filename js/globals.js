@@ -29,6 +29,8 @@ function initGlobals(){
     _globals.dynamicSimVisible = true;
     _globals.staticSimVisible = true;
     _globals.schematicVisible = true;
+    _globals.lockTopology = false;
+    _globals.lockForces = false;
     _globals.dynamicSimMaterialsChanged = false;
     _globals.applySelfWeight = true;
     _globals.forceHasChanged = false;
