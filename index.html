@@ -76,6 +76,7 @@
         precision mediump float;
         uniform vec2 u_textureDim;
         uniform sampler2D u_lastPosition;
+        uniform sampler2D u_originalPosition;
         uniform sampler2D u_meta;
         uniform sampler2D u_mass;
 
@@ -88,7 +89,6 @@
                 gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
                 return;
             }
-
             vec3 lastPosition = texture2D(u_lastPosition, scaledFragCoord).xyz;
 
             if (lastPosition.x != 0.0 || lastPosition.y != 0.0 || lastPosition.z != 0.0){
@@ -100,23 +100,37 @@
 
             vec3 avgPosition = vec3(0.0,0.0,0.0);
             float numNeighbors = 0.0;
+            float numUnsolvedNeighbors = 0.0;
             for (int j=0;j<4;j++){
                 float neighborIndex1D = neighborIndices[j];
                 if (neighborIndex1D<0.0) continue;//no beam
 
                 vec2 neighborIndex = vec2(mod(neighborIndex1D, u_textureDim.x)+0.5, floor(neighborIndex1D/u_textureDim.x)+0.5);
                 vec2 scaledNeighborIndex = neighborIndex/u_textureDim;
+
+                float neighborFixed = texture2D(u_mass, scaledNeighborIndex).y;
+                if (neighborFixed == 1.0){
+                    avgPosition += texture2D(u_originalPosition, scaledNeighborIndex).xyz;
+                    numNeighbors += 1.0;
+                    continue;
+                }
+
                 vec3 neighborLastPosition = texture2D(u_lastPosition, scaledNeighborIndex).xyz;
-
-//                if (neighborLastPosition.x == 0.0 && neighborLastPosition.y == 0.0 && neighborLastPosition.z == 0.0){
-//                    continue;
-//                }
-
+                if (neighborLastPosition.x == 0.0 && neighborLastPosition.y == 0.0 && neighborLastPosition.z == 0.0){
+                    numUnsolvedNeighbors += 1.0;
+                    continue;//not solved yet
+                }
+                neighborLastPosition += texture2D(u_originalPosition, scaledNeighborIndex).xyz;
                 avgPosition += neighborLastPosition;
                 numNeighbors += 1.0;
             }
 
+            if (numUnsolvedNeighbors > 1.0 || numNeighbors == 0.0){
+                gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+                return;
+            }
             avgPosition /= numNeighbors;
+            avgPosition -= texture2D(u_originalPosition, scaledFragCoord).xyz;
             gl_FragColor = vec4(avgPosition,0.0);
         }
     </script>

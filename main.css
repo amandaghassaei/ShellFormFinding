@@ -58,8 +58,8 @@ body{
     left:0;
     /*width: 420px;*/
     padding: 20px 20px 20px 20px;
-    /*max-height: 100%;*/
-    /*overflow: auto;*/
+    max-height: 100%;
+    overflow: auto;
 }
 
 .sliderInput{

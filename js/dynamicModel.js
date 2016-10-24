@@ -68,13 +68,9 @@ function initDynamicModel(globals){
     runSolver();
 
     function averageSubdivide(){
-        globals.gpuMath.step("averageSubdivide", ["u_lastPosition", "u_meta", "u_mass"], "u_position");
+        globals.gpuMath.step("averageSubdivide", ["u_lastPosition", "u_originalPosition", "u_meta", "u_mass"], "u_position");
         globals.gpuMath.swapTextures("u_position", "u_lastPosition");
-        globals.gpuMath.step("averageSubdivide", ["u_lastPosition", "u_meta", "u_mass"], "u_position");
-        globals.gpuMath.swapTextures("u_position", "u_lastPosition");
-        globals.gpuMath.step("averageSubdivide", ["u_lastPosition", "u_meta", "u_mass"], "u_position");
-        globals.gpuMath.swapTextures("u_position", "u_lastPosition");
-        globals.gpuMath.step("averageSubdivide", ["u_lastPosition", "u_meta", "u_mass"], "u_position");
+        globals.gpuMath.step("averageSubdivide", ["u_lastPosition", "u_originalPosition", "u_meta", "u_mass"], "u_position");
         globals.gpuMath.swapTextures("u_position", "u_lastPosition");
     }
 
@@ -268,8 +264,9 @@ function initDynamicModel(globals){
         gpuMath.createProgram("zeroTexture", vertexShader, document.getElementById("zeroTexture").text);
         gpuMath.createProgram("averageSubdivide", vertexShader, document.getElementById("averageSubdividePosition").text);
         gpuMath.setUniformForProgram("averageSubdivide", "u_lastPosition", 0, "1i");
-        gpuMath.setUniformForProgram("averageSubdivide", "u_meta", 1, "1i");
-        gpuMath.setUniformForProgram("averageSubdivide", "u_mass", 2, "1i");
+        gpuMath.setUniformForProgram("averageSubdivide", "u_originalPosition", 1, "1i");
+        gpuMath.setUniformForProgram("averageSubdivide", "u_meta", 2, "1i");
+        gpuMath.setUniformForProgram("averageSubdivide", "u_mass", 3, "1i");
         gpuMath.setUniformForProgram("averageSubdivide", "u_textureDim", [textureDim, textureDim], "2f");
 
         gpuMath.setSize(textureDim, textureDim);
