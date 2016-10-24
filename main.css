@@ -274,7 +274,7 @@ img{
 .flat-slider{
     vertical-align: middle;
     display: inline-block;
-    width: 134px;
+    width: 130px;
     position: relative;
     margin: 10px 10px 10px 10px;
     /*padding: 4px 0;*/
@@ -320,7 +320,7 @@ span.modal-close{
 }
 
 .sliderInput>.flat-slider{
-    width:180px;
+   width: 162px;
 }
 
 .label-slider{
