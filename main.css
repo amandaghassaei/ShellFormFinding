@@ -332,3 +332,12 @@ span.modal-close{
     width:100%;
     height:15px;
 }
+
+.flipped
+{
+    direction: rtl;
+}
+.flipped>div
+{
+    direction: ltr;
+}
