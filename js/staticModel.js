@@ -296,52 +296,34 @@ function initStaticModel(globals){
     }
 
     function getInfo(){
-        var string = "";
-        string += "num nodes: ";
-        string += nodes.length + "\n";
-        string += "node positions: [";
-        _.each(nodes, function(node, index){
+        var data = {};
+        data.numNodes = nodes.length;
+        data.nodes = [];
+        data.externalForces = [];
+        _.each(nodes, function(node){
             var position = node.getPosition();
-            string += "[" + position.x + ", " + position.y + ", " + position.z + "]";
-            if (index < nodes.length-1) string += ", ";
+            var externalForce = node.getExternalForce();
+            data.nodes.push([position.x, position.y, position.z]);
+            data.externalForces.push([externalForce.x, externalForce.y, externalForce.z]);
         });
-        string += "]\n";
-        string += "external forces: [";
-        _.each(nodes, function(node, index){
-            var force = node.getExternalForce();
-            string += "[" + force.x + ", " + force.y + ", " + force.z + "]";
-            if (index < nodes.length-1) string += ", ";
-        });
-        string += "]\n";
-        string += "num fixed nodes: ";
-        string += fixedIndicesMapping.length + "\n";
-        string += "fixed node indices: [";
+
+        data.numFixedNodes = fixedIndicesMapping.length;
+        data.fixedNodesIndices = [];
         _.each(fixedIndicesMapping, function(index){
-            string += index;
-            if (index < nodes.length-1) string += ", ";
+            data.fixedNodesIndices.push(index);
         });
-        string += "]\n";
-        string += "num edges: ";
-        string += edges.length + "\n";
-        string += "edges ([node 1 index, node 2 index]): [";
-        _.each(edges, function(edge, index){
-            string += "[" + edge.nodes[0].getIndex() + ", " + edge.nodes[1].getIndex() + "]";
-            if (index < edges.length-1) string += ", ";
+
+        data.numEdges = edges.length;
+        data.edges = [];
+        data.edgeQs = [];
+        data.edgeLengths = [];
+        _.each(edges, function(edge){
+            data.edges.push([edge.nodes[0].getIndex(), edge.nodes[1].getIndex()]);
+            data.edgeQs.push(edge.getForceDensity());
+            data.edgeLengths.push(edge.getLength());
         });
-        string += "]\n";
-        string += "edge q's: [";
-        _.each(edges, function(edge, index){
-            string += edge.getForceDensity();
-            if (index < edges.length-1) string += ", ";
-        });
-        string += "]\n";
-        string += "edge lengths: [";
-        _.each(edges, function(edge, index){
-            string += edge.getLength();
-            if (index < edges.length-1) string += ", ";
-        });
-        string += "]\n";
-        return string;
+
+        return JSON.stringify(data, null, 2);
     }
 
     return {

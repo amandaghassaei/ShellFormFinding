@@ -139,9 +139,6 @@ Node.prototype.hide = function(){
 Node.prototype.render = function(position){
     position.add(this.getOriginalPosition());
     this.object3D.position.set(position.x, position.y, position.z);
-    //_.each(this.beams, function(beam){
-    //    beam.updatePosition();
-    //});
 };
 
 
