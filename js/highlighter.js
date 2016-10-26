@@ -133,61 +133,29 @@ function initHighlighter(){
     function highlight(intersection){
         var nodes = globals.schematic.getNodes();
         var minDist = globals.xLength+globals.zLength;
-        var maxDist = minDist;
-        var minMaxDist = minDist;
-        var maxMinDist = maxDist;
         var minVect = null;
-        var maxVect = null;
-        var minMaxVect = null;
-        var maxMinVect = null;
         _.each(nodes, function(node){
             var position = node.getOriginalPosition();
             var diff = intersection.clone().sub(position);
-            if (diff.x<0 && diff.z<0){
-                if (diff.length()<minDist) {
+            if (diff.x<0 && diff.z<0) {
+                if (diff.length() < minDist) {
                     minDist = diff.length();
                     minVect = position.clone();
                 }
-            } else if (diff.x>0 && diff.z>0){
-                if (diff.length()<maxDist) {
-                    maxDist = diff.length();
-                    maxVect = position.clone();
-                }
-            } else if (diff.x>0 && diff.z<0){
-                if (diff.length()<maxMinDist) {
-                    maxMinDist = diff.length();
-                    maxMinVect = position.clone();
-                }
-            } else if (diff.x<0 && diff.z>0){
-                if (diff.length()<minMaxDist) {
-                    minMaxDist = diff.length();
-                    minMaxVect = position.clone();
-                }
             }
         });
-        if (minVect && maxVect && minMaxVect && maxMinVect){
-            minVect = new THREE.Vector3(Math.max(minVect.x, minMaxVect.x), 0, Math.max(minVect.z, maxMinVect.z));
-            maxVect = new THREE.Vector3(Math.min(maxVect.x, maxMinVect.x), 0, Math.min(maxVect.z, minMaxVect.z));
-            minMaxVect = new THREE.Vector3(minVect.x, 0, maxVect.z);
-            maxMinVect = new THREE.Vector3(maxVect.x, 0, minVect.z);
-
-            if (checkCompleteLoop(minVect, maxVect, minMaxVect, maxMinVect)){
+        if (minVect){
+            var data = findLoop(minVect);
+            if (data === null) {
+                globals.highlighter.setVisiblitiy(false);
+                //console.log("couldn't find loop");
+            }
+            else {
+                minVect = data.minVect;
+                var maxVect = data.maxVect;
                 globals.highlighter.setPosition(maxVect.clone().add(minVect).multiplyScalar(0.5));
                 globals.highlighter.setScale(maxVect.clone().sub(minVect));
                 globals.highlighter.setVisiblitiy(true);
-            } else {
-                var data = findLoop(minVect);
-                if (data === null) {
-                    globals.highlighter.setVisiblitiy(false);
-                    console.log("couldn't find loop");
-                }
-                else {
-                    minVect = data.minVect;
-                    maxVect = data.maxVect;
-                    globals.highlighter.setPosition(maxVect.clone().add(minVect).multiplyScalar(0.5));
-                    globals.highlighter.setScale(maxVect.clone().sub(minVect));
-                    globals.highlighter.setVisiblitiy(true);
-                }
             }
         } else {
             globals.highlighter.setVisiblitiy(false);
@@ -213,17 +181,18 @@ function initHighlighter(){
     }
 
     function findCorner(node, dir, nextDir){
+        if (!node) return;
         var corner;
         _.each(node.beams, function(beam){
             if (corner) return;
             var otherNode = beam.getOtherNode(node);
-            var direction = otherNode.getOriginalPosition().clone().sub(node.getOriginalPosition()).normalize();
-            if (direction.clone().sub(dir).length()<0.001) {
+            var direction = node.getOriginalPosition().clone().sub(otherNode.getOriginalPosition()).normalize();
+            if ((direction.clone().sub(dir)).length()<0.001) {
                 _.each(otherNode.beams, function(otherBeam){
                     if (corner) return;
                     var otherOtherNode = otherBeam.getOtherNode(otherNode);
-                    var otherDirection = otherOtherNode.getOriginalPosition().clone().sub(otherNode.getOriginalPosition()).normalize();
-                    if (otherDirection.clone().sub(nextDir).length()<0.001) {
+                    var otherDirection = otherNode.getOriginalPosition().clone().sub(otherOtherNode.getOriginalPosition()).normalize();
+                    if ((otherDirection.clone().sub(nextDir)).length()<0.001) {
                         corner = otherNode;
                     }
                 });
@@ -241,18 +210,29 @@ function initHighlighter(){
             if (node.getOriginalPosition().clone().sub(minVect).length()<0.001) min = node;
         });
 
-        var maxMin = findCorner(min, new THREE.Vector3(-1,0,0), new THREE.Vector3(0,0,-1));
-        if (!maxMin) return null;
-        var max = findCorner(maxMin, new THREE.Vector3(0,0,-1), new THREE.Vector3(1,0,0));
-        if (!max) return null;
-        var minMax = findCorner(max, new THREE.Vector3(1,0,0), new THREE.Vector3(0,0,1));
-        if (!minMax) return null;
-        var min = findCorner(minMax, new THREE.Vector3(0,0,1), new THREE.Vector3(-1,0,0));
-        if (!min) return null;
+        if (min === undefined){
+            console.log("no min");
+            return null;
+        }
+
+        var maxMin = findCorner(min, new THREE.Vector3(1,0,0), new THREE.Vector3(0,0,1));
+        if (maxMin){
+            var max = findCorner(maxMin, new THREE.Vector3(0,0,1), new THREE.Vector3(-1,0,0));
+            var minMax = findCorner(max, new THREE.Vector3(-1,0,0), new THREE.Vector3(0,0,-1));
+            min = findCorner(minMax, new THREE.Vector3(0,0,-1), new THREE.Vector3(1,0,0));
+        } else {
+            minMax = findCorner(min, new THREE.Vector3(0,0,1), new THREE.Vector3(1,0,0));
+            var max = findCorner(minMax, new THREE.Vector3(1,0,0), new THREE.Vector3(0,0,-1));
+            var maxMin = findCorner(max, new THREE.Vector3(0,0,-1), new THREE.Vector3(-1,0,0));
+            min = findCorner(maxMin, new THREE.Vector3(-1,0,0), new THREE.Vector3(0,0,1));
+        }
+
+        if (min === undefined) return null;//outer boundary
 
         if (checkCompleteLoop(min.getOriginalPosition(), max.getOriginalPosition(), minMax.getOriginalPosition(), maxMin.getOriginalPosition())){
             return {minVect:min.getOriginalPosition(), maxVect:max.getOriginalPosition()};
         }
+        console.log("no loop");
         return null;
     }
 
