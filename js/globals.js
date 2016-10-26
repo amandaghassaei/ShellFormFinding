@@ -41,7 +41,7 @@ function initGlobals(){
 
     //stl
     _globals.stlEditing = false;
-    _globals.stlScale = 0.001;
+    _globals.stlScale = 0.005;
     _globals.beamThicknessScale = 0.15;
     _globals.addBase = true;
 

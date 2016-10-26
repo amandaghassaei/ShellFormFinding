@@ -22,7 +22,6 @@ function initExportSTL(globals){
     var boundingBox = null;
 
     function setScale(){
-
         var scale = globals.stlScale*1000;
         if (units == "in") scale /= 25.4;
         var string = (dimensions.x*scale).toFixed(1) + units +" x " + (dimensions.z*scale).toFixed(1) + units + " x " + (dimensions.y*scale).toFixed(1) + units;
@@ -87,28 +86,31 @@ function initExportSTL(globals){
     }
 
     function saveSTL(){
-        var _union = null;
+
+        var scale = globals.stlScale*1000;
+        if (units == "in") scale /= 25.4;
+
+        var data = [];
         _.each(object3D.children, function(child){
             var geo = child.geometry.clone();
-            geo.applyMatrix(new THREE.Matrix4().makeScale(child.scale.x, child.scale.y, child.scale.z));
+            geo.applyMatrix(new THREE.Matrix4().makeScale(child.scale.x*scale, child.scale.y*scale, child.scale.z*scale));
             geo.applyMatrix(new THREE.Matrix4().makeRotationFromQuaternion(child.quaternion));
-            geo.applyMatrix(new THREE.Matrix4().makeTranslation(child.position.x, child.position.y, child.position.z));
-            var csgObj = new ThreeBSP(geo);
-            if (_union) _union.union(csgObj);
-            else _union = csgObj;
+            geo.applyMatrix(new THREE.Matrix4().makeTranslation(child.position.x*scale, child.position.y*scale, child.position.z*scale));
+            data.push({geo: geo, offset:new THREE.Vector3(0,0,0), orientation:new THREE.Quaternion(0,0,0,1)});
         });
 
-        var result = _union.toMesh( new THREE.MeshLambertMaterial({color: 0xff0000}) );
-		result.geometry.computeVertexNormals();
-		globals.threeView.scene.add( result );
+        if (globals.addBase){
+            var geo = base.geometry.clone();
+            geo.applyMatrix(new THREE.Matrix4().makeScale(base.scale.x*scale, base.scale.y*scale, base.scale.z*scale));
+            geo.applyMatrix(new THREE.Matrix4().makeRotationFromQuaternion(base.quaternion));
+            geo.applyMatrix(new THREE.Matrix4().makeTranslation(base.position.x*scale, base.position.y*scale, base.position.z*scale));
+            data.push({geo: geo, offset:new THREE.Vector3(0,0,0), orientation:new THREE.Quaternion(0,0,0,1)});
+        }
 
-        //var result = union.toMesh();
-        //result.geometry.computeVertexNormals();
-        //var data = {geo: result.geometry, offset:new THREE.Vector3(0,0,0), orientation:new THREE.Quaternion(0,0,0,1)};
-        //var stlBin = geometryToSTLBin([data]);
-        //if (!stlBin) return;
-        //var blob = new Blob([stlBin], {type: 'application/octet-binary'});
-        //saveAs(blob, "shell.stl");
+        var stlBin = geometryToSTLBin(data);
+        if (!stlBin) return;
+        var blob = new Blob([stlBin], {type: 'application/octet-binary'});
+        saveAs(blob, "shell.stl");
     }
 
     return {
