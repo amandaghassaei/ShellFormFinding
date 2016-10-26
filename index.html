@@ -230,9 +230,9 @@
     <script type="text/javascript" src="js/schematic.js"></script>
     <script type="text/javascript" src="js/dynamicModel.js"></script>
     <script type="text/javascript" src="js/staticModel.js"></script>
-    <script type="text/javascript" src="js/FDMmodel.js"></script>
     <script type="text/javascript" src="js/globals.js"></script>
     <script type="text/javascript" src="js/highlighter.js"></script>
+    <script type="text/javascript" src="js/exportSTL.js"></script>
 
     <script type="text/javascript" src="js/main.js"></script>
 </head>
@@ -265,6 +265,19 @@
     </div>
     <a href="#" id="addMaterial" class="btn btn-lg btn-default">+ New Material</a>
     <div id="extraSpace"></div>
+</div>
+<div id="exportSTLControls">
+    <a href="#" id="designMode" class="btn btn-lg btn-default">Back to Design Mode</a><br/><br/>
+    <span>Bounding box: <span id="stlDimensions"></span></span>
+    <span>Units: &nbsp;&nbsp;
+        <div class="btn-group" id="unitsDropdown">
+            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle" type="button"><span class="dropdownLabel">Inches (in)</span> <span class="caret"></span></button>
+            <ul role="menu" class="dropdown-menu">
+                <li><a data-id="in" href="#">Inches (in)</a></li>
+                <li><a data-id="mm" href="#">Millimeters (mm)</a></li>
+            </ul>
+        </div>
+    </span>
 </div>
 <div id="controlsLeft" class="flipped">
     <div>
@@ -320,7 +333,8 @@
             </label>
             </div>
         </div>
-        <a href="#" id="download" class="btn btn-lg btn-default">Download Design Info (.txt)</a>
+        <a href="#" id="download" class="btn btn-lg btn-default">Download Design Info (.txt)</a><br/>
+        <a href="#" id="exportSTL" class="btn btn-lg btn-default">Export STL</a>
         <br/><br/>
         <div class="dynamicSim">
             Settings:<br/>

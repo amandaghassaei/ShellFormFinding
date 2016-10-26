@@ -5,6 +5,8 @@
 function initThreeView(globals) {
 
     var scene = new THREE.Scene();
+    var wrapper = new THREE.Object3D();
+    var stlWrapper = new THREE.Object3D();
     var camera = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -1000, 1000);//-40, 40);
     var renderer = new THREE.WebGLRenderer({antialias: true});
     var controls;
@@ -18,6 +20,20 @@ function initThreeView(globals) {
         container.append(renderer.domElement);
 
         scene.background = new THREE.Color(0xe6e6e6);
+        scene.add(wrapper);
+        scene.add(stlWrapper);
+        var directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight1.position.set(0, 100, 0);
+        scene.add(directionalLight1);
+        var directionalLight4 = new THREE.DirectionalLight(0xffffff, 0.3);
+        directionalLight4.position.set(0, -100, 0);
+        scene.add(directionalLight4);
+        var directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight2.position.set(100, -30, 0);
+        scene.add(directionalLight2);
+        var directionalLight3 = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight3.position.set(-100, -30, 0);
+        scene.add(directionalLight3);
         //scene.fog = new THREE.FogExp2(0xf4f4f4, 1.7);
         //renderer.setClearColor(scene.fog.color);
 
@@ -57,16 +73,20 @@ function initThreeView(globals) {
         });
     }
 
+    function sceneAddSTL(object){
+        stlWrapper.add(object);
+    }
+
     function sceneAdd(object) {
-        scene.add(object);
+        wrapper.add(object);
     }
 
     function sceneRemove(object) {
-        scene.remove(object);
+        wrapper.remove(object);
     }
 
     function sceneClear() {
-        scene.children = [];
+        wrapper.children = [];
     }
 
     function onWindowResize() {
@@ -87,15 +107,22 @@ function initThreeView(globals) {
         controls.enableRotate = state;
     }
 
+    function setSTLEditing(state){
+        stlWrapper.visible = state;
+        wrapper.visible = !state;
+    }
+
     return {
         sceneRemove: sceneRemove,
+        sceneAddSTL: sceneAddSTL,
         sceneAdd: sceneAdd,
         sceneClear: sceneClear,
         render: render,
         onWindowResize: onWindowResize,
         startAnimation: startAnimation,
         enableControls: enableControls,
-        scene: scene,
+        setSTLEditing: setSTLEditing,
+        //scene: scene,
         camera: camera
     }
 }

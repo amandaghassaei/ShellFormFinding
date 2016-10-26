@@ -235,6 +235,32 @@ function initControls(globals){
         saveAs(blob, "shell.txt");
     });
 
+    setLink("#exportSTL", function(){
+        if (!globals.exportSTL) globals.exportSTL = initExportSTL(globals);
+        globals.setSTLEditing(true);
+    });
+
+    setLink("#designMode", function(){
+        globals.setSTLEditing(false);
+    });
+
+    setButtonGroup("#unitsDropdown", function(val){
+        globals.exportSTL.setUnits(val);
+    });
+
+
+    function setButtonGroup(id, callback){
+        $(id+" a").click(function(e){
+            e.preventDefault();
+            var $target = $(e.target);
+            var val = $target.data("id");
+            if (val) {
+                $(id+" span.dropdownLabel").html($target.html());
+                callback(val);
+            }
+        });
+    }
+
     function setLink(id, callback){
         $(id).click(function(e){
             e.preventDefault();

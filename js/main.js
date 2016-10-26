@@ -25,6 +25,7 @@ $(function() {
     var isDraggingArrow = false;
 
     $(document).dblclick(function() {
+        if (globals.stlEditing) return;
         if (globals.lockForces) return;
         if (highlightedObj && highlightedObj.getMagnitude){
             globals.controls.editMoreInfo(highlightedObj.getMagnitude().toFixed(2), function(val){
@@ -35,6 +36,7 @@ $(function() {
     });
 
     document.addEventListener('mousedown', function(){
+        if (globals.stlEditing) return;
         if (globals.addRemoveFixedMode){
             if (highlightedObj){
                 var state = !highlightedObj.fixed;
@@ -60,6 +62,7 @@ $(function() {
         mouseDown = true;
     }, false);
     document.addEventListener('mouseup', function(e){
+        if (globals.stlEditing) return;
         if (isDraggingArrow) {
             isDraggingArrow = false;
             globals.threeView.enableControls(true);
@@ -83,6 +86,8 @@ $(function() {
 
     document.addEventListener( 'mousemove', mouseMove, false );
     function mouseMove(e){
+
+        if (globals.stlEditing) return;
 
         if (mouseDown) {
             isDragging = true;

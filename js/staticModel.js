@@ -326,6 +326,14 @@ function initStaticModel(globals){
         return JSON.stringify(data, null, 2);
     }
 
+    function getNodes(){
+        return nodes;
+    }
+
+    function getEdges(){
+        return edges;
+    }
+
     return {
         setVisibility: setVisibility,
         updateMaterialAssignments: updateMaterialAssignments,
@@ -340,6 +348,9 @@ function initStaticModel(globals){
         copyNodesAndEdges: copyNodesAndEdges,
         setScale: setScale,
         getInfo: getInfo,
-        setSolid: setSolid
+        setSolid: setSolid,
+
+        getNodes: getNodes,
+        getEdges: getEdges
     }
 }

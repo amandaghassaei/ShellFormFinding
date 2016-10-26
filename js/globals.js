@@ -10,7 +10,8 @@ function initGlobals(){
         setViewMode: setViewMode,
         forceArrayUpdated: forceArrayUpdated,
         resetSimFromInitialState: resetSimFromInitialState,
-        setFixedHasChanged: setFixedHasChanged
+        setFixedHasChanged: setFixedHasChanged,
+        setSTLEditing: setSTLEditing
     };
 
     _globals.xResolution = 5;
@@ -37,6 +38,7 @@ function initGlobals(){
     _globals.addRemoveFixedMode = false;
     _globals.fixedHasChanged = false;
     _globals.shouldResetDynamicSim = false;
+    _globals.stlEditing = false;
 
     function setMaterial(id, val, color, name){
         if (_globals.materials[id]){
@@ -65,6 +67,48 @@ function initGlobals(){
         _globals.fixedHasChanged = true;
         _globals.staticModel.updateFixed();
         if (state) resetSimFromInitialState();//reset dynamic sim flag
+    }
+
+    function setSTLEditing(state){
+        _globals.stlEditing = state;
+        globals.threeView.setSTLEditing(state);
+
+        var $controls = $("#controls");
+        var $controlsLeft = $("#controlsLeft");
+        var $scaleBars = $("#scaleBars");
+        var $exportSTLControls = $("#exportSTLControls");
+
+        if (state){
+            $scaleBars.animate({right: -100});
+            if (_globals.viewMode == "none" || _globals.viewMode == "material"){
+                $controlsLeft.animate({left: -305});
+                $controls.animate({right: -420}, function(){
+                    $exportSTLControls.animate({right:0});
+                });
+            } else {
+                $controls.animate({right: 0}, function () {
+                    $controlsLeft.animate({left: -305});
+                    $controls.animate({right: -420}, function () {
+                        $exportSTLControls.animate({right: 0});
+                    });
+                });
+            }
+            _globals.exportSTL.render();
+        } else {
+            $exportSTLControls.animate({right:-420}, function(){
+                $controlsLeft.animate({left: 0});
+                if (_globals.viewMode == "none" || _globals.viewMode == "material"){
+                    $scaleBars.animate({right: -100});
+                    $controls.animate({right:0});
+                } else {
+                    $controls.animate({right:0}, function(){
+                        $scaleBars.animate({right: 0});
+                        $controls.animate({right:100});
+                    });
+
+                }
+            });
+        }
     }
 
     _globals.threeView = initThreeView(_globals);
