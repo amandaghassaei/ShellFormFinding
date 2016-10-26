@@ -122,7 +122,7 @@ function initThreeView(globals) {
         startAnimation: startAnimation,
         enableControls: enableControls,
         setSTLEditing: setSTLEditing,
-        //scene: scene,
+        scene: scene,
         camera: camera
     }
 }

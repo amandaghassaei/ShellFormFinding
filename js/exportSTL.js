@@ -11,20 +11,21 @@ function initExportSTL(globals){
     var geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 10);
     var jointGeometry = new THREE.SphereGeometry(0.5, 20, 20);
     var baseGeometry = new THREE.BoxGeometry(1,1,1);
+    baseGeometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -0.5, 0));
 
-    var beamThicknessScale = 0.3;
-    var scale = 0.1;
-    var units = "in";
+    var base = new THREE.Mesh(baseGeometry, material);
+    globals.threeView.sceneAddSTL(base);
+    addBase();
 
-    function setScale(_scale){
+    var units = "mm";
+    var dimensions = new THREE.Vector3(0,0,0);
+    var boundingBox = null;
 
-        if (_scale !== undefined) scale = _scale;
-        var height = 0;
-        var nodes = globals.staticModel.getNodes();
-        _.each(nodes, function(node){
-            if (node.getPosition().y>height) height = node.getPosition().y;
-        });
-        var string = (globals.xLength*scale).toFixed(2) + units +" x " + (globals.zLength*scale).toFixed(2) + units + " x " + (height*scale).toFixed(2) + units;
+    function setScale(){
+
+        var scale = globals.stlScale*1000;
+        if (units == "in") scale /= 25.4;
+        var string = (dimensions.x*scale).toFixed(1) + units +" x " + (dimensions.z*scale).toFixed(1) + units + " x " + (dimensions.y*scale).toFixed(1) + units;
         $("#stlDimensions").html(string);
     }
 
@@ -33,19 +34,18 @@ function initExportSTL(globals){
         setScale();
     }
 
+    function addBase(){
+        base.visible = globals.addBase;
+    }
+
     function render(){
+
+        var beamThicknessScale = globals.beamThicknessScale;
 
         object3D.children = [];
 
         var nodes = globals.staticModel.getNodes();
         var edges = globals.staticModel.getEdges();
-
-        var base = new THREE.Mesh(baseGeometry, material);
-        //_.each(nodes, function(node){
-        //
-        //})
-        base.scale.set(globals.xLength, 2, globals.zLength);
-        object3D.add(base);
 
         _.each(edges, function(edge){
             if (edge.isFixed()) return;
@@ -77,12 +77,45 @@ function initExportSTL(globals){
             object3D.add(joint);
         });
 
+        boundingBox = (new THREE.Box3()).setFromObject(object3D);
+        dimensions = boundingBox.max.sub(boundingBox.min);
+        base.scale.x = dimensions.x;
+        base.scale.y = Math.abs(boundingBox.min.y);
+        base.scale.z = dimensions.z;
+
         setScale();
+    }
+
+    function saveSTL(){
+        var _union = null;
+        _.each(object3D.children, function(child){
+            var geo = child.geometry.clone();
+            geo.applyMatrix(new THREE.Matrix4().makeScale(child.scale.x, child.scale.y, child.scale.z));
+            geo.applyMatrix(new THREE.Matrix4().makeRotationFromQuaternion(child.quaternion));
+            geo.applyMatrix(new THREE.Matrix4().makeTranslation(child.position.x, child.position.y, child.position.z));
+            var csgObj = new ThreeBSP(geo);
+            if (_union) _union.union(csgObj);
+            else _union = csgObj;
+        });
+
+        var result = _union.toMesh( new THREE.MeshLambertMaterial({color: 0xff0000}) );
+		result.geometry.computeVertexNormals();
+		globals.threeView.scene.add( result );
+
+        //var result = union.toMesh();
+        //result.geometry.computeVertexNormals();
+        //var data = {geo: result.geometry, offset:new THREE.Vector3(0,0,0), orientation:new THREE.Quaternion(0,0,0,1)};
+        //var stlBin = geometryToSTLBin([data]);
+        //if (!stlBin) return;
+        //var blob = new Blob([stlBin], {type: 'application/octet-binary'});
+        //saveAs(blob, "shell.stl");
     }
 
     return {
         render: render,
         setUnits: setUnits,
-        setScale: setScale
+        setScale: setScale,
+        addBase: addBase,
+        saveSTL: saveSTL
     }
 }

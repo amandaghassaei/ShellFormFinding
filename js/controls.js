@@ -248,6 +248,26 @@ function initControls(globals){
         globals.exportSTL.setUnits(val);
     });
 
+    setSliderInput("#stlScale", globals.stlScale, 0.0001, 0.02, 0.0001, function(val){
+        globals.stlScale = val;
+        globals.exportSTL.setScale();
+    });
+
+    setSliderInput("#beamThicknessScale", globals.beamThicknessScale, 0.01, 1, 0.001, function(val){
+        globals.beamThicknessScale = val;
+        globals.exportSTL.render();
+    });
+
+    setCheckbox("#addBase", globals.addBase, function(val){
+        globals.addBase = val;
+        globals.exportSTL.addBase();
+    });
+
+    setLink("#saveSTL", function(){
+        globals.exportSTL.saveSTL();
+    });
+
+
 
     function setButtonGroup(id, callback){
         $(id+" a").click(function(e){

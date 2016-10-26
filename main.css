@@ -78,6 +78,7 @@ body{
 #exportSTLControls>span{
     display: inline-block;
     float: right;
+    padding-bottom: 10px;
 }
 
 .sliderInput{
@@ -369,4 +370,8 @@ span.modal-close{
     width: 165px;
     display: inline-block;
     text-align: left;
+}
+
+.paddingBottom{
+    padding-bottom: 20px;
 }

@@ -38,7 +38,12 @@ function initGlobals(){
     _globals.addRemoveFixedMode = false;
     _globals.fixedHasChanged = false;
     _globals.shouldResetDynamicSim = false;
+
+    //stl
     _globals.stlEditing = false;
+    _globals.stlScale = 0.001;
+    _globals.beamThicknessScale = 0.15;
+    _globals.addBase = true;
 
     function setMaterial(id, val, color, name){
         if (_globals.materials[id]){
