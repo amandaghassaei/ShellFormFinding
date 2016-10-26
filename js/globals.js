@@ -44,6 +44,7 @@ function initGlobals(){
     _globals.stlScale = 0.005;
     _globals.beamThicknessScale = 0.15;
     _globals.addBase = true;
+    _globals.useForces = true;
 
     function setMaterial(id, val, color, name){
         if (_globals.materials[id]){

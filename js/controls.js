@@ -267,6 +267,10 @@ function initControls(globals){
         globals.exportSTL.saveSTL();
     });
 
+    setCheckbox("#useForces", globals.useForces, function(val){
+        globals.useForces = val;
+        globals.exportSTL.render();
+    });
 
 
     function setButtonGroup(id, callback){

@@ -40,6 +40,7 @@ function initExportSTL(globals){
     function render(){
 
         var beamThicknessScale = globals.beamThicknessScale;
+        var useForces = globals.useForces;
 
         object3D.children = [];
 
@@ -50,9 +51,15 @@ function initExportSTL(globals){
             if (edge.isFixed()) return;
             var beam = new THREE.Mesh(geometry, material);
             beam.scale.y = edge.getLength();
-            var internalForce = edge.getForce();
-            beam.scale.x = Math.sqrt(internalForce)*beamThicknessScale;
-            beam.scale.z = Math.sqrt(internalForce)*beamThicknessScale;
+            if (useForces){
+                var internalForce = edge.getForce();
+                beam.scale.x = Math.sqrt(internalForce)*beamThicknessScale;
+                beam.scale.z = Math.sqrt(internalForce)*beamThicknessScale;
+            } else {
+                beam.scale.x = beamThicknessScale;
+                beam.scale.z = beamThicknessScale;
+            }
+
             var beamAxis = edge.nodes[0].getPosition().clone().sub(edge.nodes[1].getPosition());
             var axis = (new THREE.Vector3(0,1,0)).cross(beamAxis).normalize();
             var angle = Math.acos(new THREE.Vector3(0,1,0).dot(beamAxis.normalize()));
@@ -65,12 +72,17 @@ function initExportSTL(globals){
 
         _.each(nodes, function(node){
             var joint = new THREE.Mesh(jointGeometry, material);
-            var internalForce = 0;
-            _.each(node.beams, function(beam){
-                var force = beam.getForce();
-                if (force>internalForce) internalForce = force;
-            });
-            joint.scale.set(Math.sqrt(internalForce)*beamThicknessScale, Math.sqrt(internalForce)*beamThicknessScale, Math.sqrt(internalForce)*beamThicknessScale);
+            if (useForces){
+                var internalForce = 0;
+                _.each(node.beams, function(beam){
+                    var force = beam.getForce();
+                    if (force>internalForce) internalForce = force;
+                });
+                joint.scale.set(Math.sqrt(internalForce)*beamThicknessScale, Math.sqrt(internalForce)*beamThicknessScale, Math.sqrt(internalForce)*beamThicknessScale);
+            } else {
+                joint.scale.set(beamThicknessScale, beamThicknessScale, beamThicknessScale);
+            }
+
             var position = node.getPosition();
             joint.position.set(position.x, position.y, position.z);
             object3D.add(joint);

@@ -372,6 +372,6 @@ span.modal-close{
     text-align: left;
 }
 
-.paddingBottom{
-    padding-bottom: 20px;
+#paddingBottom{
+    margin-bottom: 50px;
 }
