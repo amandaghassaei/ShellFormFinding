@@ -28,7 +28,7 @@ function Beam(nodes, material){
 }
 
 Beam.prototype.highlight = function(){
-    if (this.type == "beam") {
+    if (this.type == "schematic") {
         //var hsl = this.material.color.getHSL();
         //hsl.l += 0.2;
         //if (hsl.l>1) hsl.l = 1;

@@ -75,7 +75,7 @@ function initDynamicModel(globals){
         globals.gpuMath.swapTextures("u_position", "u_lastPosition");
         globals.gpuMath.step("averageSubdivide", ["u_lastPosition", "u_originalPosition", "u_meta", "u_mass"], "u_position");
         globals.gpuMath.swapTextures("u_position", "u_lastPosition");
-        runSolver();
+        solveStep();
         isBusy = false;
     }
 

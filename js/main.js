@@ -56,7 +56,7 @@ $(function() {
             globals.addRemoveFixedMode = false;
             toolTipFixedNode.visible = false;
         }
-        if (highlightedObj && highlightedObj.type == "beam"){
+        if (highlightedObj && highlightedObj.type == "schematic"){
             if (globals.currentMaterial == "none"){
             } else {
                 var needsUpdate = highlightedObj.setMaterial(globals.materials[globals.currentMaterial]);
