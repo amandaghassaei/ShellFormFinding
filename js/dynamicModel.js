@@ -75,6 +75,7 @@ function initDynamicModel(globals){
         globals.gpuMath.swapTextures("u_position", "u_lastPosition");
         globals.gpuMath.step("averageSubdivide", ["u_lastPosition", "u_originalPosition", "u_meta", "u_mass"], "u_position");
         globals.gpuMath.swapTextures("u_position", "u_lastPosition");
+        runSolver();
         isBusy = false;
     }
 
@@ -102,6 +103,8 @@ function initDynamicModel(globals){
     }
 
     function solveStep(){
+
+        if (isBusy) return;
 
         if (globals.forceHasChanged){
             updateExternalForces();
@@ -138,7 +141,7 @@ function initDynamicModel(globals){
         globals.gpuMath.setProgram("packToBytes");
         globals.gpuMath.setUniformForProgram("packToBytes", "u_vectorLength", vectorLength, "1f");
         globals.gpuMath.setSize(textureDim*vectorLength, textureDim);
-        globals.gpuMath.step("packToBytes", ["u_position"], "outputBytes");
+        globals.gpuMath.step("packToBytes", ["u_lastPosition"], "outputBytes");
 
         var pixels = new Uint8Array(textureDim*textureDim*4*vectorLength);
         if (globals.gpuMath.readyToRead()) {
