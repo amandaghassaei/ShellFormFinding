@@ -92,12 +92,14 @@ function initSchematic(globals){
                 if (j>0){
                     var minusJNode = _nodes[index-1];
                     var edge = new Beam([node, minusJNode]);
+                    edge.type = "schematic";
                     _edges.push(edge);
                     _object3D.add(edge.getObject3D());
                 }
                 if (i>0){
                     var minusINode = _nodes[index-zResolution];
                     var edge = new Beam([node, minusINode]);
+                    edge.type = "schematic";
                     _edges.push(edge);
                     _object3D.add(edge.getObject3D());
                 }
@@ -230,6 +232,8 @@ function initSchematic(globals){
     function connectNodes(node, _nodes, material){
         _.each(_nodes, function(_node){
             var edge = new Beam([node, _node], material || globals.materials[globals.currentMaterial]);
+            edge.type = "schematic";
+            edge.zero();
             edges.push(edge);
             object3D.add(edge.getObject3D());
         });

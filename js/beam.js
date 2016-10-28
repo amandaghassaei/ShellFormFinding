@@ -141,9 +141,20 @@ Beam.prototype.getObject3D = function(){
 };
 
 Beam.prototype.render = function(shouldComputeLineDistance){
-    this.object3D.geometry.verticesNeedUpdate = true;
-    this.object3D.geometry.computeBoundingSphere();
+    if (this.type == "schematic") {
+        this.zero();
+    } else {
+        this.object3D.geometry.verticesNeedUpdate = true;
+        this.object3D.geometry.computeBoundingSphere();
+    }
     if (shouldComputeLineDistance) this.object3D.geometry.computeLineDistances();
+};
+
+Beam.prototype.zero = function(){
+        this.vertices[0].y = 0;
+        this.vertices[1].y = 0;
+        this.object3D.geometry.verticesNeedUpdate = true;
+        this.object3D.geometry.computeBoundingSphere();
 };
 
 
