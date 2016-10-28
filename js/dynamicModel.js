@@ -329,6 +329,14 @@ function initDynamicModel(globals){
         globals.gpuMath.initTextureFromData("u_mass", textureDim, textureDim, "FLOAT", mass, true);
     }
 
+    function updateFixedHeights(){
+        var _nodes = globals.schematic.getNodes();
+        for (var i=0;i<nodes.length;i++){
+            var node = nodes[i];
+            if (node.fixed) node.setHeight(_nodes[i].getOriginalPosition().y);
+        }
+    }
+
     function updateOriginalPosition(){
         for (var i=0;i<nodes.length;i++){
             var origPosition = nodes[i].getOriginalPosition();
@@ -396,6 +404,8 @@ function initDynamicModel(globals){
         updateMaterialAssignments: updateMaterialAssignments,
         setViewMode: setViewMode,
         copyNodesAndEdges: copyNodesAndEdges,
-        setScale: setScale
+        setScale: setScale,
+        updateOriginalPosition: updateOriginalPosition,
+        updateFixedHeights: updateFixedHeights
     }
 }

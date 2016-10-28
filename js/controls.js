@@ -222,6 +222,10 @@ function initControls(globals){
         globals.lockTopology = val;
         //globals.schematic.setVisibility(val);
     });
+    setCheckbox("#lockFixedZPosition", globals.lockFixedZPosition, function(val){
+        globals.lockFixedZPosition = val;
+
+    });
 
     setSlider("#damping", globals.percentDamping, 0.01, 1, 0.01, function(val){
         globals.percentDamping = val;

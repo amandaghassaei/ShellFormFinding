@@ -23,14 +23,23 @@ $(function() {
     var isDragging = false;
     var mouseDown = false;
     var isDraggingArrow = false;
+    var isDraggingNode = false;
 
     $(document).dblclick(function() {
         if (globals.stlEditing) return;
-        if (globals.lockForces) return;
-        if (highlightedObj && highlightedObj.getMagnitude){
+        if (!globals.lockForces && highlightedObj && highlightedObj.getMagnitude){
             globals.controls.editMoreInfo(highlightedObj.getMagnitude().toFixed(2), function(val){
                 highlightedObj.setForce(new THREE.Vector3(0, val, 0));
                 globals.forceArrayUpdated();
+            });
+        }
+        if (!globals.lockFixedZPosition && highlightedObj && highlightedObj.type == "node"){
+            if (!highlightedObj.fixed) return;
+            globals.controls.editMoreInfo(highlightedObj.getOriginalPosition().y.toFixed(2), function(val){
+                highlightedObj.setHeight(val);
+                globals.dynamicModel.updateFixedHeights();
+                globals.dynamicModel.updateOriginalPosition();
+                globals.staticModel.copyNodesAndEdges();
             });
         }
     });
@@ -67,6 +76,10 @@ $(function() {
             isDraggingArrow = false;
             globals.threeView.enableControls(true);
         }
+        if (isDraggingNode) {
+            isDraggingNode = false;
+            globals.threeView.enableControls(true);
+        }
         isDragging = false;
         mouseDown = false;
 
@@ -82,6 +95,18 @@ $(function() {
         raycaster.ray.intersectPlane(raycasterPlane, intersection);
         highlightedObj.setForce(new THREE.Vector3(0, intersection.y, 0));
         globals.forceArrayUpdated();
+    }
+    function dragNode(){
+        globals.threeView.enableControls(false);
+        if (globals.lockFixedZPosition) return;
+        highlightedObj.highlight();
+        raycasterPlane.set(raycasterPlane.normal, -highlightedObj.getPosition().z);
+        var intersection = new THREE.Vector3();
+        raycaster.ray.intersectPlane(raycasterPlane, intersection);
+        highlightedObj.setHeight(intersection.y);
+        globals.dynamicModel.updateFixedHeights();
+        globals.dynamicModel.updateOriginalPosition();
+        globals.staticModel.copyNodesAndEdges();
     }
 
     document.addEventListener( 'mousemove', mouseMove, false );
@@ -107,6 +132,13 @@ $(function() {
                 highlightedObj.getMagnitude().toFixed(2) + " N", e);
             return;
         }
+        if (globals.schematicVisible && !globals.lockFixedZPosition && ((isDragging && highlightedObj && highlightedObj.type == "node") || isDraggingNode)){//fixed node drag
+            isDraggingNode = true;
+            dragNode();
+            globals.controls.showMoreInfo("Height: " +
+                highlightedObj.getPosition().y.toFixed(2) + " m", e);
+            return;
+        }
 
         var _highlightedObj = null;
         if (!isDragging) {
@@ -121,7 +153,7 @@ $(function() {
 
         if (globals.schematicVisible && globals.addRemoveFixedMode){
             if (highlightedObj && highlightedObj.fixed){
-                highlightedObj.highlight();
+                highlightedObj.setDeleteMode();
                 toolTipFixedNode.visible = false;
             } else {
                 if (highlightedObj) toolTipFixedNode.material.opacity = 1;
@@ -170,9 +202,17 @@ $(function() {
                 });
             } else {
                 _.each(intersections, function (thing) {
-                    if (thing.object && thing.object._myBeam) {
+                    if (objectFound) return;
+                    if (thing.object && thing.object._myNode){
+                        if (globals.lockFixedZPosition) return;
+                        _highlightedObj = thing.object._myNode;
+                        if (!_highlightedObj.fixed) return;
+                        _highlightedObj.highlight();
+                        globals.controls.showMoreInfo("Height: " +
+                            _highlightedObj.getPosition().y.toFixed(2) + " m", e);
+                        objectFound = true;
+                    } else if (thing.object && thing.object._myBeam) {
                         if (globals.currentMaterial == "none") return;
-                        if (objectFound) return;
                         _highlightedObj = thing.object._myBeam;
                         _highlightedObj.highlight();
                         objectFound = true;

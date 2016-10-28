@@ -5,6 +5,7 @@
 var nodeMaterial = new THREE.MeshBasicMaterial({color: 0x000000, side:THREE.DoubleSide});
 var nodeMaterialFixed = new THREE.MeshBasicMaterial({color: 0x000000, side:THREE.DoubleSide});
 var nodeMaterialDelete = new THREE.MeshBasicMaterial({color: 0xff0000, side:THREE.DoubleSide});
+var nodeMaterialHighlight = new THREE.MeshBasicMaterial({color: 0xff00ff, side:THREE.DoubleSide});
 var nodeGeo = new THREE.CircleGeometry(0.2,20);
 nodeGeo.rotateX(Math.PI/2);
 var nodeFixedGeo = new THREE.CubeGeometry(1, 0.5, 1);
@@ -13,6 +14,7 @@ nodeFixedGeo.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0.25, 0) );
 
 function Node(position, index){
 
+    this.type = "node";
     this.index = index;
     this._originalPosition = position.clone();
     this.updateOriginalPosition(globals.xLength, globals.zLength);
@@ -39,6 +41,12 @@ Node.prototype.setFixed = function(fixed){
         this.object3D.geometry = nodeGeo;
         if (this.externalForce) this.externalForce.show();
     }
+};
+
+Node.prototype.setHeight = function(height){
+    this._originalPosition.y = height;
+    this.updateOriginalPosition(globals.xLength, globals.zLength);
+    if (this.fixed) this.render(new THREE.Vector3(0,0,0));
 };
 
 
@@ -119,8 +127,12 @@ Node.prototype.getObject3D = function(){
     return this.object3D;
 };
 
-Node.prototype.highlight = function(){
+Node.prototype.setDeleteMode = function(){
     this.object3D.material = nodeMaterialDelete;
+};
+
+Node.prototype.highlight = function(){
+    this.object3D.material = nodeMaterialHighlight;
 };
 
 Node.prototype.unhighlight = function(){
