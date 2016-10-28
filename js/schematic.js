@@ -49,6 +49,13 @@ function initSchematic(globals){
     }
 
     function setFixed(index, state){
+        if (!nodes[index]) return;
+        if (!state) {
+            nodes[index].setHeight(0);
+            globals.dynamicModel.updateFixedHeights();
+            globals.dynamicModel.updateOriginalPosition();
+            globals.staticModel.copyNodesAndEdges();
+        }
         fixed[index] = state;
     }
 
@@ -175,6 +182,7 @@ function initSchematic(globals){
 
         var middlePosition = subDivNodes[0].getOriginalPosition().clone().add(subDivNodes[1].getOriginalPosition()).multiplyScalar(0.5);
         middlePosition.x /= globals.xLength;
+        middlePosition.y = 0;
         middlePosition.z /= globals.zLength;
         var node = new Node(middlePosition, nodes.length);
         object3D.add(node.getObject3D());
@@ -201,7 +209,9 @@ function initSchematic(globals){
         var _fixed = edge.isFixed();
         deleteEdge(edge);
         var position1 = _nodes[0].getOriginalPosition();
+        position1.y = 0;
         var position2 = _nodes[1].getOriginalPosition();
+        position2.y = 0;
         var position = position1.clone().add(position2).multiplyScalar(0.5);
         position.x /= globals.xLength;
         position.z /= globals.zLength;

@@ -33,7 +33,7 @@ $(function() {
                 globals.forceArrayUpdated();
             });
         }
-        if (!globals.lockFixedZPosition && highlightedObj && highlightedObj.type == "node"){
+        if (!globals.addRemoveFixedMode && !globals.lockFixedZPosition && highlightedObj && highlightedObj.type == "node"){
             if (!highlightedObj.fixed) return;
             globals.controls.editMoreInfo(highlightedObj.getOriginalPosition().y.toFixed(2), function(val){
                 highlightedObj.setHeight(val);
@@ -99,6 +99,8 @@ $(function() {
     function dragNode(){
         globals.threeView.enableControls(false);
         if (globals.lockFixedZPosition) return;
+        if (globals.addRemoveFixedMode) return;
+        if (!highlightedObj.fixed) return;
         highlightedObj.highlight();
         raycasterPlane.set(raycasterPlane.normal, -highlightedObj.getPosition().z);
         var intersection = new THREE.Vector3();
@@ -107,6 +109,8 @@ $(function() {
         globals.dynamicModel.updateFixedHeights();
         globals.dynamicModel.updateOriginalPosition();
         globals.staticModel.copyNodesAndEdges();
+        globals.controls.showMoreInfo("Height: " +
+                highlightedObj.getPosition().y.toFixed(2) + " m", e);
     }
 
     document.addEventListener( 'mousemove', mouseMove, false );
@@ -132,11 +136,9 @@ $(function() {
                 highlightedObj.getMagnitude().toFixed(2) + " N", e);
             return;
         }
-        if (globals.schematicVisible && !globals.lockFixedZPosition && ((isDragging && highlightedObj && highlightedObj.type == "node") || isDraggingNode)){//fixed node drag
+        if (!globals.addRemoveFixedMode && globals.schematicVisible && !globals.lockFixedZPosition && ((isDragging && highlightedObj && highlightedObj.type == "node") || isDraggingNode)){//fixed node drag
             isDraggingNode = true;
             dragNode();
-            globals.controls.showMoreInfo("Height: " +
-                highlightedObj.getPosition().y.toFixed(2) + " m", e);
             return;
         }
 

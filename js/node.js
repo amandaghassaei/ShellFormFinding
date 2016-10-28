@@ -163,7 +163,7 @@ Node.prototype.render = function(position){
 //dynamic solve
 
 Node.prototype.getOriginalPosition = function(){
-    return this.originalPosition;
+    return this.originalPosition.clone();
 };
 
 Node.prototype.updateOriginalPosition = function(xLength, zLength){

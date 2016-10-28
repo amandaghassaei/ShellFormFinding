@@ -101,10 +101,6 @@ Beam.prototype.getVector = function(){
     return this.vertices[0].clone().sub(this.vertices[1]);
 };
 
-Beam.prototype.getNominalLength = function(){
-    return this.nodes[0].getOriginalPosition().clone().sub(this.nodes[1].getOriginalPosition()).length();
-};
-
 
 
 //dynamic solve

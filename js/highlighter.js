@@ -43,6 +43,7 @@ function initHighlighter(){
 
         _.each(nodes, function(node, nodeIndex){
             var position = node.getOriginalPosition();
+            position.y = 0;
             _.each(vertices, function(vertex, vertIndex){
                 var dist = vertex.clone().sub(position).length();
                 if (dist < 0.001){
@@ -81,8 +82,9 @@ function initHighlighter(){
                 else if (i == 2) vertex.z += scale.z;
                 else if (i == 3) vertex.z -= scale.z;
                 _.each(nodes, function (node) {
-                    var position = node.getOriginalPosition();
-                    var dist = vertex.clone().sub(position).length();
+                    var nodePosition = node.getOriginalPosition();
+                    nodePosition.y = 0;
+                    var dist = vertex.clone().sub(nodePosition).length();
                     if (dist < 0.001) {
                         existingNodes.push(node);
                     }
@@ -103,28 +105,29 @@ function initHighlighter(){
         var minMaxVect = null;
         var maxMinVect = null;
         _.each(nodes, function(node){
-            var position = node.getOriginalPosition();
-            var diff = intersection.clone().sub(position);
+            var nodePosition = node.getOriginalPosition();
+            nodePosition.y = 0;
+            var diff = intersection.clone().sub(nodePosition);
             var length = diff.length();
             if (diff.x<0 && diff.z<0){
                 if (length<minDist) {
                     minDist = length;
-                    minVect = position.clone();
+                    minVect = nodePosition.clone();
                 }
             } else if (diff.x>0 && diff.z>0){
                 if (length<maxDist) {
                     maxDist = length;
-                    maxVect = position.clone();
+                    maxVect = nodePosition.clone();
                 }
             } else if (diff.x>0 && diff.z<0){
                 if (length<maxMinDist) {
                     maxMinDist = length;
-                    maxMinVect = position.clone();
+                    maxMinVect = nodePosition.clone();
                 }
             } else if (diff.x<0 && diff.z>0){
                 if (length<minMaxDist) {
                     minMaxDist = length;
-                    minMaxVect = position.clone();
+                    minMaxVect = nodePosition.clone();
                 }
             }
         });
@@ -135,12 +138,13 @@ function initHighlighter(){
         var minDist = globals.xLength+globals.zLength;
         var minVect = null;
         _.each(nodes, function(node){
-            var position = node.getOriginalPosition();
-            var diff = intersection.clone().sub(position);
+            var nodePosition = node.getOriginalPosition();
+            nodePosition.y = 0;
+            var diff = intersection.clone().sub(nodePosition);
             if (diff.x<0 && diff.z<0) {
                 if (diff.length() < minDist) {
                     minDist = diff.length();
-                    minVect = position.clone();
+                    minVect = nodePosition.clone();
                 }
             }
         });
@@ -165,13 +169,19 @@ function initHighlighter(){
     function isConnected(node1, node2){
         var connected = false;
         var intermediate = false;
-        var vector = node2.getOriginalPosition().clone().sub(node1.getOriginalPosition()).normalize();
+        var node2Position = node2.getOriginalPosition();
+        node2Position.y = 0;
+        var node1Position = node1.getOriginalPosition();
+        node1Position.y = 0;
+        var vector = node2Position.clone().sub(node1Position).normalize();
         _.each(node1.beams, function(beam){
             if (connected) return;
             var otherNode = beam.getOtherNode(node1);
             if (otherNode == node2) connected = true;
             else {
-                var otherVector = otherNode.getOriginalPosition().clone().sub(node1.getOriginalPosition()).normalize();
+                var otherNodePosition = otherNode.getPosition();
+                otherNodePosition.y = 0;
+                var otherVector = otherNodePosition.clone().sub(node1Position).normalize();
                 if (otherVector.clone().sub(vector).length()<0.001) intermediate = otherNode;
             }
         });
@@ -186,12 +196,18 @@ function initHighlighter(){
         _.each(node.beams, function(beam){
             if (corner) return;
             var otherNode = beam.getOtherNode(node);
-            var direction = node.getOriginalPosition().clone().sub(otherNode.getOriginalPosition()).normalize();
+            var nodePosition = node.getOriginalPosition();
+            nodePosition.y = 0;
+            var otherNodePosition = otherNode.getOriginalPosition();
+            otherNodePosition.y = 0;
+            var direction = nodePosition.clone().sub(otherNodePosition).normalize();
             if ((direction.clone().sub(dir)).length()<0.001) {
                 _.each(otherNode.beams, function(otherBeam){
                     if (corner) return;
                     var otherOtherNode = otherBeam.getOtherNode(otherNode);
-                    var otherDirection = otherNode.getOriginalPosition().clone().sub(otherOtherNode.getOriginalPosition()).normalize();
+                    var otherOtherNodePosition = otherOtherNode.getOriginalPosition();
+                    otherOtherNodePosition.y = 0;
+                    var otherDirection = otherNodePosition.clone().sub(otherOtherNodePosition).normalize();
                     if ((otherDirection.clone().sub(nextDir)).length()<0.001) {
                         corner = otherNode;
                     }
@@ -207,7 +223,9 @@ function initHighlighter(){
         var min;
         var nodes = globals.schematic.getNodes();
         _.each(nodes, function(node){
-            if (node.getOriginalPosition().clone().sub(minVect).length()<0.001) min = node;
+            var nodePosition = node.getOriginalPosition();
+            nodePosition.y = 0;
+            if (nodePosition.clone().sub(minVect).length()<0.001) min = node;
         });
 
         if (min === undefined){
@@ -229,14 +247,23 @@ function initHighlighter(){
 
         if (min === undefined) return null;//outer boundary
 
-        if (checkCompleteLoop(min.getOriginalPosition(), max.getOriginalPosition(), minMax.getOriginalPosition(), maxMin.getOriginalPosition())){
-            return {minVect:min.getOriginalPosition(), maxVect:max.getOriginalPosition()};
+        var minPosition = min.getOriginalPosition();
+        minPosition.y = 0;
+        var maxPosition = max.getOriginalPosition();
+        maxPosition.y = 0;
+        if (checkCompleteLoop(minPosition, maxPosition, minMax.getOriginalPosition(), maxMin.getOriginalPosition())){
+            return {minVect:minPosition, maxVect: maxPosition};
         }
         console.log("no loop");
         return null;
     }
 
     function checkCompleteLoop(minVect, maxVect, minMaxVect, maxMinVect){
+
+        minVect.y = 0;
+        maxVect.y = 0;
+        minMaxVect.y = 0;
+        maxMinVect.y = 0;
 
         var min;
         var max;
@@ -245,10 +272,12 @@ function initHighlighter(){
 
         var nodes = globals.schematic.getNodes();
         _.each(nodes, function(node){
-            if (node.getOriginalPosition().clone().sub(minVect).length()<0.001) min = node;
-            else if (node.getOriginalPosition().clone().sub(maxVect).length()<0.001) max = node;
-            else if (node.getOriginalPosition().clone().sub(minMaxVect).length()<0.001) minMax = node;
-            else if (node.getOriginalPosition().clone().sub(maxMinVect).length()<0.001) maxMin = node;
+            var nodePosition = node.getOriginalPosition();
+            nodePosition.y = 0;
+            if (nodePosition.clone().sub(minVect).length()<0.001) min = node;
+            else if (nodePosition.clone().sub(maxVect).length()<0.001) max = node;
+            else if (nodePosition.clone().sub(minMaxVect).length()<0.001) minMax = node;
+            else if (nodePosition.clone().sub(maxMinVect).length()<0.001) maxMin = node;
         });
 
         if (!min || !max || !minMax || !maxMin) return false;
