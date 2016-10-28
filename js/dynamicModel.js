@@ -12,6 +12,8 @@ function initDynamicModel(globals){
     var nodes;
     var edges;
 
+    var isBusy = false;
+
     function copyNodesAndEdges(isSubdivide){
         object3D.children = [];
         if (nodes){
@@ -68,17 +70,21 @@ function initDynamicModel(globals){
     runSolver();
 
     function averageSubdivide(){
+        isBusy = true;
         globals.gpuMath.step("averageSubdivide", ["u_lastPosition", "u_originalPosition", "u_meta", "u_mass"], "u_position");
         globals.gpuMath.swapTextures("u_position", "u_lastPosition");
         globals.gpuMath.step("averageSubdivide", ["u_lastPosition", "u_originalPosition", "u_meta", "u_mass"], "u_position");
         globals.gpuMath.swapTextures("u_position", "u_lastPosition");
+        isBusy = false;
     }
 
     function reset(){
+        isBusy = true;
         globals.gpuMath.step("zeroTexture", [], "u_position");
         globals.gpuMath.step("zeroTexture", [], "u_lastPosition");
         globals.gpuMath.step("zeroTexture", [], "u_velocity");
         globals.gpuMath.step("zeroTexture", [], "u_lastVelocity");
+        isBusy = false;
     }
 
     function runSolver(){
@@ -125,6 +131,8 @@ function initDynamicModel(globals){
     }
 
     function render(){
+
+        if (isBusy) return;
 
         var vectorLength = 3;
         globals.gpuMath.setProgram("packToBytes");
