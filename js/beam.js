@@ -84,8 +84,12 @@ Beam.prototype.getMaterial = function(){
     return this.beamMaterial;
 };
 
-Beam.prototype.getLength = function(){
-    return this.vertices[0].clone().sub(this.vertices[1]).length();
+Beam.prototype.getLength = function(schematicLength){
+    var vertex1Pos = this.nodes[0].getPosition().clone();
+    if (schematicLength && this.nodes[0].fixed) vertex1Pos.y = 0;
+    var vertex2Pos = this.nodes[1].getPosition().clone();
+    if (schematicLength && this.nodes[1].fixed) vertex2Pos.y = 0;
+    return vertex1Pos.sub(vertex2Pos).length();
 };
 
 Beam.prototype.isFixed = function(){

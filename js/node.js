@@ -68,7 +68,7 @@ Node.prototype.getExternalForce = function(){
 Node.prototype.getLocalLength = function(){
     var length = 0;
     _.each(this.beams, function(beam){
-        length += beam.getLength()/2;
+        length += beam.getLength(true)/2;
     });
     return length;
 };
