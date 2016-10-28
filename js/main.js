@@ -96,7 +96,7 @@ $(function() {
         highlightedObj.setForce(new THREE.Vector3(0, intersection.y, 0));
         globals.forceArrayUpdated();
     }
-    function dragNode(){
+    function dragNode(e){
         globals.threeView.enableControls(false);
         if (globals.lockFixedZPosition) return;
         if (globals.addRemoveFixedMode) return;
@@ -138,7 +138,7 @@ $(function() {
         }
         if (!globals.addRemoveFixedMode && globals.schematicVisible && !globals.lockFixedZPosition && ((isDragging && highlightedObj && highlightedObj.type == "node") || isDraggingNode)){//fixed node drag
             isDraggingNode = true;
-            dragNode();
+            dragNode(e);
             return;
         }
 

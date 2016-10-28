@@ -48,9 +48,8 @@ function initSchematic(globals){
         return _fixed;
     }
 
-    function setFixed(index, state){
-        if (!nodes[index]) return;
-        if (!state) {
+    function setFixed(index, state, shouldIgnore){
+        if (shouldIgnore === undefined && !state && nodes[index]) {
             nodes[index].setHeight(0);
             globals.dynamicModel.updateFixedHeights();
             globals.dynamicModel.updateOriginalPosition();
@@ -217,7 +216,7 @@ function initSchematic(globals){
         position.z /= globals.zLength;
         var node = new Node(position, nodes.length);
         node.setFixed(_fixed);
-        setFixed(node.getIndex(), _fixed);
+        setFixed(node.getIndex(), _fixed, true);
         object3D.add(node.getObject3D());
         nodes.push(node);
         var force = new Force(new THREE.Vector3(0,0,0));
