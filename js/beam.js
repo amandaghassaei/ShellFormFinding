@@ -151,10 +151,13 @@ Beam.prototype.render = function(shouldComputeLineDistance){
 };
 
 Beam.prototype.zero = function(){
-        this.vertices[0].y = 0;
-        this.vertices[1].y = 0;
-        this.object3D.geometry.verticesNeedUpdate = true;
-        this.object3D.geometry.computeBoundingSphere();
+    var vertex1 = this.vertices[0].clone();
+    vertex1.y = 0;
+    var vertex2 = this.vertices[1].clone();
+    vertex2.y = 0;
+    this.object3D.geometry.vertices = [vertex1, vertex2];
+    this.object3D.geometry.verticesNeedUpdate = true;
+    this.object3D.geometry.computeBoundingSphere();
 };
 
 

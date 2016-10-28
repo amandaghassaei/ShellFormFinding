@@ -301,7 +301,7 @@ function initStaticModel(globals){
         data.nodes = [];
         data.externalForces = [];
         _.each(nodes, function(node){
-            var position = node.getPosition();
+            var position = node.getPosition().clone();
             var externalForce = node.getExternalForce();
             data.nodes.push([position.x, position.y, position.z]);
             data.externalForces.push([externalForce.x, externalForce.y, externalForce.z]);

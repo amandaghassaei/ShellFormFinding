@@ -179,7 +179,7 @@ function initHighlighter(){
             var otherNode = beam.getOtherNode(node1);
             if (otherNode == node2) connected = true;
             else {
-                var otherNodePosition = otherNode.getPosition();
+                var otherNodePosition = otherNode.getPosition().clone();
                 otherNodePosition.y = 0;
                 var otherVector = otherNodePosition.clone().sub(node1Position).normalize();
                 if (otherVector.clone().sub(vector).length()<0.001) intermediate = otherNode;
