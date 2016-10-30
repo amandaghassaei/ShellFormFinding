@@ -56,7 +56,9 @@ Node.prototype.setHeight = function(height){
 
 Node.prototype.addExternalForce = function(force){
     this.externalForce = force;
-    this.externalForce.setOrigin(this.getOriginalPosition());
+    var position = this.getOriginalPosition();
+    position.y = 0;
+    this.externalForce.setOrigin(position);
     if (this.fixed) this.externalForce.hide();
 };
 

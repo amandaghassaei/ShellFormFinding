@@ -210,12 +210,13 @@ function initSchematic(globals){
         var _fixed = edge.isFixed();
         deleteEdge(edge);
         var position1 = _nodes[0].getOriginalPosition();
-        position1.y = 0;
+        //position1.y = 0;
         var position2 = _nodes[1].getOriginalPosition();
-        position2.y = 0;
+        //position2.y = 0;
         var position = position1.clone().add(position2).multiplyScalar(0.5);
         position.x /= globals.xLength;
         position.z /= globals.zLength;
+        if (!_fixed) position.y = 0;
         var node = new Node(position, nodes.length);
         node.setFixed(_fixed);
         setFixed(node.getIndex(), _fixed, true);

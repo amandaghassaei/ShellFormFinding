@@ -25,7 +25,7 @@ Force.prototype.setForce = function(force){
 };
 
 Force.prototype.setOrigin = function(origin){
-    this.arrow.position.set(origin.x, origin.y, origin.z);
+    this.arrow.position.set(origin.x, 0, origin.z);
 };
 
 Force.prototype.setSelfWeight = function(selfWeight){
