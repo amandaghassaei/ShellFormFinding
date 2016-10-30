@@ -1,5 +1,7 @@
 # ShellFormFinding
 
+Live demo is available [here](http://git.amandaghassaei.com/ShellFormFinding/).  
+
 This design tool simulates and visualizes the behavior of preloaded thin-shell structures under pure tension.  Traditionally, shell form finding was achieved by [creating physical models](http://www.fabwiki.fabric-formedconcrete.com/lib/exe/fetch.php?media=nottingham:form-finding_and_fabric_forming_in_the_work_of_heinz_isler.pdf) from cloth and string, loading them with hanging weights or other forces, and carefully measuring their geometry at equilibrium.  Now, anyone can run form finding simulations from their laptop and design these forms virtually.
 
 ###A bit about the simulation:
