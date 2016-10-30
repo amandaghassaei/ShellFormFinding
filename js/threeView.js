@@ -56,8 +56,8 @@ function initThreeView(globals) {
     function startAnimation(callback){
         console.log("starting animation");
         _loop(function(){
-            _render();
             if (!globals.stlEditing) callback();//only run dynamic sim if not editing stl
+            _render();
         });
 
     }

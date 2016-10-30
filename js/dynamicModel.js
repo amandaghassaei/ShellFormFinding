@@ -42,8 +42,10 @@ function initDynamicModel(globals){
         });
         initTypedArrays(isSubdivide);
         if (programsInited) {
+            isBusy = true;
             updateTextures(globals.gpuMath, isSubdivide);
             steps = parseInt(setSolveParams());
+            isBusy = false;
         }
         setViewMode(globals.viewMode);
     }
@@ -70,22 +72,17 @@ function initDynamicModel(globals){
     runSolver();
 
     function averageSubdivide(){
-        isBusy = true;
         globals.gpuMath.step("averageSubdivide", ["u_lastPosition", "u_originalPosition", "u_meta", "u_mass"], "u_position");
         globals.gpuMath.swapTextures("u_position", "u_lastPosition");
         globals.gpuMath.step("averageSubdivide", ["u_lastPosition", "u_originalPosition", "u_meta", "u_mass"], "u_position");
         globals.gpuMath.swapTextures("u_position", "u_lastPosition");
-        solveStep();
-        isBusy = false;
     }
 
     function reset(){
-        isBusy = true;
         globals.gpuMath.step("zeroTexture", [], "u_position");
         globals.gpuMath.step("zeroTexture", [], "u_lastPosition");
         globals.gpuMath.step("zeroTexture", [], "u_velocity");
         globals.gpuMath.step("zeroTexture", [], "u_lastVelocity");
-        isBusy = false;
     }
 
     function runSolver(){
@@ -193,6 +190,8 @@ function initDynamicModel(globals){
                 }
                 globals.controls.updateScaleBars(min, max);
             }
+        } else {
+            console.log("here");
         }
 
         globals.threeView.render();
