@@ -194,16 +194,20 @@ function initControls(globals){
         $('#aboutModal').modal('show')
     });
 
-    setCheckbox("#dynamic", globals.dynamicSimVisible, function(val){
-        globals.dynamicSimVisible = val;
-        globals.dynamicModel.setVisibility(val);
-        globals.staticModel.setSolid(!val);
+    var dynamicSimVisCallback = function(val){
+        if (globals.dynamicModel) globals.dynamicModel.setVisibility(val);
+        if (globals.staticModel) globals.staticModel.setSolid(!val);
         if (val) $(".dynamicSim").show();
         else  {
             $(".dynamicSim").hide();
             if (globals.viewMode == "length" || globals.viewMode == "force") globals.staticModel.setEdgeColors();
         }
+    };
+    setCheckbox("#dynamic", globals.dynamicSimVisible, function(val){
+        globals.dynamicSimVisible = val;
+        dynamicSimVisCallback(val);
     });
+    dynamicSimVisCallback(globals.dynamicSimVisible);
     setCheckbox("#static", globals.staticSimVisible, function(val){
         globals.staticSimVisible = val;
         globals.staticModel.setVisibility(val);

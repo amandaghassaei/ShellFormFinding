@@ -5,6 +5,7 @@
 function initDynamicModel(globals){
 
     var object3D = new THREE.Object3D();
+    object3D.visible = globals.dynamicSimVisible;
     globals.threeView.sceneAdd(object3D);
 
     var schematic = globals.schematic;
