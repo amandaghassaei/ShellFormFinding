@@ -256,6 +256,7 @@ function initSchematic(globals){
         setSelfWeight: setSelfWeight,
         subDivide: subDivide,
         setScale: setScale,
-        setVisibility: setVisibility
+        setVisibility: setVisibility,
+        forces: forces
     }
 }

@@ -88,7 +88,12 @@ function initDynamicModel(globals){
 
     function runSolver(){
         globals.threeView.startAnimation(function(){
-            if (!globals.dynamicSimVisible) return;
+            if (!globals.dynamicSimVisible) {
+                if (globals.selfWeightMode == "dynamic"){
+                    globals.staticModel.setSelfWeight();
+                }
+                return;
+            }
             for (var j=0;j<steps;j++){
                 solveStep();
             }
@@ -100,9 +105,22 @@ function initDynamicModel(globals){
         object3D.visible = state;
     }
 
+    function setSelfWeight(){
+        for (var i=0;i<nodes.length;i++){
+            var node = nodes[i];
+            if (globals.applySelfWeight) globals.schematic.forces[i].setSelfWeight(node.getSelfWeight());
+            else globals.schematic.forces[i].setSelfWeight(new THREE.Vector3(0,0,0));
+        }
+        globals.forceArrayUpdated();
+    }
+
     function solveStep(){
 
         if (isBusy) return;
+
+        if (globals.selfWeightMode == "dynamic"){
+            setSelfWeight();
+        }
 
         if (globals.forceHasChanged){
             updateExternalForces();

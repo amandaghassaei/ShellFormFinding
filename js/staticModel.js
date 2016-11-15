@@ -155,6 +155,15 @@ function initStaticModel(globals){
         solve();
     }
 
+    function setSelfWeight(){
+        for (var i=0;i<nodes.length;i++){
+            var node = nodes[i];
+            if (globals.applySelfWeight) globals.schematic.forces[i].setSelfWeight(node.getSelfWeight());
+            else globals.schematic.forces[i].setSelfWeight(new THREE.Vector3(0,0,0));
+        }
+        globals.forceArrayUpdated();
+    }
+
     function resetArrays(){
         var _indicesMapping = [];
         var _fixedIndicesMapping = [];
@@ -350,6 +359,7 @@ function initStaticModel(globals){
         setScale: setScale,
         getInfo: getInfo,
         setSolid: setSolid,
+        setSelfWeight: setSelfWeight,
 
         getNodes: getNodes,
         getEdges: getEdges

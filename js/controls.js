@@ -150,6 +150,24 @@ function initControls(globals){
         else $density.hide();
         globals.applySelfWeight = val;
         globals.schematic.setSelfWeight();
+        if (!val){
+            $("input[name=selfWeightMode]").each(function(i) {
+                $(this).prop('disabled', true);
+            });
+            $(".selfWeightMode").css({opacity: 0.5});
+        } else {
+            $("input[name=selfWeightMode]").each(function(i) {
+                $(this).prop('disabled', false);
+            });
+            $(".selfWeightMode").css({opacity: 1});
+        }
+    });
+
+    setRadio("selfWeightMode", globals.selfWeightMode, function(val){
+        globals.selfWeightMode = val;
+        if (val == "constant"){
+            globals.schematic.setSelfWeight();
+        }
     });
 
     setRadio("viewMode", globals.viewMode, function(val){
@@ -278,11 +296,6 @@ function initControls(globals){
     setCheckbox("#useForces", globals.useForces, function(val){
         globals.useForces = val;
         globals.exportSTL.render();
-    });
-
-    setRadio("selfWeightMode", globals.selfWeightMode, function(val){
-        globals.selfWeightMode = val;
-        //todo something here
     });
 
 
