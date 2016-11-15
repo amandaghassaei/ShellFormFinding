@@ -35,6 +35,7 @@ function initGlobals(){
     _globals.lockFixedZPosition = false;
     _globals.dynamicSimMaterialsChanged = false;
     _globals.applySelfWeight = true;
+    _globals.selfWeightMode = "constant";
     _globals.forceHasChanged = false;
     _globals.addRemoveFixedMode = false;
     _globals.fixedHasChanged = false;

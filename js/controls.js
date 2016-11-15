@@ -191,7 +191,7 @@ function initControls(globals){
     }
 
     setLink("#about", function(){
-        $('#aboutModal').modal('show')
+        $('#aboutModal').modal('show');
     });
 
     var dynamicSimVisCallback = function(val){
@@ -278,6 +278,11 @@ function initControls(globals){
     setCheckbox("#useForces", globals.useForces, function(val){
         globals.useForces = val;
         globals.exportSTL.render();
+    });
+
+    setRadio("selfWeightMode", globals.selfWeightMode, function(val){
+        globals.selfWeightMode = val;
+        //todo something here
     });
 
 

@@ -376,3 +376,19 @@ span.modal-close{
 #paddingBottom{
     margin-bottom: 50px;
 }
+
+.selfWeightMode{
+    display:inline-block;
+    height:21px!important;
+    width:auto!important;
+    margin-left: 10px;
+}
+.selfWeightMode input.custom-radio[type="radio"]:checked + .icons, .selfWeightMode input.custom-radio[type="radio"]:checked + .icons {
+    margin-top: 0!important;
+}
+.selfWeightMode>.icons{
+    margin-top: 0!important;
+}
+label[for=selfWeight]{
+    display: inline-block;
+}
