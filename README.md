@@ -20,7 +20,7 @@ By adjusting the topology and material properties of the structure, it is possib
 * Fixed nodes are pinned to the ground, indicated with a black box.  Use the "Add/Remove Fixed Constraint" button and select a node in the schematic view to toggle its fixed state.  Click and drag a fixed node to change its height.  Double click on a fixed node to type in a height for it.
 * Change the material properties of the mesh by dragging the slider next to "Material 1".  Create new materials and assign them to edges of the mesh by selecting a new material type and clicking on edges in the schematic view.
 * The force on each node is indicated by a grey arrow.  Drag on force vectors to change the applied force at each node.  Double click on a force vector to type in a value for it.
-* By default, the structure is loaded under its own weight, turn off effects due to self weight using the "Apply Self-Weight" toggle or change the density (measured in kg/m) of the edges of the structure with the "Density" slider.
+* By default, the structure is loaded under its own weight, turn off effects due to self weight using the "Apply Self-Weight" toggle or change the density (measured in kg/m) of the edges of the structure with the "Density" slider. Self weight may either be calculated dynamically (based on the edge lengths found in simulation) or statically (based on the edge lengths in the schematic). 
 * Download a text file containing all geometric and material properties of your design by clicking "Download Design Info".
 * Export an stl for 3D printing or other manufacturing processes.
 
