@@ -45,7 +45,7 @@ function initGlobals(){
     _globals.stlEditing = false;
     _globals.stlScale = 0.005;
     _globals.beamThicknessScale = 0.15;
-    _globals.addBase = true;
+    _globals.addBase = false;
     _globals.useForces = true;
 
     var isMobile = {
