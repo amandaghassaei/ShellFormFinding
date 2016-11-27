@@ -71,7 +71,7 @@ function initControls(globals){
         $("#materialTypes").append(makeMaterialHTML(newId, color));
         var $parent = $("#" + newId).parent();
         var val = 2;
-        setSliderInput("#" + newId, val, 0.5, 30, 0.01, function(val){
+        setLogSliderInput("#" + newId, val, 0.5, 30, 0.01, function(val){
             globals.setMaterial(newId, val);
         });
         $parent.children(".editable").click(function(e){
@@ -371,6 +371,46 @@ function initControls(globals){
             var val = slider.slider('value');
             if (callbackOnStop) callbackOnStop(val);
         })
+    }
+
+    function setLogSliderInput(id, val, min, max, incr, callback){
+
+        var scale = (Math.log(max)-Math.log(min)) / (max-min);
+
+        var slider = $(id+">div").slider({
+            orientation: 'horizontal',
+            range: false,
+            value: (Math.log(val)-Math.log(min)) / scale + min,
+            min: min,
+            max: max,
+            step: incr
+        });
+
+        var $input = $(id+">input");
+        $input.change(function(){
+            var val = $input.val();
+            if ($input.hasClass("int")){
+                if (isNaN(parseInt(val))) return;
+                val = parseInt(val);
+            } else {
+                if (isNaN(parseFloat(val))) return;
+                val = parseFloat(val);
+            }
+
+            var min = slider.slider("option", "min");
+            if (val < min) val = min;
+            if (val > max) val = max;
+            $input.val(val);
+            slider.slider('value', (Math.log(val)-Math.log(min)) / scale + min);
+            callback(val, id);
+        });
+        $input.val(val);
+        slider.on("slide", function(e, ui){
+            var val = ui.value;
+            val = Math.exp(Math.log(min) + scale*(val-min));
+            $input.val(val.toFixed(4));
+            callback(val, id);
+        });
     }
 
     function setSliderInput(id, val, min, max, incr, callback){
