@@ -197,7 +197,7 @@ function initSchematic(globals){
         //globals.resetSimFromInitialState();
         globals.dynamicModel.copyNodesAndEdges(true);
         globals.staticModel.copyNodesAndEdges();
-        setSelfWeight();
+        if (globals.selfWeightMode == "constant") setSelfWeight();
     }
 
     function setVisibility(visible){

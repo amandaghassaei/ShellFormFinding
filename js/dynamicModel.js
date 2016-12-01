@@ -106,6 +106,7 @@ function initDynamicModel(globals){
     }
 
     function setSelfWeight(){
+        // console.log(nodes[0].getSelfWeight().length());
         for (var i=0;i<nodes.length;i++){
             var node = nodes[i];
             if (globals.applySelfWeight) globals.schematic.forces[i].setSelfWeight(node.getSelfWeight());
@@ -117,10 +118,6 @@ function initDynamicModel(globals){
     function solveStep(){
 
         if (isBusy) return;
-
-        if (globals.selfWeightMode == "dynamic"){
-            setSelfWeight();
-        }
 
         if (globals.forceHasChanged){
             updateExternalForces();
@@ -211,6 +208,10 @@ function initDynamicModel(globals){
             }
         } else {
             console.log("here");
+        }
+
+        if (globals.selfWeightMode == "dynamic"){
+            setSelfWeight();
         }
 
         globals.threeView.render();
@@ -394,8 +395,8 @@ function initDynamicModel(globals){
             lastPosition = new Float32Array(textureDim*textureDim*4);
             velocity = new Float32Array(textureDim*textureDim*4);
             lastVelocity = new Float32Array(textureDim*textureDim*4);
+            externalForces = new Float32Array(textureDim*textureDim*4);
         }
-        externalForces = new Float32Array(textureDim*textureDim*4);
         mass = new Float32Array(textureDim*textureDim*4);
         meta = new Float32Array(textureDim*textureDim*4);
         beamK = new Float32Array(textureDim*textureDim*4);
@@ -419,7 +420,7 @@ function initDynamicModel(globals){
 
         updateOriginalPosition();
         updateMaterials();
-        updateExternalForces();
+        // updateExternalForces();
         updateFixed();
     }
 
