@@ -1,16 +1,16 @@
 # ShellFormFinding
 
-Live demo is available [here](http://git.amandaghassaei.com/ShellFormFinding/).  
+Live demo is available at <a href="http://apps.amandaghassaei.com/ShellFormFinding/" target="_blank">apps.amandaghassaei.com/ShellFormFinding</a>.  
 
 This design tool simulates and visualizes the behavior of preloaded thin-shell structures under pure tension.  Traditionally, shell form finding was achieved by [creating physical models](http://www.fabwiki.fabric-formedconcrete.com/lib/exe/fetch.php?media=nottingham:form-finding_and_fabric_forming_in_the_work_of_heinz_isler.pdf) from cloth and string, loading them with hanging weights or other forces, and carefully measuring their geometry at equilibrium.  Now, anyone can run form finding simulations from their laptop and design these forms virtually.
 
-###A bit about the simulation:
+### A bit about the simulation:
 
 This tool implements both static and dynamic simulation methods to solve for shell geometry.  The static simulation uses the [force-density method](http://www.sciencedirect.com/science/article/pii/0045782574900450) to solve a linear system of equations for the steady-state equilibrium positions of every node in the system given a force density (force per unit length) at each edge.  The static solution is indicated by a dotted line.  Adjust the visibility of the static vs dynamic simulation with the checkboxes in the upper right.
 
 The dynamic simulation uses a [mass-spring-damper](https://graphics.stanford.edu/~mdfisher/cloth.html) system to model interactions between nodes through edges.  The nominal length of the springs connecting nodes in the system is assumed to be zero.  Damping values may range from 1% to 100% of critical damping for each node-node interaction (adjust this value with the "Damping" slider).  Calculations of the dynamic simulation are executed in parallel in a GPU fragment shader for increased performance.  After time-dependant effects have damped out, the steady-state solution of the dynamic simulation should equal the static solution for every scenario.<br/>
 
-###Instructions:
+### Instructions:
 
 By adjusting the topology and material properties of the structure, it is possible to achieve many diverse forms.  By default, the geometric shape of the mesh is indicated in black, and its topology, external forces, and materials are indicated in the "schematic view" underneath.<br/>
 
